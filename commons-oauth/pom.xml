@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>${version.apiCommons}</version>
+		<version>0.2.2-SNAPSHOT</version>
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
@@ -51,25 +51,49 @@
         </dependency>
 	</dependencies>
 
-	<!--
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
--->
+	
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<version.apiCommons>0.2.2-SNAPSHOT</version.apiCommons>
+		<version.java>1.7</version.java>
+		
 		<version.log4j>1.2.12</version.log4j>
 	</properties>
+	<build>
+		<!--  configure source and output locations -->
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<finalName>${artifactId}-${version}</finalName>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<!-- 
+		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
+		 -->
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+
+		<!--  plugins -->
+		<plugins>
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${version.java}</source>
+					<target>${version.java}</target>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
 </project>
