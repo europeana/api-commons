@@ -51,7 +51,7 @@
 	</properties>
 	
 	<modules>
-		<module>api-commons-oauth</module>	
+		<module>commons-oauth</module>	
 	</modules>
 	
 	<build>
