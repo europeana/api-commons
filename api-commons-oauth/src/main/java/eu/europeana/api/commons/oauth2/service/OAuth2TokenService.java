@@ -29,6 +29,7 @@ public interface OAuth2TokenService {
 	 * Find an access token by its string value
 	 * @param token The identifier to search on
 	 * @return An access token
+	 * @throws catched or runtime exception
 	 */
 	OAuth2RefreshToken findAccessToken(String token) throws CommonServiceException, CommonServiceRuntimeException;
 	
@@ -37,6 +38,7 @@ public interface OAuth2TokenService {
 	 * @param clientId The client id to search on
 	 * @param userName The username to search on
 	 * @return A list of access tokens
+	 * @throws catched or runtime exception
 	 */
 	List<OAuth2RefreshToken> findByClientIdAndUserName(String clientId, String userName) throws CommonServiceException, CommonServiceRuntimeException;
 
@@ -44,6 +46,7 @@ public interface OAuth2TokenService {
 	 * Find the list of access tokens associated to a client id
 	 * @param clientId The client id to search on
 	 * @return A list of access tokens
+	 * @throws catched or runtime exception
 	 */
 	List<OAuth2RefreshToken> findByClientId(String clientId) throws CommonServiceException, CommonServiceRuntimeException;
 		

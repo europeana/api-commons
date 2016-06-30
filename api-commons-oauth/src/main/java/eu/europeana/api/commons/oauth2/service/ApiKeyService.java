@@ -14,6 +14,7 @@ public interface ApiKeyService {
 	     *
 	     * @param apiKey the value of the apiKey
 	     * @return matching api key
+	     * @throws  catched or runtime exception 
 	     */
 	    ApiKey findByKey(String apiKey) throws CommonServiceException, CommonServiceRuntimeException;
 
@@ -22,6 +23,7 @@ public interface ApiKeyService {
 	     *
 	     * @param applicationName application name registered with the api key(s)
 	     * @return all matching api keys
+	     * @throws catched or runtime exception
 	     */
 	    List<ApiKey> findByApplicationName(String applicationName) throws CommonServiceException, CommonServiceRuntimeException;
 
