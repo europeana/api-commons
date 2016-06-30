@@ -20,7 +20,7 @@ package eu.europeana.api.commons.oauth2.model;
 import java.util.Date;
 
 /**
- * @author Willem-Jan Boogerd <contact>www.eledge.net</contact>
+ * @author Willem-Jan Boogerd www.eledge.net
  */
 public interface ApiKey{
 
