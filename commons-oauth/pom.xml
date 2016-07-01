@@ -34,42 +34,41 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${version.commonsLang3}</version>
 		</dependency>
-		 <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>${version.springSecurityOauth}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>${version.springSecurity}</version>
-        </dependency>
-        <dependency>
-        	<groupId>log4j</groupId>
-        	<artifactId>log4j</artifactId>
-        	<version>${version.log4j}</version>  	
-        </dependency>
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
+			<version>${version.springSecurityOauth}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${version.springSecurity}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${version.log4j}</version>
+		</dependency>
 	</dependencies>
 
-	
+<!-- 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.apiCommons>0.2.2-SNAPSHOT</version.apiCommons>
 		<version.java>1.7</version.java>
-		
+
 		<version.log4j>1.2.12</version.log4j>
 	</properties>
+	 -->
 	<build>
-		<!--  configure source and output locations -->
+		<!-- configure source and output locations -->
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
 		<finalName>${artifactId}-${version}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<!-- 
-		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
-		 -->
+		<!-- <scriptSourceDirectory>src/main/scripts</scriptSourceDirectory> -->
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
@@ -82,7 +81,7 @@
 			</testResource>
 		</testResources>
 
-		<!--  plugins -->
+		<!-- plugins -->
 		<plugins>
 			<plugin>
 				<inherited>true</inherited>
@@ -92,6 +91,10 @@
 					<source>${version.java}</source>
 					<target>${version.java}</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
 			</plugin>
 
 		</plugins>
