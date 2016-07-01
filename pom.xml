@@ -17,19 +17,20 @@
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 	
-	<repositories>
-		<repository>
-			<id>libs-release-local</id>
-			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release-local/</url>
-		</repository>
-		<repository>
-			<id>libs-snapshots-local</id>
-			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
-		</repository>
-	</repositories>
-	
+	<distributionManagement>
+		<repositories>
+			<snapshotRepository>
+				<id>artifactory.eanadev.org</id>
+				<name>libs-snapshot-local</name>
+				<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
+			</snapshotRepository>
+			<repository>
+				<id>artifactory.eanadev.org</id>
+				<name>ibs-release-local</name>
+				<url>http://artifactory.eanadev.org/artifactory/libs-release-local/</url>
+			</repository>
+		</repositories>
+	</distributionManagement>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
