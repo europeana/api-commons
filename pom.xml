@@ -18,18 +18,16 @@
 	<name>API Commons modules</name>
 	
 	<distributionManagement>
-		<repositories>
-			<snapshotRepository>
+		<snapshotRepository>
 				<id>artifactory.eanadev.org</id>
 				<name>libs-snapshot-local</name>
 				<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
-			</snapshotRepository>
-			<repository>
+		</snapshotRepository>
+		<repository>
 				<id>artifactory.eanadev.org</id>
 				<name>ibs-release-local</name>
 				<url>http://artifactory.eanadev.org/artifactory/libs-release-local/</url>
-			</repository>
-		</repositories>
+		</repository>		
 	</distributionManagement>
 	
 	<properties>
