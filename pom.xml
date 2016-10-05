@@ -44,6 +44,7 @@
 
 	<modules>
 		<module>commons-oauth</module>
+		<module>commons-web</module>
 	</modules>
 
 	<build>
