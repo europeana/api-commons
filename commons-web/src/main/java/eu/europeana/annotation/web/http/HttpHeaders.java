@@ -4,7 +4,8 @@ package eu.europeana.annotation.web.http;
 public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 
 	/**
-	 * see {@link <a href="http://www.w3.org/wiki/LinkHeader">W3C Link Header documentation</a>}.
+	 * 
+	 * @see  <a href="http://www.w3.org/wiki/LinkHeader">W3C Link Header documentation</a>.
 	 * 
 	 */
 	public static final String LINK = "Link";
