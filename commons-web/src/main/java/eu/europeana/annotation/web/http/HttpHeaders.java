@@ -10,13 +10,15 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 	 */
 	public static final String LINK = "Link";
 	public static final String ALLOW = "Allow";
+	public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
 	public static final String PREFER = "Prefer";
+	public static final String ACCEPT_POST = "Accept-Post";
 	
 	public static final String ALLOW_POST = "POST";
 	public static final String ALLOW_GET = "GET";
 	public static final String ALLOW_GPuD = "GET,PUT,DELETE";
 	public static final String ALLOW_GOH = "GET,OPTIONS,HEAD";
-
+	public static final String ALLOW_PGDOHP = "GET,OPTIONS,HEAD";
 	
 	public static final String CONTENT_TYPE_JSON_UTF8 = "application/json; charset=utf-8";
 	public static final String CONTENT_TYPE_JSONLD_UTF8 = "application/ld+json; charset=utf-8";
