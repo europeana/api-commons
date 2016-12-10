@@ -12,7 +12,7 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 	public static final String ALLOW = "Allow";
 	public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
 	public static final String PREFER = "Prefer";
-	public static final String ACCEPT_POST = "Accept-Post";
+//	public static final String ACCEPT_POST = "Accept-Post";
 	
 	public static final String ALLOW_POST = "POST";
 	public static final String ALLOW_GET = "GET";
