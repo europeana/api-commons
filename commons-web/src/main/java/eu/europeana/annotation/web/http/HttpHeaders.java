@@ -18,7 +18,7 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 	public static final String ALLOW_GET = "GET";
 	public static final String ALLOW_GPuD = "GET,PUT,DELETE";
 	public static final String ALLOW_GOH = "GET,OPTIONS,HEAD";
-	public static final String ALLOW_PGDOHP = "GET,OPTIONS,HEAD";
+//	public static final String ALLOW_PGDOHP = "GET,OPTIONS,HEAD";
 	
 	public static final String CONTENT_TYPE_JSON_UTF8 = "application/json; charset=utf-8";
 	public static final String CONTENT_TYPE_JSONLD_UTF8 = "application/ld+json; charset=utf-8";
