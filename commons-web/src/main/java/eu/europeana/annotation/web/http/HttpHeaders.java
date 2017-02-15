@@ -33,7 +33,7 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 			"rel=\"http://www.w3.org/ns/ldp#constrainedBy\"";
 	
 	
-	public static final String VALUE_PREFER_CONTAINEDIRIS = "return=representation;include=\"http://www.w3.org/ns/ldp#PPreferContainedIRIs\"";
+	public static final String VALUE_PREFER_CONTAINEDIRIS = "return=representation;include=\"http://www.w3.org/ns/oa#PreferContainedIRIs\"";
 	public static final String VALUE_PREFER_CONTAINEDDESCRIPTIONS = "return=representation;include=\"http://www.w3.org/ns/oa#PreferContainedDescriptions\"";
 	
 	
