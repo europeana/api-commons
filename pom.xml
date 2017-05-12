@@ -45,6 +45,7 @@
 	<modules>
 		<module>commons-oauth</module>
 		<module>commons-web</module>
+		<module>commons-nosql</module>
 	</modules>
 
 	<build>
