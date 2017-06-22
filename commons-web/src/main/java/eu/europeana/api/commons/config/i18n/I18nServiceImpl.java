@@ -18,14 +18,6 @@ public class I18nServiceImpl implements I18nService {
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-
-//	@Override
-//	public MessageSource messageSource() {
-//		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-//		messageSource.setBasename("locale/messages");
-//		messageSource.setDefaultEncoding("UTF-8");
-//		return messageSource;
-//	}
 	
 	@Override
 	public String getMessage(String key, String args[]) throws NoSuchMessageException {
