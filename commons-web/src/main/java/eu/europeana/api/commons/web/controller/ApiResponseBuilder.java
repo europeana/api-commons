@@ -11,8 +11,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
-import eu.europeana.api.commons.definitions.model.Concept;
-import eu.europeana.api.commons.web.model.EntityApiResponse;
+import eu.europeana.api.commons.web.model.ApiResponse;
 
 public abstract class ApiResponseBuilder {
 
@@ -25,28 +24,22 @@ public abstract class ApiResponseBuilder {
 		return logger;
 	}
 
-	public EntityApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
-		EntityApiResponse response;
-		response = new EntityApiResponse(apiKey, action);
+	public abstract ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey);
+	
+	//TODO: remove
+//	public EntityApiResponse buildResponse(Concept entity, String action, String apiKey) {
+//		EntityApiResponse response;
+//		response = new EntityApiResponse(apiKey, action);
+//
+//		response.success = true;
+//		response.setEntity(entity);
+//		// response. setStatus(message);
+//		return response;
+//	}
 
-		response.success = false;
-		response.error = errorMessage;
-		return response;
-	}
+	protected ApiResponse getErrorReport(String apiKey, String action, Throwable th, boolean includeErrorStack) {
 
-	public EntityApiResponse buildResponse(Concept entity, String action, String apiKey) {
-		EntityApiResponse response;
-		response = new EntityApiResponse(apiKey, action);
-
-		response.success = true;
-		response.setEntity(entity);
-		// response. setStatus(message);
-		return response;
-	}
-
-	protected EntityApiResponse getErrorReport(String apiKey, String action, Throwable th, boolean includeErrorStack) {
-
-		EntityApiResponse response = new EntityApiResponse(apiKey, action);
+		ApiResponse response;
 
 		final String blank = " ";
 		StringBuilder messageBuilder = new StringBuilder();
@@ -63,7 +56,7 @@ public abstract class ApiResponseBuilder {
 		if (th != null && th.getCause() != null && th != th.getCause())
 			messageBuilder.append(blank).append(th.getCause().getMessage());
 
-		response = buildErrorResponse(messageBuilder.toString(), response.action, response.apikey);
+		response = buildErrorResponse(messageBuilder.toString(), action, apiKey);
 
 		if (includeErrorStack && th != null)
 			response.setStackTrace(getStackTraceAsString(th));
@@ -77,7 +70,7 @@ public abstract class ApiResponseBuilder {
 		return out.toString();
 	}
 
-	protected String serializeResponse(EntityApiResponse res) {
+	protected String serializeResponse(ApiResponse res) {
 		String errorMessage;
 		try {
 			// correct serialization

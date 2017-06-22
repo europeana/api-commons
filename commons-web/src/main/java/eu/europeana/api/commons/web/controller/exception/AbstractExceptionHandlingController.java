@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,19 +25,17 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
+import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.utils.JsonWebUtils;
-import eu.europeana.api.commons.config.i18n.I18nService;
-import eu.europeana.api.commons.definitions.vocabulary.WebEntityConstants;
 import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
-import eu.europeana.api.commons.web.model.EntityApiResponse;
+import eu.europeana.api.commons.web.model.ApiResponse;
 
 /**
  * 
@@ -46,14 +43,9 @@ import eu.europeana.api.commons.web.model.EntityApiResponse;
  * @author GordeaS
  *
  */
-@Deprecated
-@ControllerAdvice
-public class GlobalExceptionHandling extends ApiResponseBuilder {
+public abstract class AbstractExceptionHandlingController extends ApiResponseBuilder {
 
 	Logger logger = Logger.getLogger(getClass());
-	
-	@Resource
-	I18nService i18nService;
 	
 	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>(); 
 	//see DefaultHandlerExceptionResolver.doResolveException
@@ -79,8 +71,8 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 			HttpServletResponse response) throws IOException {
 
 		// TODO remove the usage of Model and View
-		boolean includeErrorStack = new Boolean(req.getParameter(WebEntityConstants.PARAM_INCLUDE_ERROR_STACK));
-		EntityApiResponse res = getErrorReport(req.getParameter(WebEntityConstants.PARAM_WSKEY), req.getServletPath(),
+		boolean includeErrorStack = new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
+		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 
 		logger.debug(ex);
@@ -93,8 +85,8 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 			throws IOException {
 
 		// TODO remove the usage of Model and View
-		boolean includeErrorStack =new Boolean(req.getParameter(WebEntityConstants.PARAM_INCLUDE_ERROR_STACK));
-		EntityApiResponse res = getErrorReport(req.getParameter(WebEntityConstants.PARAM_WSKEY), req.getServletPath(),
+		boolean includeErrorStack =new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
+		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 
 		logger.debug(ex);
@@ -106,20 +98,20 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 			HttpServletResponse response) throws IOException {
 
 		
-		boolean includeErrorStack = new Boolean(req.getParameter(WebEntityConstants.PARAM_INCLUDE_ERROR_STACK));
+		boolean includeErrorStack = new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		
 		HttpStatus statusCode = statusCodeMap.get(ex.getClass());
 		if(statusCode == null)
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 		
 		// TODO remove the usage of Model and View
-		EntityApiResponse res = getErrorReport(req.getParameter(WebEntityConstants.PARAM_WSKEY), req.getServletPath(),
+		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 		logger.debug(ex);
 		return buildErrorResponse(res, statusCode);
 	}
 	
-	protected ResponseEntity<String> buildErrorResponse(EntityApiResponse res, HttpStatus status) {
+	protected ResponseEntity<String> buildErrorResponse(ApiResponse res, HttpStatus status) {
 		
 		String body = JsonWebUtils.toJson(res);
 		
@@ -137,10 +129,6 @@ public class GlobalExceptionHandling extends ApiResponseBuilder {
 		// storedAnnotation.getLastUpdate().hashCode());
 		// headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
 		return headers;
-	}
-
-	protected I18nService getI18nService() {
-		return i18nService;
 	}
 
 }
