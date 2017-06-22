@@ -27,8 +27,8 @@ import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 /**
  * Implementation of a NosqlDao
  *
- * @param <E>
- * @param <T>
+ * @param <E> the entity class
+ * @param <T> the class of the entity Id
  */
 public class NosqlDaoImpl<E extends NoSqlEntity, T extends Serializable> extends BasicDAO<E, T> implements NosqlDao<E, T> {
 
@@ -45,6 +45,10 @@ public class NosqlDaoImpl<E extends NoSqlEntity, T extends Serializable> extends
 		this.clazz = clazz;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see eu.europeana.api.commons.nosql.dao.NosqlDao#deleteAll()
+	 */
 	@Override
 	public void deleteAll() {
 		try {

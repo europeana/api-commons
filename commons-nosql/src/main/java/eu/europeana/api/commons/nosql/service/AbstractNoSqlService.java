@@ -23,21 +23,21 @@ import java.io.Serializable;
 import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
 /**
- * @author Willem-Jan Boogerd <www.eledge.net/contact>
+ * @author Willem-Jan Boogerd, Sven Schlarb 
  */
 public interface AbstractNoSqlService<E extends NoSqlEntity, T extends Serializable> {
 
 	/**
 	 * 
 	 * 
-	 * @param object
+	 * @param object - the object to be stored in the database
 	 */
 	E store(E object);
 
 	/**
 	 * 
 	 * 
-	 * @param object
+	 * @param id - the database id of the object to be deleted
 	 */
 	void remove(final T id);
 
@@ -62,7 +62,7 @@ public interface AbstractNoSqlService<E extends NoSqlEntity, T extends Serializa
 	/**
 	 * 
 	 * 
-	 * @param id
+	 * @param id the database ID for the object persisted in the database
 	 * @return
 	 */
 	E findByID(final T id);
@@ -70,7 +70,7 @@ public interface AbstractNoSqlService<E extends NoSqlEntity, T extends Serializa
 	/**
 	 * Checks if a entity with the given ID exists.
 	 * 
-	 * @param id
+	 * @param id - the database ID
 	 * @return
 	 */
 	boolean exists(final T id);

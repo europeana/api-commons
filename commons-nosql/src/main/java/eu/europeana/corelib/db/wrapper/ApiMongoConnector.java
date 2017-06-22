@@ -40,9 +40,9 @@ public class ApiMongoConnector {
 
 	/**
 	 * Mongo create datastore
-	 * @param serverAddress server address
-	 * @param dbName database name
-	 * @return
+	 * @param connectionUri - the connection URI, without database name 
+	 * @param dbName - database name
+	 * @return the datastore
 	 */
 	public Datastore createDatastore(String connectionUri, String dbName) {
 		Datastore datastore = null;
