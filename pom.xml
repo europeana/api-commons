@@ -13,7 +13,7 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
-	<version>0.2.2</version>
+	<version>${version.apiCommons}</version>
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 	
@@ -100,11 +100,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
+					<version>3.3.3</version>
 				</plugin>
 				<plugin>
-					<inherited>true</inherited>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.3.3</version>
 					<configuration>
 						<source>${version.java}</source>
 						<target>${version.java}</target>
