@@ -13,7 +13,7 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
-	<version>0.2.2-SNAPSHOT</version>
+	<version>${version.apiCommons}</version>
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 	
@@ -57,7 +57,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.apiCommons>0.2.2-SNAPSHOT</version.apiCommons>
+		<version.apiCommons>0.2.2</version.apiCommons>
 		<version.java>1.7</version.java>
 		<version.junit>4.11</version.junit>
 		<version.springSecurity>4.1.0.RELEASE</version.springSecurity>
