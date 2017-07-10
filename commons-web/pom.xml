@@ -80,14 +80,13 @@
 		<version.log4j>1.2.12</version.log4j>
 	</properties>
 	 -->
+	 <!-- 
 	<build>
-		<!-- configure source and output locations -->
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
 		<finalName>${artifactId}-${version}</finalName>
 		<testOutputDirectory>target/test-classes</testOutputDirectory>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<!-- <scriptSourceDirectory>src/main/scripts</scriptSourceDirectory> -->
 		<testSourceDirectory>src/test/java</testSourceDirectory>
 		<resources>
 			<resource>
@@ -100,7 +99,6 @@
 			</testResource>
 		</testResources>
 
-		<!-- plugins -->
 		<plugins>
 			<plugin>
 				<inherited>true</inherited>
@@ -117,4 +115,5 @@
 			</plugin>
 		</plugins>
 	</build>
+	-->
 </project>
