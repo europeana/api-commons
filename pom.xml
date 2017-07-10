@@ -13,7 +13,7 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
-	<version>${project.version}</version>
+	<version>0.2.2</version>
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 
@@ -60,7 +60,7 @@
 		<!-- 
 		<version.apiCommons>0.2.2</version.apiCommons>
 		-->
-		<project.version>0.2.2</project.version>
+		<version.commonsApi>0.2.2</version.commonsApi>
 		<version.java>1.7</version.java>
 		<version.junit>4.11</version.junit>
 		<version.springSecurity>4.1.0.RELEASE</version.springSecurity>
