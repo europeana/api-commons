@@ -13,7 +13,10 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
+	<version>0.2.3-SNAPSHOT</version>
+	<!-- 
 	<version>${version.apiCommons}</version>
+	 -->
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 	
