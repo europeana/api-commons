@@ -64,6 +64,12 @@
 		<version.log4j>1.2.12</version.log4j>
 	</properties>
 	 -->
+	 
+	 <build>
+	 	<!-- it seems that final name is not inhereted from parent pom -->
+	 	<finalName>${project.artifactId}-${project.version}</finalName>
+	 </build>	
+	
 	 <!-- 
 	<build>
 		<directory>target</directory>
