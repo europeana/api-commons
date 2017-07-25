@@ -12,11 +12,14 @@ public class ParamValidationException extends HttpException{
 //	public static final String MESSAGE_BLANK_PARAMETER_VALUE = "Invalid request. Parameter value must not be null or empty!";
 	
 	public ParamValidationException(String message, String i18nKey, String[] i18nParams) {
-		super(message, i18nKey, i18nParams, HttpStatus.BAD_REQUEST);
+		this(message, i18nKey, i18nParams, HttpStatus.BAD_REQUEST, null);
 	}
 
 	public ParamValidationException(String message, String i18nKey, String[] i18nParams, HttpStatus status, Throwable th){
-		super(message, i18nKey, i18nParams, status, th);
+		super(message, i18nKey, i18nParams, status, th);		
 	}
 
+	public ParamValidationException(String message, String i18nKey, String[] i18nParams, Throwable th){
+		this(message, i18nKey, i18nParams, HttpStatus.BAD_REQUEST, th);
+	}
 }
