@@ -28,9 +28,8 @@ import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 public interface AbstractNoSqlService<E extends NoSqlEntity, T extends Serializable> {
 
 	/**
-	 * 
-	 * 
 	 * @param object - the object to be stored in the database
+	 * @return the persisted object
 	 */
 	E store(E object);
 
@@ -63,7 +62,7 @@ public interface AbstractNoSqlService<E extends NoSqlEntity, T extends Serializa
 	 * 
 	 * 
 	 * @param id the database ID for the object persisted in the database
-	 * @return
+	 * @return the database object
 	 */
 	E findByID(final T id);
 
@@ -71,7 +70,7 @@ public interface AbstractNoSqlService<E extends NoSqlEntity, T extends Serializa
 	 * Checks if a entity with the given ID exists.
 	 * 
 	 * @param id - the database ID
-	 * @return
+	 * @return true if the object with the given id is found in database
 	 */
 	boolean exists(final T id);
 
