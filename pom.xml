@@ -76,6 +76,7 @@
 		<module>commons-oauth</module>
 		<module>commons-web</module>
 		<module>commons-nosql</module>
+		<module>commons-net</module>
 	</modules>
 
 	<build>
