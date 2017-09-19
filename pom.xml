@@ -68,8 +68,6 @@
 		<version.springSecurityOauth>2.0.10.RELEASE</version.springSecurityOauth>
 		<version.log4j>1.2.12</version.log4j>
 		<version.commonsLang3>3.0</version.commonsLang3>
-		<version.codehausJackson>1.9.9</version.codehausJackson>
-		<version.corelib>2.1</version.corelib>
 	</properties>
 
 	<modules>
