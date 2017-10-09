@@ -26,16 +26,6 @@ public abstract class ApiResponseBuilder {
 
 	public abstract ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey);
 	
-	//TODO: remove
-//	public EntityApiResponse buildResponse(Concept entity, String action, String apiKey) {
-//		EntityApiResponse response;
-//		response = new EntityApiResponse(apiKey, action);
-//
-//		response.success = true;
-//		response.setEntity(entity);
-//		// response. setStatus(message);
-//		return response;
-//	}
 
 	protected ApiResponse getErrorReport(String apiKey, String action, Throwable th, boolean includeErrorStack) {
 
