@@ -70,12 +70,11 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req,
 			HttpServletResponse response) throws IOException {
 
-		// TODO remove the usage of Model and View
 		boolean includeErrorStack = new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 
-		logger.debug(ex);
+		logger.debug("respond with http exception:", ex);
 		return buildErrorResponse(res, ex.getStatus());
 
 	}
@@ -84,12 +83,11 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response)
 			throws IOException {
 
-		// TODO remove the usage of Model and View
 		boolean includeErrorStack =new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 
-		logger.debug(ex);
+		logger.debug("respond with internal server error for runtime exception:", ex);
 		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -104,10 +102,9 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		if(statusCode == null)
 			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 		
-		// TODO remove the usage of Model and View
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-		logger.debug(ex);
+		logger.debug("respond with internal server error for spring exception:", ex);
 		return buildErrorResponse(res, statusCode);
 	}
 	
@@ -125,9 +122,6 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>(5);
 		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 		headers.add(HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_TYPE_JSON_UTF8);
-		// headers.add(HttpHeaders.ETAG, "" +
-		// storedAnnotation.getLastUpdate().hashCode());
-		// headers.add(HttpHeaders.LINK, HttpHeaders.VALUE_LD_RESOURCE);
 		return headers;
 	}
 
