@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.model.ApiResponse;
+import eu.europeana.api.commons.web.model.ErrorApiResponse;
 
 public abstract class ApiResponseBuilder {
 
@@ -24,8 +25,9 @@ public abstract class ApiResponseBuilder {
 		return logger;
 	}
 
-	public abstract ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey);
-	
+	public ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
+		return new ErrorApiResponse(apiKey, action, errorMessage);		
+	}
 
 	protected ApiResponse getErrorReport(String apiKey, String action, Throwable th, boolean includeErrorStack) {
 
