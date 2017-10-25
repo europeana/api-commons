@@ -16,7 +16,10 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>0.2.2</version>
+			<version>0.2.3-SNAPSHOT</version>
+	<!-- 
+	<version>${version.apiCommons}</version>
+	 -->
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
@@ -61,6 +64,12 @@
 		<version.log4j>1.2.12</version.log4j>
 	</properties>
 	 -->
+	 
+	 <build>
+	 	<!-- it seems that final name is not inhereted from parent pom -->
+	 	<finalName>${project.artifactId}-${project.version}</finalName>
+	 </build>	
+	
 	 <!-- 
 	<build>
 		<directory>target</directory>

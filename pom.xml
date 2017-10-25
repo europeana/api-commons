@@ -13,17 +13,14 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
-	<version>0.2.2</version>
+	<version>0.2.3-SNAPSHOT</version>
+	<!-- 
+	<version>${version.apiCommons}</version>
+	 -->
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 
-	<parent>
-		<artifactId>corelib</artifactId>
-		<groupId>eu.europeana</groupId>
-		<version>2.1</version>
-	</parent>
-
-	<repositories>
+  <repositories>
 		<repository>
 			<id>artifactory.eanadev.org</id>
 			<name>artifactory.eanadev.org-releases (external libs)</name>
@@ -57,7 +54,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.apiCommons>0.2.2</version.apiCommons>
+		<version.apiCommons>0.2.3-SNAPSHOT</version.apiCommons>
 		<version.java>1.7</version.java>
 		<version.junit>4.11</version.junit>
 		<version.springSecurity>4.1.0.RELEASE</version.springSecurity>
@@ -66,13 +63,13 @@
 		<version.log4j>1.2.12</version.log4j>
 		<version.commonsLang3>3.0</version.commonsLang3>
 		<version.codehausJackson>1.9.9</version.codehausJackson>
-		<version.corelib>2.1</version.corelib>
 	</properties>
 
 	<modules>
 		<module>commons-oauth</module>
 		<module>commons-web</module>
 		<module>commons-nosql</module>
+		<module>commons-net</module>
 	</modules>
 
 	<build>
