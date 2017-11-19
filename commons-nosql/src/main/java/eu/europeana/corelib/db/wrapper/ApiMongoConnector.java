@@ -63,8 +63,11 @@ public class ApiMongoConnector {
 	 * 
 	 * @param connectionUri
 	 *            - the connection URI, without database name
-	 * @param trustore 
+	 * @param truststore 
 	 *            - the name of the trustore file available in classpath in the /config folder 
+	 * @param truststorePass 
+	 *            - the password needd to access the  trustore  
+	 *            
 	 * @return the datastore
 	 */
 	public Datastore createDatastore(String connectionUri, String truststore, String truststorePass) {
