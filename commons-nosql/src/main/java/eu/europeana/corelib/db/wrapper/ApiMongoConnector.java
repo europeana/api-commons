@@ -81,7 +81,7 @@ public class ApiMongoConnector {
 				validateTrustStoreConfig(truststore, truststorePass);
 				log.debug("Enabling ssl connection using truststore: " + truststore + ":"+truststorePass);
 				SSLContext sc = getSslContext(truststore, truststorePass);
-				mco.sslEnabled(true).socketFactory(sc.getSocketFactory());
+				mco.sslEnabled(true).sslInvalidHostNameAllowed(true).socketFactory(sc.getSocketFactory());
 			}
 			
 			MongoClientURI mongoUri = new MongoClientURI(connectionUri, mco);
