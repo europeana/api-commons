@@ -103,8 +103,12 @@ public class ApiMongoConnector {
      */
     public void close() {
         if(mongoClient != null){
-	    	log.info("Shutting down connections to Mongo...");
-	        mongoClient.close();
+        	try{
+		    	log.info("Shutting down connections to Mongo...");
+		        mongoClient.close();
+        	}catch(Throwable th){
+        		log.error("cannot close mongo connetions", th);
+        	}
         }
     }
     
