@@ -49,7 +49,8 @@ import com.mongodb.MongoException;
 public class ApiMongoConnector {
 
 	private static Logger log = Logger.getLogger(ApiMongoConnector.class);
-	private SSLContext sslContext = null;
+	SSLContext sslContext = null;
+	MongoClient mongoClient = null;
 
 	/**
 	 * Default constructor
@@ -85,9 +86,9 @@ public class ApiMongoConnector {
 			}
 			
 			MongoClientURI mongoUri = new MongoClientURI(connectionUri, mco);
-			MongoClient mongoClient = new MongoClient(mongoUri);
+			mongoClient = new MongoClient(mongoUri);
+			
 			datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
-
 			log.info(String.format("Connection to db '%s' mongo server was successful", mongoUri.getDatabase()));
 		} catch (MongoException e) {
 			//redundant, runtime exceptions should be logged by the system 
@@ -97,6 +98,16 @@ public class ApiMongoConnector {
 		return datastore;
 	}
 
+	 /**
+     * Close the connection to mongo
+     */
+    public void close() {
+        if(mongoClient != null){
+	    	log.info("Shutting down connections to Mongo...");
+	        mongoClient.close();
+        }
+    }
+    
 	protected void validateTrustStoreConfig(String truststore, String truststorePass) {
 		//store and pass are mandatory
 		if(StringUtils.isEmpty(truststore) || StringUtils.isEmpty(truststorePass))
@@ -140,8 +151,5 @@ public class ApiMongoConnector {
 			initSSLContext(truststore, truststorePass);
 		return sslContext;
 	}
-
-	void setSslContext(SSLContext sslContext) {
-		this.sslContext = sslContext;
-	}
+	
 }
