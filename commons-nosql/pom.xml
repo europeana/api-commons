@@ -16,7 +16,7 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-			<version0.2.4-RELEASE</version>
+			<version>0.2.4-RELEASE</version>
 	<!-- 
 	<version>${version.apiCommons}</version>
 	 -->
