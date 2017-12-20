@@ -27,8 +27,8 @@ import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
 /**
  * Implementation od the {@link AbstractNoSqlService}
  *
- * @param <E>
- * @param <T>
+ * @param <E> The type of the concrete NoSql Entity
+ * @param <T> The type of the serializable class for id attribute
  */
 public abstract class AbstractNoSqlServiceImpl<E extends NoSqlEntity, T extends Serializable> implements AbstractNoSqlService<E, T> {
 
