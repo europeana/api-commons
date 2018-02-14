@@ -54,7 +54,7 @@ public class ResultSet<T> {
 	/**
 	 * Setter method
 	 * @param list the retrieved items
-	 * @return
+	 *  
 	 */
 	public void setResults(List<T> list) {
 		this.results = list;
@@ -69,8 +69,7 @@ public class ResultSet<T> {
 	}
 
 	/**
-	 * Setter method
-	 * @param query the search query
+	 * Setter method for search query
 	 */
 	public void setQuery(Query query) {
 		this.query = query;
@@ -145,8 +144,8 @@ public class ResultSet<T> {
 	}
 
 	/**
-	 * indicate if the results list is empty
-	 * @return
+	 * indicates if the results list is empty
+	 * @return true if empty list
 	 */
 	public boolean isEmpty() {
 		return getResults().isEmpty();
