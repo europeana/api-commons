@@ -22,13 +22,15 @@ package eu.europeana.api.commons.web.model;
 
 import java.util.Date;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Willem-Jan Boogerd www.eledge.net/contact
  */
-@JsonSerialize(include = Inclusion.NON_EMPTY)
+@JsonSerialize()
+@JsonInclude(content=Include.NON_EMPTY, value=Include.NON_EMPTY)
 public abstract class ApiResponse {
 
 	public String apikey;
