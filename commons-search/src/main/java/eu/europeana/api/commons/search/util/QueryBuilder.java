@@ -113,10 +113,11 @@ public class QueryBuilder {
 		return solrFilters;
 	}
 	
-	public SolrQuery toSolrQuery(Query searchQuery) {
+	public SolrQuery toSolrQuery(Query searchQuery, String searchHandler) {
 
 		SolrQuery solrQuery = new SolrQuery();
-
+		
+		solrQuery.setRequestHandler(searchHandler);
 		solrQuery.setQuery(searchQuery.getQuery());
 
 		solrQuery.setRows(searchQuery.getPageSize());
