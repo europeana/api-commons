@@ -32,7 +32,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 
@@ -47,8 +48,7 @@ import com.mongodb.MongoException;
  *
  */
 public class ApiMongoConnector {
-
-	private static Logger log = Logger.getLogger(ApiMongoConnector.class);
+	private static final Logger log = LogManager.getLogger(ApiMongoConnector.class);
 	SSLContext sslContext = null;
 	MongoClient mongoClient = null;
 

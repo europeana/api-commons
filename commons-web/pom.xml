@@ -48,6 +48,12 @@
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>
 			<version>${version.annotationLd}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		
@@ -59,9 +65,9 @@
 		</dependency>
 		 
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${version.log4j}</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>
 		</dependency>
 		
 		<dependency>

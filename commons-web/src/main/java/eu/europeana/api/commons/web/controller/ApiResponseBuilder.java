@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -17,7 +18,7 @@ import eu.europeana.api.commons.web.model.ErrorApiResponse;
 
 public abstract class ApiResponseBuilder {
 
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 	private static ObjectMapper objectMapper = new ObjectMapper();
 
 	protected abstract I18nService getI18nService();
