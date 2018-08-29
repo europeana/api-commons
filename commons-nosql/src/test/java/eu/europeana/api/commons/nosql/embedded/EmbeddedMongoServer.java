@@ -33,15 +33,15 @@ public class EmbeddedMongoServer{
 			System.out.println(version);
 			starter = MongodStarter.getDefaultInstance();
 			mongodExecutable = starter.prepare(conf);
-			mongodExecutable.start();
-			LOG.info("Creating new test MongoClient for EmbeddedMongoProvider");
-			//MongoClient = new MongoClient("localhost", port);
-
 		} catch (IOException e) {
 			LOG.error("cannot start embedded mongo server", e);
 		}
 	}
 
+	public void start() throws IOException {
+		mongodExecutable.start();
+	}
+	
 	public void stop() throws IOException {
 		mongodExecutable.stop();
 	}
