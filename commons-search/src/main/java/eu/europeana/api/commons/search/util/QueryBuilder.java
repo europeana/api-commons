@@ -49,8 +49,9 @@ public class QueryBuilder {
 
 		// translateSearchFilters(filters);
 		searchQuery.setFilters(filters);
-		if(retFields != null)
+		if(retFields != null) {
 			searchQuery.setViewFields(retFields);
+		}
 		searchQuery.setSearchProfile(profile);
 
 		if (StringUtils.isNotBlank(sortField)) {
@@ -135,8 +136,9 @@ public class QueryBuilder {
 		if (searchQuery.getSort() != null) {
 			solrQuery.setSort(searchQuery.getSort(), SolrQuery.ORDER.valueOf(searchQuery.getSortOrder()));
 		}
-		if(searchQuery.getViewFields() != null)
-			solrQuery.setFields();
+		if(searchQuery.getViewFields() != null) {
+			solrQuery.setFields(searchQuery.getViewFields());
+		}
 
 		return solrQuery;
 	}
