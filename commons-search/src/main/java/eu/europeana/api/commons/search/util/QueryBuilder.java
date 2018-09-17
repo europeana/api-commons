@@ -2,7 +2,6 @@ package eu.europeana.api.commons.search.util;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import eu.europeana.api.commons.definitions.search.Query;
@@ -18,15 +17,14 @@ public class QueryBuilder {
 	 * @param filters query filters (qf)
 	 * @param facets requested facet fields
 	 * @param retFields the fields to be returned as response for the Query
-	 * @param sortField sortField
-	 * @param sortOrder
+	 * @param sortCriteria list of sorting criteria (e.g. ["type+asc", "derived_score+desc"]
 	 * @param pageNr the requested results page
 	 * @param pageSize the requested pageSize
 	 * @param maxPageSize the maximum allowed page size for the given query
 	 * @param profile the search profile
 	 * @return
 	 */
-	public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String[] retFields, String sortField, String sortOrder,
+	public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String[] retFields, String[] sortCriteria,
 			int pageNr, int pageSize, int maxPageSize, String profile) {
 
 		// TODO: check if needed
@@ -54,10 +52,10 @@ public class QueryBuilder {
 		}
 		searchQuery.setSearchProfile(profile);
 
-		if (StringUtils.isNotBlank(sortField)) {
-			searchQuery.setSort(sortField);
-			searchQuery.setSortOrder(sortOrder);
+		if(sortCriteria != null){
+			// TODO: EA-941 to implement
 		}
+		
 
 		return searchQuery;
 	}
@@ -133,8 +131,13 @@ public class QueryBuilder {
 			solrQuery.setFacetLimit(Query.DEFAULT_FACET_LIMIT);
 		}
 
-		if (searchQuery.getSort() != null) {
-			solrQuery.setSort(searchQuery.getSort(), SolrQuery.ORDER.valueOf(searchQuery.getSortOrder()));
+		if (searchQuery.getSortCriteria() != null) {
+			//TODO: EA-941
+			//foreach
+			//StringUtils.split(+)
+			//if(length = 1)
+			// order=asc //set default ordering if not explicitly stated
+			//solrQuery.addSort(field, order)
 		}
 		if(searchQuery.getViewFields() != null) {
 			solrQuery.setFields(searchQuery.getViewFields());

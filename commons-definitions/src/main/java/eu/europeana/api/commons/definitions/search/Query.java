@@ -18,14 +18,10 @@ public interface Query {
 
 	String[] getViewFields();
 
-	public String getSort();
+	public String[] getSortCriteria();
 
-	public void setSort(String sort);
+	public void setSortCriteria(String[] sortCriteria);
 	
-	public String getSortOrder();
-
-	public void setSortOrder(String sortOrder);
-
 	void setLimit(long limit);
 
 	long getLimit();

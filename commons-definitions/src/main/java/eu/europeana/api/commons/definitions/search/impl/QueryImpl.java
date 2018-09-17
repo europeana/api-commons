@@ -13,8 +13,9 @@ public class QueryImpl implements Cloneable, Query{
 	private int pageNr;
 	private int pageSize;
 	private long limit;
-	private String sort;
-	private String sortOrder;
+//	private String sort;
+//	private String sortOrder;
+	String[] sortCriteria;
 	private String query;
 	private String[] filters;
 	private String[] facetFields;
@@ -107,21 +108,30 @@ public class QueryImpl implements Cloneable, Query{
 		return (Query) super.clone();
 	}
 
-	public String getSort() {
-		return sort;
+//	public String getSort() {
+//		return sort;
+//	}
+//
+//	public void setSort(String sort) {
+//		this.sort = sort;
+//	}
+//
+//	public String getSortOrder() {
+//		return sortOrder;
+//	}
+//
+//	public void setSortOrder(String sortOrder) {
+//		this.sortOrder = sortOrder;
+//	}
+	
+	public String[] getSortCriteria() {
+		return sortCriteria;
 	}
 
-	public void setSort(String sort) {
-		this.sort = sort;
+	public void setSortCriteria(String[] sortCriteria) {
+		this.sortCriteria = sortCriteria;
 	}
 
-	public String getSortOrder() {
-		return sortOrder;
-	}
-
-	public void setSortOrder(String sortOrder) {
-		this.sortOrder = sortOrder;
-	}
 
 	@Override
 	public String toString() {
@@ -131,11 +141,8 @@ public class QueryImpl implements Cloneable, Query{
 		params.add("pageSize=" + getPageSize());
 		params.add("limit=" + getLimit());
 		
-		if (sort != null){
-			String sortParam = "sort=" + sort;
-			if(sortOrder != null)
-				sortParam += (" " + sortOrder);
-		
+		if (sortCriteria != null){
+			String sortParam = "sort=" + StringUtils.join(sortCriteria, ',');
 			params.add(sortParam);
 			
 		}
