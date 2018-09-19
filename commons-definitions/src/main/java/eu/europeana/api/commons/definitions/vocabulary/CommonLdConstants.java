@@ -25,5 +25,7 @@ public interface CommonLdConstants {
 	public static final String NEXT = "next";
 
 	public static final String COLLECTION = "Collection";
+	
+	public static final String RESULT_PAGE = "ResultPage";
 
 }
