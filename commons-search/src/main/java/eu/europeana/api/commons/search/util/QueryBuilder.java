@@ -14,7 +14,7 @@ public class QueryBuilder {
 
 	/**
 	 * 
-	 * @param queryString
+	 * @param queryString The query string e.g. "drama"
 	 * @param filters query filters (qf)
 	 * @param facets requested facet fields
 	 * @param retFields the fields to be returned as response for the Query
@@ -23,7 +23,7 @@ public class QueryBuilder {
 	 * @param pageSize the requested pageSize
 	 * @param maxPageSize the maximum allowed page size for the given query
 	 * @param profile the search profile
-	 * @return
+	 * @return the completed search query
 	 */
 	public Query buildSearchQuery(String queryString, String[] filters, String[] facets, String[] retFields, String[] sortCriteria,
 			int pageNr, int pageSize, int maxPageSize, String profile) {
@@ -74,7 +74,7 @@ public class QueryBuilder {
 
 	/**
 	 * 
-	 * @param filters
+	 * @param filters The array of filter values
 	 * @param mappedFilterFields
 	 *            the mapping of model (request) fields (map key) to solr fields
 	 *            (map value)
@@ -142,8 +142,7 @@ public class QueryBuilder {
 	/**
 	 * This method should be implemented in subclasses 
 	 * (if the fieldName is not allowed for sorting an Runtime Exception and the api responses must indicate the request as invalid (reported with a HTTP 400)
-	 * @param fieldName
-	 * @return
+	 * @param fieldName The name of the Solr field
 	 */
 	protected void verifySortField(String fieldName){
 		//superclasses must implement the method
@@ -152,8 +151,8 @@ public class QueryBuilder {
 	/**
 	 * This method builds sort query string array from provided sort criteria array.
 	 * 
-	 * @param solrQuery
-	 * @param inputFields
+	 * @param solrQuery The Solr query
+	 * @param inputFields The Solr input fields intended for sorting
 	 */
 	protected void buildSortQuery(SolrQuery solrQuery, String[] inputFields) {
 		
