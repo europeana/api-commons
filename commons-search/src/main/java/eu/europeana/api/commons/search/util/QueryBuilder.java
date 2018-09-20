@@ -2,6 +2,7 @@ package eu.europeana.api.commons.search.util;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 
 import eu.europeana.api.commons.definitions.search.Query;
@@ -52,14 +53,11 @@ public class QueryBuilder {
 		}
 		searchQuery.setSearchProfile(profile);
 
-		if(sortCriteria != null){
-			// TODO: EA-941 to implement
-		}
+		searchQuery.setSortCriteria(sortCriteria);
 		
-
 		return searchQuery;
 	}
-
+	
 	protected int computeValidPageSize(int pageSize, int maxPageSize) {
 		if (pageSize < 0)
 			return Query.DEFAULT_PAGE_SIZE;
@@ -132,12 +130,7 @@ public class QueryBuilder {
 		}
 
 		if (searchQuery.getSortCriteria() != null) {
-			//TODO: EA-941
-			//foreach
-			//StringUtils.split(+)
-			//if(length = 1)
-			// order=asc //set default ordering if not explicitly stated
-			//solrQuery.addSort(field, order)
+			buildSortQuery(solrQuery, searchQuery.getSortCriteria());
 		}
 		if(searchQuery.getViewFields() != null) {
 			solrQuery.setFields(searchQuery.getViewFields());
@@ -145,5 +138,38 @@ public class QueryBuilder {
 
 		return solrQuery;
 	}
+
+	/**
+	 * This method should be implemented in subclasses 
+	 * (if the fieldName is not allowed for sorting an Runtime Exception and the api responses must indicate the request as invalid (reported with a HTTP 400)
+	 * @param fieldName
+	 * @return
+	 */
+	protected void verifySortField(String fieldName){
+		//superclasses must implement the method
+	}
 	
+	/**
+	 * This method builds sort query string array from provided sort criteria array.
+	 * 
+	 * @param solrQuery
+	 * @param inputFields
+	 */
+	protected void buildSortQuery(SolrQuery solrQuery, String[] inputFields) {
+		
+		String[] inputArray;
+		String fieldName;
+		SolrQuery.ORDER order;
+		
+		for (String field : inputFields) {
+			inputArray = StringUtils.splitByWholeSeparator(field, "+");
+			fieldName = inputArray[0];
+			verifySortField(fieldName);
+			
+			order = (inputArray.length == 2) ? SolrQuery.ORDER.valueOf( inputArray[1]): SolrQuery.ORDER.asc; 
+			solrQuery.addSort(fieldName, order);		
+		}		
+	}
+	
+		
 }
