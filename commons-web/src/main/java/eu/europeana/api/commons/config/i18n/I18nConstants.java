@@ -9,7 +9,6 @@ public interface I18nConstants {
 	//401
 	static final String INVALID_APIKEY = "error.invalid_apikey";
 	static final String EMPTY_APIKEY = "error.empty_apikey";
-	static final String MISSING_APIKEY = "error.missing_apikey";
 	
 	//404
 	static final String RESOURCE_NOT_FOUND = "error.not_found";
