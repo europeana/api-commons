@@ -67,6 +67,7 @@ public abstract class ResultsPageSerializer<T> extends JsonLd {
 			JsonLdProperty collectionProp = new JsonLdProperty(CommonLdConstants.PART_OF);
 			JsonLdPropertyValue collectionPropValue = new JsonLdPropertyValue();
 			collectionPropValue.putProperty(new JsonLdProperty(CommonLdConstants.ID, resultsPage.getCollectionUri()));
+			collectionPropValue.putProperty(new JsonLdProperty(CommonLdConstants.TYPE, CommonLdConstants.RESULT_LIST));
 			collectionPropValue
 					.putProperty(new JsonLdProperty(CommonLdConstants.TOTAL, resultsPage.getTotalInCollection()));
 			collectionProp.addValue(collectionPropValue);

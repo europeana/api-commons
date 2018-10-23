@@ -28,4 +28,5 @@ public interface CommonLdConstants {
 	
 	public static final String RESULT_PAGE = "ResultPage";
 
+	public static final String RESULT_LIST = "ResultList";	
 }
