@@ -17,7 +17,6 @@
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
 		<version>0.2.5-SNAPSHOT</version>
-		<!-- <version>${version.apiCommons}</version> -->
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
