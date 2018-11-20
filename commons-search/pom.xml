@@ -16,37 +16,53 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-			<version>0.2.5-RELEASE</version>
-	<!-- 
-	<version>${version.apiCommons}</version>
-	 -->
+		<version>0.2.5-SNAPSHOT</version>
+		<!-- <version>${version.apiCommons}</version> -->
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
-	<artifactId>commons-net</artifactId>
-	<name>Api Commons - Networking utilities</name>
+	<artifactId>commons-search</artifactId>
+	<name>Api Commons - Base for Generic Search specifications</name>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
 	<url>http://www.europeanalabs.eu</url>
 
 	<dependencies>
-		<!-- Other -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${version.commonsLang3}</version>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-definitions</artifactId>
+			<version>${version.apiCommons}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
+		
+		<!-- Other -->
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-solrj</artifactId>
+			<version>${version.apacheSolr}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>wstx-asl</artifactId>
+					<groupId>org.codehaus.woodstox</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 	</dependencies>
-	 
-	 <build>
-	 	<!-- it seems that final name is not inhereted from parent pom -->
-	 	<finalName>${project.artifactId}-${project.version}</finalName>
-	 </build>	
+
+	<properties>
+		<version.apacheSolr>6.5.1</version.apacheSolr>
+	</properties>
+
+	<build>
+		<!-- it seems that final name is not inhereted from parent pom -->
+		<finalName>${project.artifactId}-${project.version}</finalName>
+	</build>
 
 </project>

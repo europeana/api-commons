@@ -16,15 +16,13 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-			<version>0.2.5-RELEASE</version>
-	<!-- 
-	<version>${version.apiCommons}</version>
-	 -->
+		<version>0.2.5-SNAPSHOT</version>
+		<!-- <version>${version.apiCommons}</version> -->
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
-	<artifactId>commons-net</artifactId>
-	<name>Api Commons - Networking utilities</name>
+	<artifactId>commons-definitions</artifactId>
+	<name>Api Commons - Shared data structures and constants</name>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
@@ -37,16 +35,13 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${version.commonsLang3}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>${version.log4j2}</version>
-		</dependency>
+		
 	</dependencies>
-	 
-	 <build>
-	 	<!-- it seems that final name is not inhereted from parent pom -->
-	 	<finalName>${project.artifactId}-${project.version}</finalName>
-	 </build>	
+	
+	
+	<build>
+		<!-- it seems that final name is not inhereted from parent pom -->
+		<finalName>${project.artifactId}-${project.version}</finalName>
+	</build>
 
 </project>

@@ -2,11 +2,13 @@ package eu.europeana.api.commons.utils;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
@@ -16,7 +18,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 @Deprecated
 public class JsonWebUtils {
 	
-	private static final Logger log = Logger.getLogger(JsonWebUtils.class);
+	private static final Logger log = LogManager.getLogger(JsonWebUtils.class);
 	private static ObjectMapper objectMapper = new ObjectMapper();
 	
 	public static String toJson(Object object) {
@@ -29,7 +31,7 @@ public class JsonWebUtils {
 		
 	public static String toJson(Object object, String callback, boolean shortObject, int objectId) {
 			
-		objectMapper.setSerializationInclusion(Inclusion.NON_NULL);
+		objectMapper.setSerializationInclusion(Include.NON_EMPTY);
 		String errorMessage = null;
 		try {
 			String jsonStr = objectMapper.writeValueAsString(object);	

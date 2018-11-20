@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
@@ -16,7 +17,7 @@ public abstract class BaseApplicationLoaderListener {
 
 	public static final String SOCKS_PROXY_URL = "socks.proxy.url";
 	Properties props = new Properties();
-	Logger logger = Logger.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 	
 	public BaseApplicationLoaderListener(){
 		System.out.println("instantiation of ApplicationLoaderListener");
