@@ -77,13 +77,7 @@ public class ApiMongoConnector {
 		try {
 			log.debug("Connecting to mongo server:" + connectionUri);
 			
-			MongoClientOptions.Builder mco = MongoClientOptions.builder();
-			if(isSslEnabled(connectionUri)){
-				validateTrustStoreConfig(truststore, truststorePass);
-				log.debug("Enabling ssl connection using truststore: " + truststore + ":"+truststorePass);
-				SSLContext sc = getSslContext(truststore, truststorePass);
-				mco.sslEnabled(true).sslInvalidHostNameAllowed(true).socketFactory(sc.getSocketFactory());
-			}
+			MongoClientOptions.Builder mco = buildMongoConnectionOptions(connectionUri, truststore, truststorePass);
 			
 			MongoClientURI mongoUri = new MongoClientURI(connectionUri, mco);
 			mongoClient = new MongoClient(mongoUri);
@@ -91,11 +85,31 @@ public class ApiMongoConnector {
 			datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
 			log.info(String.format("Connection to db '%s' mongo server was successful", mongoUri.getDatabase()));
 		} catch (MongoException e) {
-			//redundant, runtime exceptions should be logged by the system 
-			//log.error(e.getMessage());
+			//runtime exceptions will be logged by the system 
 			throw e;
 		}
 		return datastore;
+	}
+
+
+	private MongoClientOptions.Builder buildMongoConnectionOptions(String connectionUri, String truststore,
+			String truststorePass) {
+		
+		MongoClientOptions.Builder mco = MongoClientOptions.builder();
+		
+		if(isSslEnabled(connectionUri)){
+			//allow invalid host names (required by mongo)
+			mco.sslEnabled(true).sslInvalidHostNameAllowed(true);
+			
+			//if the trustore is configured will be used for mongo connection
+			if(!StringUtils.isEmpty(truststore)){
+				validateTrustStoreConfig(truststore, truststorePass);
+				log.debug("Enabling ssl connection using truststore: " + truststore + ":"+truststorePass);
+				SSLContext sc = getSslContext(truststore, truststorePass);
+				mco.socketFactory(sc.getSocketFactory());	
+			}		
+		}
+		return mco;
 	}
 
 	 /**
@@ -115,7 +129,7 @@ public class ApiMongoConnector {
 	protected void validateTrustStoreConfig(String truststore, String truststorePass) {
 		//store and pass are mandatory
 		if(StringUtils.isEmpty(truststore) || StringUtils.isEmpty(truststorePass))
-			throw new IllegalArgumentException("Trustore and truststorePass must not be null when ssl is enabled! " 
+			throw new IllegalArgumentException("Both trustore and truststorePass must be provided, when trustore is used! " 
 					+ truststore + ":"+truststorePass);
 	}
 
