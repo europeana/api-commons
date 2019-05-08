@@ -26,6 +26,7 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 	
 	public static final String CONTENT_TYPE_JSON_UTF8 = MediaType.APPLICATION_JSON_VALUE+";charset=utf-8";
 	public static final String CONTENT_TYPE_JSONLD_UTF8 = "application/ld+json;charset=utf-8";
+	public static final String CONTENT_TYPE_JSONLD = "application/ld+json";
 	public static final String CONTENT_TYPE_APPLICATION_RDF_XML = "application/rdf+xml";
 	public static final String CONTENT_TYPE_RDF_XML = "rdf/xml";
 	
