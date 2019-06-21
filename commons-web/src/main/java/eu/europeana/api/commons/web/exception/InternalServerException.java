@@ -2,7 +2,7 @@ package eu.europeana.api.commons.web.exception;
 
 import org.springframework.http.HttpStatus;
 
-import eu.europeana.api.commons.config.i18n.I18nConstants;
+import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 
 
 public class InternalServerException extends HttpException{

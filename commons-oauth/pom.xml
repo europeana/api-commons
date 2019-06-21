@@ -27,21 +27,94 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${version.commonsLang3}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 			<version>${version.springSecurityOauth}</version>
 		</dependency>
+		
+		<!-- 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-config</artifactId>
 			<version>${version.springSecurity}</version>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+			<version>2.5</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${version.apiCommons}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-definitions</artifactId>
+			<version>${version.apiCommons}</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+		<dependency>
+		    <groupId>com.auth0</groupId>
+		    <artifactId>java-jwt</artifactId>
+		    <version>0.2</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.okta.jwt/okta-jwt-verifier -->
+		<!--
+		<dependency>
+		    <groupId>com.okta.jwt</groupId>
+		    <artifactId>okta-jwt-verifier</artifactId>
+		    <version>0.4.0</version>
+		</dependency>
+			-->	
+		
+		<!-- 
+		<dependency>
+			<groupId>eu.europeana.apikey-utils</groupId>
+			<artifactId>apikey.client</artifactId>
+			<version>${version.apikeyUtils}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europeana</groupId>
+			<artifactId>europeana-apikeyclient</artifactId>
+			<version>${version.apikeyUtils}</version>
+		</dependency>
+		 -->
+		
+		<dependency>
+			<scope>test</scope>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
+			<scope>test</scope>
+		</dependency>
+                				
 	</dependencies>
 
 <!-- 
