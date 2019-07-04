@@ -12,6 +12,7 @@ import eu.europeana.api.commons.oauth2.service.ApiKeyService;
 
 /**
  * The entry point into the database of clients.
+ * @deprecated Use EuropeanaClientDetailsService instead
  */
 @Service("commons_oauth2_clientDetailsService")
 public class OAuth2ClientDetailsService implements ClientDetailsService {

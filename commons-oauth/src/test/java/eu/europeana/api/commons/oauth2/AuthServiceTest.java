@@ -1,14 +1,18 @@
 package eu.europeana.api.commons.oauth2;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
-import eu.europeana.apikey.client.Connector;
-import eu.europeana.apikey.client.ValidationResult;
+import eu.europeana.apikey.client.ApiKeyValidationResult;
+import eu.europeana.apikey.client.Client;
 import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 
 /**
@@ -21,19 +25,28 @@ public class AuthServiceTest {
 
 	private final Logger log = LogManager.getLogger(getClass());
 	
-	private String ADMINAPIKEY = "ApiKey1";
-	private String ADMINSECRETKEY = "PrivateKey1";
-	private String API_KEY = "ApiKey2";
-	private String TEST_API = "entity";
+	private String TEST_API_KEY = "tromssusequ";
+	private String WRONG_API_KEY = "wrongapikey";
 
 	@Test
 	public void testAuthValidationReadAccess() throws ApiKeyValidationException {
 
-    	    Connector connector = new Connector();
-    	    ValidationResult validationResult = connector.validateApiKey(
-    		    ADMINAPIKEY, ADMINSECRETKEY, API_KEY, TEST_API);
+    	    Client client = new Client();
+    	    ApiKeyValidationResult validationResult = client.validateApiKey(
+    		TEST_API_KEY);
     	    assertNotNull(validationResult);
-    	    assertTrue(validationResult.isValidKey());
+    	    assertTrue(validationResult.isValidApiKey());
+	}
+	
+	@Test
+	public void testAuthValidationWrongKey() throws ApiKeyValidationException {
+
+    	    Client client = new Client();
+    	    ApiKeyValidationResult validationResult = client.validateApiKey(
+    		WRONG_API_KEY);
+    	    assertNotNull(validationResult);
+    	    assertFalse(validationResult.isValidApiKey());
+    	    assertEquals(HttpStatus.SC_UNAUTHORIZED, validationResult.getHttpStatus());
 	}
 	
 	/**

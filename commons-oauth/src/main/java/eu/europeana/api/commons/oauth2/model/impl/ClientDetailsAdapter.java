@@ -16,18 +16,25 @@ public class ClientDetailsAdapter implements ClientDetails {
 	 */
 	private static final long serialVersionUID = 1L;
 	ApiKey apiKey;
+	private String wsKey;
 
+	
 	public ClientDetailsAdapter() {
 
 	}
 
 	public ClientDetailsAdapter(ApiKey apiKey) {
 		this.apiKey = apiKey;
+		this.wsKey = apiKey.getApiKey(); 
 	}
 
+	public ClientDetailsAdapter(String wsKey) {
+		this.wsKey = wsKey; 
+	}
+	
 	@Override
 	public String getClientId() {
-		return getApiKey().getApiKey();
+		return getWsKey();
 	}
 
 	@Override
@@ -57,7 +64,6 @@ public class ClientDetailsAdapter implements ClientDetails {
 
 	@Override
 	public Set<String> getAuthorizedGrantTypes() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -83,12 +89,11 @@ public class ClientDetailsAdapter implements ClientDetails {
 
 	@Override
 	public boolean isAutoApprove(String scope) {
-		return false;
+		return true;
 	}
 
 	@Override
 	public Map<String, Object> getAdditionalInformation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -98,6 +103,14 @@ public class ClientDetailsAdapter implements ClientDetails {
 
 	public void setApiKey(ApiKey apiKey) {
 		this.apiKey = apiKey;
+	}
+
+	public String getWsKey() {
+	    return wsKey;
+	}
+
+	public void setWsKey(String wsKey) {
+	    this.wsKey = wsKey;
 	}
 
 }
