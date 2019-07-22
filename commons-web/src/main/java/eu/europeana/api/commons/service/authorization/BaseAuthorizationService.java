@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
-import eu.europeana.api.commons.oauth2.utils.ApiKeyUtils;
+import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 public abstract class BaseAuthorizationService implements AuthorizationService {
@@ -28,7 +28,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	String wsKey; 
 	//check and verify jwt token
 	try {
-	    wsKey = ApiKeyUtils.extractApiKeyFromJwtToken(request, getSignatureVerifier());
+	    wsKey = OAuthUtils.extractApiKeyFromJwtToken(request, getSignatureVerifier());
 	    if(wsKey != null) {
         	return;//apikey is valid if the JWT Token is verified
 	    }
@@ -39,7 +39,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	
 	//extract api key with other methods
 	try {
-		wsKey = ApiKeyUtils.extractApiKey(request);
+		wsKey = OAuthUtils.extractApiKey(request);
 	} catch (ApiKeyExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
 		    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);

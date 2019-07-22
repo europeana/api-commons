@@ -1,15 +1,9 @@
 package eu.europeana.api.commons.oauth2.service.impl;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.oauth2.common.exceptions.ClientAuthenticationException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.stereotype.Service;
 
-import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.oauth2.model.impl.ClientDetailsAdapter;
 import eu.europeana.apikey.client.ApiKeyValidationResult;
 import eu.europeana.apikey.client.Client;
@@ -20,15 +14,17 @@ import eu.europeana.apikey.client.Client;
 @Service("commons_oauth2_europeanaClientDetailsService")
 public class EuropeanaClientDetailsService implements ClientDetailsService {
 
-    private Client apiKeyClient = new Client();
+    private String apiKeyServiceUrl;
+    private Client apiKeyClient;
 
     public Client getApiKeyClient() {
-        return apiKeyClient;
+        if(apiKeyClient == null) {
+            apiKeyClient = new Client(getApiKeyServiceUrl());
+        }
+	return apiKeyClient;
     }
 
-    public void setApiKeyClient(Client apiKeyClient) {
-        this.apiKeyClient = apiKeyClient;
-    }
+    
 
     @Override
     /**
@@ -45,5 +41,13 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
         } catch (Exception e) {
             throw new OAuth2Exception("Cannot authorize ApiKey : " + key, e);
         }
+    }
+    
+    public String getApiKeyServiceUrl() {
+        return apiKeyServiceUrl;
+    }
+
+    public void setApiKeyServiceUrl(String apiKeyServiceUrl) {
+        this.apiKeyServiceUrl = apiKeyServiceUrl;
     }
 }

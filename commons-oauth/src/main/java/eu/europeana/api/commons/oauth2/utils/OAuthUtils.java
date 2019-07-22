@@ -21,7 +21,7 @@ import eu.europeana.api.commons.exception.ApiKeyExtractionException;
  * @author GrafR
  * 
  */
-public class ApiKeyUtils {
+public class OAuthUtils {
 
     public static final String HEADER_XAPIKEY = "X-Api-Key";
     public static final String TYPE_APIKEY = "APIKEY";
