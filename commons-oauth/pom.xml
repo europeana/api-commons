@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-			<version>0.2.7-SNAPSHOT</version>
-	<!-- 
-	<version>${version.apiCommons}</version>
-	 -->
+		<version>0.2.7-SNAPSHOT</version>
+		<!-- <version>${version.apiCommons}</version> -->
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
@@ -27,74 +26,77 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>${version.commonsLang3}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 			<version>${version.springSecurityOauth}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-			<version>${version.springSecurity}</version>
+			<artifactId>spring-security-jwt</artifactId>
+			<version>${version.springSecurityJwt}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${version.apiCommons}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-definitions</artifactId>
+			<version>${version.apiCommons}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+
+		<dependency>
+			<groupId>eu.europeana.apikey-utils</groupId>
+			<artifactId>apikey-client</artifactId>
+			<version>${version.apikeyUtils}</version>
+		</dependency>
+
+		<dependency>
+			<scope>test</scope>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${version.junit}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
-<!-- 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.apiCommons>0.2.2-SNAPSHOT</version.apiCommons>
-		<version.java>1.7</version.java>
-
-		<version.log4j>1.2.12</version.log4j>
-	</properties>
-	 -->
-	 
-	 <build>
-	 	<!-- it seems that final name is not inhereted from parent pom -->
-	 	<finalName>${project.artifactId}-${project.version}</finalName>
-	 </build>	
-	
-	 <!-- 
 	<build>
-		<directory>target</directory>
-		<outputDirectory>target/classes</outputDirectory>
+		<!-- it seems that final name is not inhereted from parent pom -->
 		<finalName>${project.artifactId}-${project.version}</finalName>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
-
-		<plugins>
-			<plugin>
-				<inherited>true</inherited>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>${version.java}</source>
-					<target>${version.java}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-			</plugin>
-		</plugins>
-		 
 	</build>
-	-->
+
+
 </project>
