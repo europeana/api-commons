@@ -10,8 +10,8 @@ public abstract class BaseRestController {
     /**
      * This method is used for validation of the provided api key
      * 
-     * @param wsKey
-     * @throws EntityAuthenticationException
+     * @param request web request 
+     * @throws EntityAuthenticationException if the apikey submitted with the request cannot be validated
      */
     protected void validateApiKey(HttpServletRequest request) throws ApplicationAuthenticationException {
 	getAuthorizationService().authorizeReadAccess(request);
