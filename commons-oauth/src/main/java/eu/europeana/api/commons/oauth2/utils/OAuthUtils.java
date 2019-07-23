@@ -36,7 +36,7 @@ public class OAuthUtils {
      * methods: 1. By means of a query parameter 2. By means of the "X-Api-Key"
      * header 3. By means of a specialization of the "Authorization" header
      *
-     * @param API request that is expected to contain an apikey submitted in one of the above mentioned ways
+     * @param request API request that is expected to contain an apikey submitted in one of the above mentioned ways
      * @return The extracted apikey, or null if not found in the request object
      * @throws ApiKeyExtractionException if the authorization header doesn't have one of the supported types
      * 
@@ -90,8 +90,8 @@ public class OAuthUtils {
      * @param request           the API Request
      * @param signatureVerifier RsaVerifier initialized with the public key used to
      *                          verify the token signature
-     * @return
-     * @throws ApiKeyExtractionException
+     * @return value of API key
+     * @throws ApiKeyExtractionException if the token cannot be parsed or it is expired 
      */
     public static String extractApiKeyFromJwtToken(HttpServletRequest request, RsaVerifier signatureVerifier)
 	    throws ApiKeyExtractionException {
@@ -107,11 +107,11 @@ public class OAuthUtils {
     /**
      * Obtain apikey from JWT token using
      * 
-     * @param encodedApiKey
+     * @param encodedToken the JWT token as string 
      * @param signatureVerifier RsaVerifier initialized with the public key used to
      *                          verify the token signature
-     * @return apikey
-     * @throws ApiKeyExtractionException
+     * @return the extracted apikey 
+     * @throws ApiKeyExtractionException if the token is expired or the apikey is not found in the token
      * 
      */
     protected static String processJwtToken(String encodedToken, RsaVerifier signatureVerifier)
