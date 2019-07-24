@@ -53,14 +53,13 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	if (StringUtils.isEmpty(wsKey))
 	    throw new ApplicationAuthenticationException(I18nConstants.EMPTY_APIKEY, I18nConstants.EMPTY_APIKEY, null);
 	//validate api key
-	if (!wsKey.equals("apidemo")) {
-	    try {
-		getClientDetailsService().loadClientByClientId(wsKey);
-	    } catch (Exception e) {
-		throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-			new String[] { wsKey });
-	    }
-	}
+
+	try {
+	    getClientDetailsService().loadClientByClientId(wsKey);
+	} catch (Exception e) {
+	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
+		    new String[] { wsKey });
+	}	
     }
 
     protected abstract String getSignatureKey();

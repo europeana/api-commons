@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
 	<version>0.2.7-SNAPSHOT</version>
-	<!-- 
-	<version>${version.apiCommons}</version>
-	 -->
+	<!-- <version>${version.apiCommons}</version> -->
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 
-  <repositories>
+	<modules>
+		<module>commons-definitions</module>
+		<module>commons-net</module>
+		<module>commons-nosql</module>
+		<module>commons-oauth</module>
+		<module>commons-search</module>
+		<module>commons-web</module>
+		
+	</modules>
+
+	<repositories>
 		<repository>
 			<id>artifactory.eanadev.org</id>
 			<name>artifactory.eanadev.org-releases (external libs)</name>
@@ -57,21 +66,9 @@
 		<version.annotationLd>1.1.4-RELEASE</version.annotationLd>
 		<version.springBoot>2.1.5.RELEASE</version.springBoot>
 		<version.springSecurityJwt>1.0.10.RELEASE</version.springSecurityJwt>
-		<!-- 
-		<version.springBootMongoStarter>2.0.3.RELEASE</version.springBootMongoStarter>
-		 -->
 		<version.jackson>2.9.4</version.jackson>
 		<version.apikeyUtils>1.4-SNAPSHOT</version.apikeyUtils>
 	</properties>
-
-	<modules>
-		<module>commons-oauth</module>
-		<module>commons-web</module>
-		<module>commons-nosql</module>
-		<module>commons-net</module>
-		<module>commons-definitions</module>
-		<module>commons-search</module>
-	</modules>
 
 	<build>
 		<!-- configure source and output locations -->
