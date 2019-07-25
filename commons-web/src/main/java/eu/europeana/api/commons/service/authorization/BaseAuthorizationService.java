@@ -58,7 +58,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    getClientDetailsService().loadClientByClientId(wsKey);
 	} catch (Exception e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { wsKey });
+		    new String[] { wsKey }, HttpStatus.UNAUTHORIZED, e);
 	}	
     }
 
