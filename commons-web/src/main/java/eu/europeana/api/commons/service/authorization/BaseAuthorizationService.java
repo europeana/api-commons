@@ -1,16 +1,23 @@
 package eu.europeana.api.commons.service.authorization;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
+import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.model.vocabulary.UserRoles;
 
 public abstract class BaseAuthorizationService implements AuthorizationService {
 
@@ -63,8 +70,65 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	}
     }
 
+     
+    /* (non-Javadoc)
+     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#authorizeWriteAccess(java.util.List, java.lang.String, java.lang.String)
+     */
+    public boolean authorizeWriteAccess(List<? extends Authentication> authenticationList, String operation) 
+	    throws ApplicationAuthenticationException {
+	    
+	return checkPermissions(authenticationList, getAuthorizationApiName(), operation);
+    }
+    
+    /**
+     * This method verifies write access rights for particular api and operation
+     * @param authenticationList The list of authentications extracted from the JWT token
+     * @param api The current api name
+     * @param operation The name of current operation
+     * @return true if authenticated, false otherwise
+     * @throws ApplicationAuthenticationException
+     */
+    public static boolean checkPermissions(List<? extends Authentication> authenticationList, String api, String operation) 
+	    throws ApplicationAuthenticationException {
+	 boolean res = false;
+	 
+	 for(Authentication authentication : authenticationList) {
+	     String authenticationApi = (String) authentication.getDetails();
+	     @SuppressWarnings("unchecked")
+	     List<GrantedAuthority> authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
+	     if(authenticationApi.equals(api)) {
+		 for(GrantedAuthority authority : authorityList) {
+		     String user = authority.getAuthority();
+		     UserRoles userRole = UserRoles.valueOf(user.toUpperCase());
+		     String[] supportedOperations = userRole.getOperations();
+		     if(Arrays.asList(supportedOperations).contains(operation)) {
+			 res = true;
+			 break;
+		     }
+		 }
+//	     } else {
+//	         throw new ApplicationAuthenticationException(I18nConstants.INVALID_API_NAME, I18nConstants.INVALID_API_NAME, null);
+	     }
+	     
+	     if(res) {
+		 break;
+	     }
+	 }
+	 
+	 return res;
+    }    
+    
+    /* (non-Javadoc)
+     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#processJwtToken(javax.servlet.http.HttpServletRequest)
+     */
+    public List<? extends Authentication> processJwtToken(HttpServletRequest request) throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	return OAuthUtils.processJwtToken(request, getSignatureVerifier());
+    }
+    
     protected abstract String getSignatureKey();
 
     protected abstract ClientDetailsService getClientDetailsService();
+    
+    protected abstract String getAuthorizationApiName();
 
 }
