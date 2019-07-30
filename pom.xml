@@ -57,7 +57,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<version.apiCommons>0.2.7-SNAPSHOT</version.apiCommons>
 		<version.java>1.7</version.java>
-		<version.junit>4.11</version.junit>
+		<version.org.junit.jupiter>5.1.0</version.org.junit.jupiter>
 		<version.springSecurity>4.2.12.RELEASE</version.springSecurity>
 		<version.spring>5.0.7.RELEASE</version.spring>
 		<version.springSecurityOauth>2.3.6.RELEASE</version.springSecurityOauth>
