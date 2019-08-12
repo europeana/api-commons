@@ -132,3 +132,4 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     protected abstract String getAuthorizationApiName();
 
 }
+
