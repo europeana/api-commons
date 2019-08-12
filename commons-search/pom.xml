@@ -47,7 +47,7 @@
 	</dependencies>
 
 	<properties>
-		<version.apacheSolr>6.5.1</version.apacheSolr>
+		<version.apacheSolr>7.7.2</version.apacheSolr>
 	</properties>
 
 	<build>

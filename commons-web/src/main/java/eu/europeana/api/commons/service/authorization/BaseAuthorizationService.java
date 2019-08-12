@@ -29,6 +29,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	return signatureVerifier;
     }
 
+
     @Override
     public void authorizeReadAccess(HttpServletRequest request) throws ApplicationAuthenticationException {
     
@@ -60,17 +61,23 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	if (StringUtils.isEmpty(wsKey))
 	    throw new ApplicationAuthenticationException(I18nConstants.EMPTY_APIKEY, I18nConstants.EMPTY_APIKEY, null);
 	//validate api key
-	if (!wsKey.equals("apidemo")) {
-	    try {
-		getClientDetailsService().loadClientByClientId(wsKey);
-	    } catch (Exception e) {
-		throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-			new String[] { wsKey });
-	    }
-	}
-    }
 
-     
+	try {
+	    getClientDetailsService().loadClientByClientId(wsKey);
+	} catch (Exception e) {
+	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
+		    new String[] { wsKey }, HttpStatus.UNAUTHORIZED, e);
+	}	
+    }
+    
+    
+    protected abstract String getSignatureKey();
+
+    protected abstract ClientDetailsService getClientDetailsService();
+    
+    protected abstract String getAuthorizationApiName();
+
+    
     /* (non-Javadoc)
      * @see eu.europeana.api.commons.service.authorization.AuthorizationService#authorizeWriteAccess(java.util.List, java.lang.String, java.lang.String)
      */
@@ -123,12 +130,5 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      */
     public List<? extends Authentication> processJwtToken(HttpServletRequest request) throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
 	return OAuthUtils.processJwtToken(request, getSignatureVerifier());
-    }
-    
-    protected abstract String getSignatureKey();
-
-    protected abstract ClientDetailsService getClientDetailsService();
-    
-    protected abstract String getAuthorizationApiName();
-
+    }    
 }
