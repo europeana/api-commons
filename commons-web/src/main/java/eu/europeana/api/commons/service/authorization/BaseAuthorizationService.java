@@ -131,4 +131,11 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     public List<? extends Authentication> processJwtToken(HttpServletRequest request) throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
 	return OAuthUtils.processJwtToken(request, getSignatureVerifier());
     }    
+    
+    /* (non-Javadoc)
+     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#getJwtUser(javax.servlet.http.HttpServletRequest, org.springframework.security.jwt.crypto.sign.RsaVerifier)
+     */
+    public String getJwtUser(HttpServletRequest request) throws ApiKeyExtractionException, AuthorizationExtractionException {
+    	return OAuthUtils.getJwtUser(request, getSignatureVerifier());
+    }
 }

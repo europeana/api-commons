@@ -38,6 +38,7 @@ public class OAuthUtils {
     public static final String EXP = "exp";
     public static final String RESOURCE_ACCESS = "resource_access";
     public static final String ROLES = "roles";
+    public static final String PREFERRED_USERNAME = "preferred_username";
 
     static JsonParser objectMapper = JsonParserFactory.create();
 
@@ -116,6 +117,38 @@ public class OAuthUtils {
 	return authenticationList;
     }
             
+    /**
+     * This method extracts user name from a JWT token provided in HTTP request header
+     * @param request The HTTP request header
+     * @param signatureVerifier
+     * @return jwt user name
+     * @throws ApiKeyExtractionException
+     * @throws AuthorizationExtractionException
+     */
+    public static String getJwtUser(HttpServletRequest request, 
+    	    RsaVerifier signatureVerifier) throws ApiKeyExtractionException, AuthorizationExtractionException {
+    	
+    	String jwtUserName = null;    	 
+    	String encodedToken = extractPayloadFromAuthorizationHeader(request, TYPE_BEARER);
+    	
+    	// if authorization header or JWT token not present in request return null
+    	if (encodedToken == null)
+    	    return null;
+
+    	try {
+    	    Map<String, Object> data = extractCustomData(encodedToken, signatureVerifier);
+
+    	    jwtUserName = (String) data.get(PREFERRED_USERNAME);
+    	    if (jwtUserName == null) {
+    	    	throw new AuthorizationExtractionException("User name not available in provided JWT token");
+    	    }
+    	} catch (RuntimeException e) {
+    	    throw new AuthorizationExtractionException("Unexpected exception occured when processing JWT Token for authorization", e);
+    	}
+    		
+    	return jwtUserName;
+    }
+                
     /**
      * Extracts the payload of the Authorization header
      * 

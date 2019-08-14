@@ -39,4 +39,14 @@ public interface AuthorizationService {
      */
     public boolean authorizeWriteAccess(List<? extends Authentication> authenticationList, String operation) throws ApplicationAuthenticationException;
     
+    /**
+     * This method extracts user name from a JWT token provided in HTTP request header
+     * @param request The HTTP request header
+     * @return jwt user name
+     * @throws ApiKeyExtractionException
+     * @throws AuthorizationExtractionException
+     */
+    public String getJwtUser(HttpServletRequest request) 
+    		throws ApiKeyExtractionException, AuthorizationExtractionException;
+    
 }
