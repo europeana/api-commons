@@ -97,17 +97,24 @@ public class OAuthUtils {
 	    // for each API in resource_access should be produced EuropeanaAuthenticationToken
 	    EuropeanaAuthenticatonToken authenticationToken;
 	    Collection<GrantedAuthority> rolesCollection; 
+	    String details;
+	    Map<String, Object> rolesMap;
+	    List<String> roles;
+	    String principal;
 	    for (Map.Entry<String, Object> entry : resourceAccessMap.entrySet()) {
 		rolesCollection = new ArrayList<GrantedAuthority>();
-		String api = entry.getKey();
-	        Map<String, Object> rolesMap = (Map<String, Object>) entry.getValue();
-	        List<String> roles = (List<String>) rolesMap.get(ROLES);
+		details = entry.getKey();
+	        rolesMap = (Map<String, Object>) entry.getValue();
+	        roles = (List<String>) rolesMap.get(ROLES);
 		for(String role : roles) {
 		    rolesCollection.add(new SimpleGrantedAuthority(role));
-		}
+		}		
+		principal = (String) data.get(PREFERRED_USERNAME);
+	    	if (principal == null) {
+	    	    throw new AuthorizationExtractionException("User name not available in provided JWT token");
+	    	}
 		authenticationToken = 
-		    new EuropeanaAuthenticatonToken(rolesCollection);
-		authenticationToken.setDetails(api);
+		    new EuropeanaAuthenticatonToken(rolesCollection, details, principal);
 		authenticationList.add(authenticationToken);
 	    }		
 	} catch (RuntimeException e) {
@@ -115,39 +122,7 @@ public class OAuthUtils {
 	}
 		
 	return authenticationList;
-    }
-            
-    /**
-     * This method extracts user name from a JWT token provided in HTTP request header
-     * @param request The HTTP request header
-     * @param signatureVerifier
-     * @return jwt user name
-     * @throws ApiKeyExtractionException
-     * @throws AuthorizationExtractionException
-     */
-    public static String getJwtUser(HttpServletRequest request, 
-    	    RsaVerifier signatureVerifier) throws ApiKeyExtractionException, AuthorizationExtractionException {
-    	
-    	String jwtUserName = null;    	 
-    	String encodedToken = extractPayloadFromAuthorizationHeader(request, TYPE_BEARER);
-    	
-    	// if authorization header or JWT token not present in request return null
-    	if (encodedToken == null)
-    	    return null;
-
-    	try {
-    	    Map<String, Object> data = extractCustomData(encodedToken, signatureVerifier);
-
-    	    jwtUserName = (String) data.get(PREFERRED_USERNAME);
-    	    if (jwtUserName == null) {
-    	    	throw new AuthorizationExtractionException("User name not available in provided JWT token");
-    	    }
-    	} catch (RuntimeException e) {
-    	    throw new AuthorizationExtractionException("Unexpected exception occured when processing JWT Token for authorization", e);
-    	}
-    		
-    	return jwtUserName;
-    }
+    }            
                 
     /**
      * Extracts the payload of the Authorization header

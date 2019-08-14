@@ -1,11 +1,8 @@
 package eu.europeana.api.commons.service.authorization;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.security.core.Authentication;
-
+import eu.europeana.api.commons.definitions.vocabulary.Roles;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
@@ -21,32 +18,15 @@ public interface AuthorizationService {
 		throws ApplicationAuthenticationException;
 
     /**
-     * This method adopts KeyCloack token from HTTP request
+     * This method adopts KeyCloack token from HTTP request and 
+     * verifies write access rights for particular api and operation
      * @param request The HTTP request
-     * @return list of Authentication objects
-     * @throws ApplicationAuthenticationException
-     * @throws ApiKeyExtractionException
-     */
-    public List<? extends Authentication> processJwtToken(HttpServletRequest request) 
-	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException;
-    
-    /**
-     * This method verifies write access rights for particular api and operation
-     * @param authenticationList The list of authentications extracted from the JWT token
      * @param operation The name of current operation
+     * @param userRoles
      * @return true if authenticated, false otherwise
      * @throws ApplicationAuthenticationException
      */
-    public boolean authorizeWriteAccess(List<? extends Authentication> authenticationList, String operation) throws ApplicationAuthenticationException;
-    
-    /**
-     * This method extracts user name from a JWT token provided in HTTP request header
-     * @param request The HTTP request header
-     * @return jwt user name
-     * @throws ApiKeyExtractionException
-     * @throws AuthorizationExtractionException
-     */
-    public String getJwtUser(HttpServletRequest request) 
-    		throws ApiKeyExtractionException, AuthorizationExtractionException;
-    
+    public void authorizeWriteAccess(HttpServletRequest request, String operation, Roles[] userRoles) 
+	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException;
+        
 }

@@ -25,22 +25,47 @@ public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
     
     String details = null;
     
+    String principal = null;
+    
     
     public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> arg0) {
 	super(arg0);
-	// TODO Auto-generated constructor stub
+    }
+
+    /**
+     * This constructor supports also details
+     * @param arg0
+     * @param details
+     */
+    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> arg0, String details, String principal) {
+	super(arg0);
+	setDetails(details);
+	setPrincipal(principal);
     }
 
     @Override
     public Object getCredentials() {
-	// TODO Auto-generated method stub
 	return null;
     }
 
-    @Override
-    public Object getPrincipal() {
-	// TODO Auto-generated method stub
-	return null;
+    public String getPrincipal() {
+	// returns the "preferred_username" value from the JWT token
+	return principal;
+    }
+
+    public String getDetails() {
+	// returns the "api" value from the JWT token
+	return details;
+    }
+
+    public void setDetails(String details) {
+	// sets the "api" value from the JWT token
+	this.details = details;
+    }
+
+    public void setPrincipal(String principal) {
+	// sets the "preferred_username" value from the JWT token
+	this.principal = principal;
     }
 
 }
