@@ -97,17 +97,21 @@ public class OAuthUtils {
 	    // for each API in resource_access should be produced EuropeanaAuthenticationToken
 	    EuropeanaAuthenticatonToken authenticationToken;
 	    Collection<GrantedAuthority> rolesCollection; 
+	    String details;
+	    Map<String, Object> rolesMap;
+	    List<String> roles;
+	    String principal;
 	    for (Map.Entry<String, Object> entry : resourceAccessMap.entrySet()) {
 		rolesCollection = new ArrayList<GrantedAuthority>();
-		String api = entry.getKey();
-	        Map<String, Object> rolesMap = (Map<String, Object>) entry.getValue();
-	        List<String> roles = (List<String>) rolesMap.get(ROLES);
+		details = entry.getKey();
+	        rolesMap = (Map<String, Object>) entry.getValue();
+	        roles = (List<String>) rolesMap.get(ROLES);
 		for(String role : roles) {
 		    rolesCollection.add(new SimpleGrantedAuthority(role));
-		}
+		}		
+		principal = getJwtUser(request, signatureVerifier);
 		authenticationToken = 
-		    new EuropeanaAuthenticatonToken(rolesCollection);
-		authenticationToken.setDetails(api);
+		    new EuropeanaAuthenticatonToken(rolesCollection, details, principal);
 		authenticationList.add(authenticationToken);
 	    }		
 	} catch (RuntimeException e) {

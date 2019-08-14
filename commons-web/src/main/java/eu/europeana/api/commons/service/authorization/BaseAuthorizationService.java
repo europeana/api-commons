@@ -13,11 +13,11 @@ import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
+import eu.europeana.api.commons.definitions.vocabulary.Roles;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
-import eu.europeana.api.commons.web.model.vocabulary.UserRoles;
 
 public abstract class BaseAuthorizationService implements AuthorizationService {
 
@@ -79,12 +79,13 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
     
     /* (non-Javadoc)
-     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#authorizeWriteAccess(java.util.List, java.lang.String, java.lang.String)
+     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#authorizeWriteAccess(javax.servlet.http.HttpServletRequest, java.lang.String)
      */
-    public boolean authorizeWriteAccess(List<? extends Authentication> authenticationList, String operation) 
-	    throws ApplicationAuthenticationException {
+    public void authorizeWriteAccess(HttpServletRequest request, String operation, Roles[] userRoles) 
+	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	List<? extends Authentication> authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier());
 	    
-	return checkPermissions(authenticationList, getAuthorizationApiName(), operation);
+	checkPermissions(authenticationList, getAuthorizationApiName(), operation, userRoles);
     }
     
     /**
@@ -92,29 +93,22 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      * @param authenticationList The list of authentications extracted from the JWT token
      * @param api The current api name
      * @param operation The name of current operation
+     * @param userRoles
      * @return true if authenticated, false otherwise
      * @throws ApplicationAuthenticationException
      */
-    public static boolean checkPermissions(List<? extends Authentication> authenticationList, String api, String operation) 
+    @SuppressWarnings("unchecked")
+    protected static void checkPermissions(List<? extends Authentication> authenticationList, 
+	    String api, String operation, Roles[] userRoles) 
 	    throws ApplicationAuthenticationException {
 	 boolean res = false;
-	 
+	 String authenticationApi;
+	 List<GrantedAuthority> authorityList;
 	 for(Authentication authentication : authenticationList) {
-	     String authenticationApi = (String) authentication.getDetails();
-	     @SuppressWarnings("unchecked")
-	     List<GrantedAuthority> authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
+	     authenticationApi = (String) authentication.getDetails();
+	     authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
 	     if(authenticationApi.equals(api)) {
-		 for(GrantedAuthority authority : authorityList) {
-		     String user = authority.getAuthority();
-		     UserRoles userRole = UserRoles.valueOf(user.toUpperCase());
-		     String[] supportedOperations = userRole.getOperations();
-		     if(Arrays.asList(supportedOperations).contains(operation)) {
-			 res = true;
-			 break;
-		     }
-		 }
-//	     } else {
-//	         throw new ApplicationAuthenticationException(I18nConstants.INVALID_API_NAME, I18nConstants.INVALID_API_NAME, null);
+		 res = isOperationSupported(operation, authorityList, userRoles);
 	     }
 	     
 	     if(res) {
@@ -122,15 +116,53 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	     }
 	 }
 	 
-	 return res;
+	 if(!res) {
+	     throw new ApplicationAuthenticationException(
+		     I18nConstants.OPERATION_NOT_AUTHORIZED, I18nConstants.OPERATION_NOT_AUTHORIZED, null);	     
+	 }
+    }
+
+
+    /**
+     * This method performs checking, whether an operation is supported for provided authorities
+     * @param operation
+     * @param authorityList
+     * @param userRoles
+     * @return true if operation supported
+     */
+    private static boolean isOperationSupported(String operation, List<GrantedAuthority> authorityList, Roles[] userRoles) {
+	boolean res = false;
+	String user;
+	Roles userRole;
+	String[] supportedOperations;
+	for(GrantedAuthority authority : authorityList) {
+	     user = authority.getAuthority();
+	     userRole = getUserRoleByName(userRoles, user.toUpperCase());
+	     supportedOperations = userRole.getPermissions();
+	     if(Arrays.asList(supportedOperations).contains(operation)) {
+		 res = true;
+		 break;
+	     }
+	 }
+	return res;
     }    
     
-    /* (non-Javadoc)
-     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#processJwtToken(javax.servlet.http.HttpServletRequest)
+    /**
+     * This method selects user role from all roles by provided role name
+     * @param userRoles The list of roles
+     * @param name The name of required role
+     * @return the user role
      */
-    public List<? extends Authentication> processJwtToken(HttpServletRequest request) throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
-	return OAuthUtils.processJwtToken(request, getSignatureVerifier());
-    }    
+    private static Roles getUserRoleByName(Roles[] userRoles, String name) {
+	Roles userRole = null;
+	for(Roles role : userRoles) {
+	    if(role.getName().equals(name)) {
+		userRole = role;
+		break;
+	    }
+	}
+	return userRole;
+    }
     
     /* (non-Javadoc)
      * @see eu.europeana.api.commons.service.authorization.AuthorizationService#getJwtUser(javax.servlet.http.HttpServletRequest, org.springframework.security.jwt.crypto.sign.RsaVerifier)
