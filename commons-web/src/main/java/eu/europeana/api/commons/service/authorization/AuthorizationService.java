@@ -28,5 +28,4 @@ public interface AuthorizationService {
      */
     public void authorizeWriteAccess(HttpServletRequest request, String operation, Roles[] userRoles) 
 	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException;
-        
 }
