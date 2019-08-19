@@ -2,6 +2,9 @@ package eu.europeana.api.commons.service.authorization;
 
 import javax.servlet.http.HttpServletRequest;
 
+import eu.europeana.api.commons.definitions.vocabulary.Role;
+import eu.europeana.api.commons.exception.ApiKeyExtractionException;
+import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 
 public interface AuthorizationService {
@@ -13,4 +16,16 @@ public interface AuthorizationService {
      */
     public void authorizeReadAccess(HttpServletRequest request)
 		throws ApplicationAuthenticationException;
+
+    /**
+     * This method adopts KeyCloack token from HTTP request and 
+     * verifies write access rights for particular api and operation
+     * @param request The HTTP request
+     * @param operation The name of current operation
+     * @param userRoles
+     * @return true if authenticated, false otherwise
+     * @throws ApplicationAuthenticationException
+     */
+    public void authorizeWriteAccess(HttpServletRequest request, String operation, Role[] userRoles) 
+	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException;
 }
