@@ -1,4 +1,4 @@
-package eu.europeana.api.commons.oauth2.utils;
+package eu.europeana.api.commons.oauth2.model.impl;
 
 import java.util.Collection;
 

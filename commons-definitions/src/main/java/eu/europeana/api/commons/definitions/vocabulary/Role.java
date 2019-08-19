@@ -6,7 +6,7 @@ package eu.europeana.api.commons.definitions.vocabulary;
  * @author GrafR
  *
  */
-public interface Roles {
+public interface Role {
     
     
     /**

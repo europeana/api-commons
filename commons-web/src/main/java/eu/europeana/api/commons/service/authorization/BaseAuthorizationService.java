@@ -13,7 +13,7 @@ import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
-import eu.europeana.api.commons.definitions.vocabulary.Roles;
+import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
@@ -81,7 +81,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     /* (non-Javadoc)
      * @see eu.europeana.api.commons.service.authorization.AuthorizationService#authorizeWriteAccess(javax.servlet.http.HttpServletRequest, java.lang.String)
      */
-    public void authorizeWriteAccess(HttpServletRequest request, String operation, Roles[] userRoles) 
+    public void authorizeWriteAccess(HttpServletRequest request, String operation, Role[] userRoles) 
 	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
 	List<? extends Authentication> authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier());
 	    
@@ -98,28 +98,26 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      * @throws ApplicationAuthenticationException
      */
     @SuppressWarnings("unchecked")
-    protected static void checkPermissions(List<? extends Authentication> authenticationList, 
-	    String api, String operation, Roles[] userRoles) 
+    protected void checkPermissions(List<? extends Authentication> authenticationList, 
+	    String api, String operation, Role[] userRoles) 
 	    throws ApplicationAuthenticationException {
-	 boolean res = false;
-	 String authenticationApi;
-	 List<GrantedAuthority> authorityList;
-	 for(Authentication authentication : authenticationList) {
-	     authenticationApi = (String) authentication.getDetails();
-	     authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
-	     if(authenticationApi.equals(api)) {
-		 res = isOperationSupported(operation, authorityList, userRoles);
-	     }
-	     
-	     if(res) {
-		 break;
-	     }
-	 }
-	 
-	 if(!res) {
-	     throw new ApplicationAuthenticationException(
-		     I18nConstants.OPERATION_NOT_AUTHORIZED, I18nConstants.OPERATION_NOT_AUTHORIZED, null);	     
-	 }
+	
+	List<GrantedAuthority> authorityList;
+	
+	for (Authentication authentication : authenticationList) {
+	    
+	    authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
+	    
+	    if (api.equals((String) authentication.getDetails()) 
+		    && isOperationAuthorized(operation, authorityList, userRoles)) {
+		// access granted
+		return;
+	    }
+	}
+
+	// not authorized
+	throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+		I18nConstants.OPERATION_NOT_AUTHORIZED, null);    
     }
 
 
@@ -130,21 +128,19 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      * @param userRoles
      * @return true if operation supported
      */
-    private static boolean isOperationSupported(String operation, List<GrantedAuthority> authorityList, Roles[] userRoles) {
-	boolean res = false;
+    private boolean isOperationAuthorized(String operation, List<GrantedAuthority> authorityList, Role[] userRoles) {
 	String user;
-	Roles userRole;
+	Role userRole;
 	String[] supportedOperations;
 	for(GrantedAuthority authority : authorityList) {
 	     user = authority.getAuthority();
-	     userRole = getUserRoleByName(userRoles, user.toUpperCase());
+	     userRole = getRoleByName(userRoles, user.toUpperCase());
 	     supportedOperations = userRole.getPermissions();
 	     if(Arrays.asList(supportedOperations).contains(operation)) {
-		 res = true;
-		 break;
+		 return true;
 	     }
 	 }
-	return res;
+	return false;
     }    
     
     /**
@@ -153,15 +149,13 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      * @param name The name of required role
      * @return the user role
      */
-    private static Roles getUserRoleByName(Roles[] userRoles, String name) {
-	Roles userRole = null;
-	for(Roles role : userRoles) {
+    private Role getRoleByName(Role[] userRoles, String name) {
+	for(Role role : userRoles) {
 	    if(role.getName().equals(name)) {
-		userRole = role;
-		break;
+		return role;
 	    }
 	}
-	return userRole;
+	return null;
     }
     
 }

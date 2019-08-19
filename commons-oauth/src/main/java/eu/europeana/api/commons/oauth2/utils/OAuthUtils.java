@@ -21,6 +21,7 @@ import org.springframework.security.oauth2.common.util.JsonParserFactory;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticatonToken;
 
 
 /**

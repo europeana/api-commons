@@ -2,7 +2,7 @@ package eu.europeana.api.commons.service.authorization;
 
 import javax.servlet.http.HttpServletRequest;
 
-import eu.europeana.api.commons.definitions.vocabulary.Roles;
+import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
@@ -26,6 +26,6 @@ public interface AuthorizationService {
      * @return true if authenticated, false otherwise
      * @throws ApplicationAuthenticationException
      */
-    public void authorizeWriteAccess(HttpServletRequest request, String operation, Roles[] userRoles) 
+    public void authorizeWriteAccess(HttpServletRequest request, String operation, Role[] userRoles) 
 	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException;
 }
