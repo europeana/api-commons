@@ -8,8 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 /**
  * This class maps contents of JwtToken
  * 
- * in collection of Collection<GrantedAuthority> we store roles 
- * in details we store key from resource_access (i.e. api_annotations, api_entity)
+ * in granted authorities we store roles 
+ * in details we store the api for which the resource_access is requested (i.e. api_annotations, api_entity)
  * 
  * @author GrafR
  *
@@ -20,27 +20,23 @@ public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
      * 
      */
     private static final long serialVersionUID = -3956175951431237501L;
-
-    Collection<? extends GrantedAuthority> collection = null;
-    
-    String details = null;
-    
     String principal = null;
     
     
-    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> arg0) {
-	super(arg0);
+    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> grantedAuthorities) {
+	super(grantedAuthorities);
     }
 
     /**
      * This constructor supports also details
-     * @param arg0
-     * @param details
+     * @param grantedAuthorities the authorities holding granted access permissions
+     * @param api the API for which access is requested
+     * @param principal the username 
      */
-    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> arg0, String details, String principal) {
-	super(arg0);
-	setDetails(details);
-	setPrincipal(principal);
+    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> grantedAuthorities, String api, String principal) {
+	super(grantedAuthorities);
+	setDetails(api);
+	this.principal = principal;
     }
 
     @Override
@@ -48,24 +44,9 @@ public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
 	return null;
     }
 
-    public String getPrincipal() {
-	// returns the "preferred_username" value from the JWT token
+    @Override
+    public Object getPrincipal() {
 	return principal;
-    }
-
-    public String getDetails() {
-	// returns the "api" value from the JWT token
-	return details;
-    }
-
-    public void setDetails(String details) {
-	// sets the "api" value from the JWT token
-	this.details = details;
-    }
-
-    public void setPrincipal(String principal) {
-	// sets the "preferred_username" value from the JWT token
-	this.principal = principal;
     }
 
 }

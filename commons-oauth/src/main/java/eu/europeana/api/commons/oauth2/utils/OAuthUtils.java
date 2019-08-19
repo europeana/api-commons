@@ -70,10 +70,10 @@ public class OAuthUtils {
     /**
      * This method adopts KeyCloack token from HTTP request
      * @param request The HTTP request
-     * @param signatureVerifier
+     * @param signatureVerifier the signature verifier for JWT token
      * @return a list of Authentication objects
-     * @throws ApiKeyExtractionException
-     * @throws AuthorizationExtractionException 
+     * @throws ApiKeyExtractionException if the API key cannot be successfully extracted from re quest
+     * @throws AuthorizationExtractionException if the Authorization header cannot be successfully extracted from request  
      */
     @SuppressWarnings("unchecked")
     public static List<? extends Authentication> processJwtToken(HttpServletRequest request, 
