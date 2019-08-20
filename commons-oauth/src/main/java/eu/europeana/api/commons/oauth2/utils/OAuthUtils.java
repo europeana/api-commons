@@ -97,25 +97,25 @@ public class OAuthUtils {
 
 	    // for each API in resource_access should be produced EuropeanaAuthenticationToken
 	    EuropeanaAuthenticatonToken authenticationToken;
-	    Collection<GrantedAuthority> rolesCollection; 
+	    Collection<GrantedAuthority> authorities; 
 	    String details;
 	    Map<String, Object> rolesMap;
 	    List<String> roles;
 	    String principal;
 	    for (Map.Entry<String, Object> entry : resourceAccessMap.entrySet()) {
-		rolesCollection = new ArrayList<GrantedAuthority>();
+		authorities = new ArrayList<GrantedAuthority>();
 		details = entry.getKey();
 	        rolesMap = (Map<String, Object>) entry.getValue();
 	        roles = (List<String>) rolesMap.get(ROLES);
 		for(String role : roles) {
-		    rolesCollection.add(new SimpleGrantedAuthority(role));
+		    authorities.add(new SimpleGrantedAuthority(role));
 		}		
 		principal = (String) data.get(PREFERRED_USERNAME);
 	    	if (principal == null) {
 	    	    throw new AuthorizationExtractionException("User name not available in provided JWT token");
 	    	}
 		authenticationToken = 
-		    new EuropeanaAuthenticatonToken(rolesCollection, details, principal);
+		    new EuropeanaAuthenticatonToken(authorities, details, principal);
 		authenticationList.add(authenticationToken);
 	    }		
 	} catch (RuntimeException e) {
