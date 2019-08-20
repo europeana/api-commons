@@ -128,6 +128,9 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
 	for (GrantedAuthority authority : authorities) {
 	    userRole = getRoleByName(authority.getAuthority());
+	    if(userRole == null) {
+		continue;
+	    }
 	    allowedOperations = Arrays.asList(userRole.getPermissions());
 	    if (allowedOperations.contains(operation)) {
 		return true;
