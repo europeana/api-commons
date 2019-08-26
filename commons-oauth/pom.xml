@@ -94,8 +94,11 @@
 	</dependencies>
 
 	<build>
-		<!-- it seems that final name is not inhereted from parent pom -->
-		<finalName>${project.artifactId}-${project.version}</finalName>
+		<!-- configure source and output locations -->
+		<directory>target</directory>
+		<outputDirectory>target/classes</outputDirectory>
+		<testOutputDirectory>target/test-classes</testOutputDirectory>
+		<sourceDirectory>src/main/java</sourceDirectory>
 	</build>
 
 
