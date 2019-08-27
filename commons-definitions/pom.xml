@@ -9,7 +9,7 @@
 		<!-- 
 		<version>0.2.7-SNAPSHOT</version>
 	 	-->
-		<version>${version.apiCommons}</version>
+		<version>${revision}</version>
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
