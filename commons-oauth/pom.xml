@@ -7,10 +7,10 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<!-- 
 		<version>0.2.7-SNAPSHOT</version>
-	 	-->
+		<!-- 
 		<version>${revision}</version>
+		-->
 		
 		<artifactId>commons-api-services</artifactId>
 	</parent>
