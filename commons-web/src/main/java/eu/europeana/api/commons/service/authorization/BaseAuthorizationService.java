@@ -6,11 +6,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.ClientRegistrationException;
 
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
@@ -22,6 +26,11 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
 public abstract class BaseAuthorizationService implements AuthorizationService {
 
     RsaVerifier signatureVerifier;
+    private Logger log = LogManager.getLogger(getClass());
+
+    public Logger getLog() {
+        return log;
+    }
 
     protected RsaVerifier getSignatureVerifier() {
 	if (signatureVerifier == null)
@@ -42,7 +51,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	} catch (ApiKeyExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
 		    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
-	}
+       }
 
 	// extract api key with other methods
 	try {
@@ -63,9 +72,14 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
 	try {
 	    getClientDetailsService().loadClientByClientId(wsKey);
-	} catch (Exception e) {
+	}  catch (ClientRegistrationException e) {
+	    //invalid api key
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
 		    new String[] { wsKey }, HttpStatus.UNAUTHORIZED, e);
+	} catch (OAuth2Exception e) {
+	    //validation failed through API Key service issues
+	    //silently approve request
+	    getLog().info("Invocation of API Key Service failed. Silently approve apikey: "+ wsKey, e);
 	}
     }
 

@@ -1,12 +1,15 @@
 package eu.europeana.api.commons.oauth2.service.impl;
+import org.apache.http.HttpStatus;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Service;
 
 import eu.europeana.api.commons.oauth2.model.impl.ClientDetailsAdapter;
 import eu.europeana.apikey.client.ApiKeyValidationResult;
 import eu.europeana.apikey.client.Client;
+import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 
 /**
  * The entry point into the database of clients.
@@ -31,15 +34,24 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
      * Loads ClientDetails object belongs to an apiKey
      */
     public ClientDetails loadClientByClientId(String key)
-            throws OAuth2Exception {
+            throws OAuth2Exception, ClientRegistrationException {
         try {
             ApiKeyValidationResult validation = getApiKeyClient().validateApiKey(key);
-            if (validation.isValidApiKey())
-                return new ClientDetailsAdapter(key);
-            else
-        	throw new OAuth2Exception("Unauthorized ApiKey : " + key + ". Reason:" + validation.getErrorMessage());
-        } catch (Exception e) {
-            throw new OAuth2Exception("Cannot authorize ApiKey : " + key, e);
+            if (validation.isValidApiKey()) {
+                //valid api key
+        	return new ClientDetailsAdapter(key);
+            }else if (HttpStatus.SC_INTERNAL_SERVER_ERROR == validation.getHttpStatus()){
+        	//apikey service is faulty
+        	throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + key + ". Reason:" + validation.getErrorMessage());
+            } else {
+        	//invalid apikey
+        	throw new ClientRegistrationException("Invalid API key: "  + key 
+        		+ " Reason: " + validation.getHttpStatus() + " : " + validation.getErrorMessage());
+            }
+        	
+        } catch (ApiKeyValidationException | RuntimeException e) {
+          //service not accessible (e.g. IO Exception wrapped by the client, or other runtime exception )
+    	  throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + key, e);
         }
     }
     
