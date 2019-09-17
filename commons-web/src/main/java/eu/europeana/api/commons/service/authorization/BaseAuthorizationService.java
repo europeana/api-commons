@@ -110,7 +110,12 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     @SuppressWarnings("unchecked")
     protected void checkPermissions(List<? extends Authentication> authenticationList, String api, String operation) throws ApplicationAuthenticationException {
 
-	List<GrantedAuthority> authorityList;
+	if(authenticationList == null || authenticationList.isEmpty()) {
+		throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+				I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"No or invalid authorization provided"});
+	}
+    	
+    List<GrantedAuthority> authorityList;
 
 	for (Authentication authentication : authenticationList) {
 
