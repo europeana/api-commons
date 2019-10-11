@@ -35,24 +35,31 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
      */
     public ClientDetails loadClientByClientId(String key)
             throws OAuth2Exception, ClientRegistrationException {
-        try {
-            ApiKeyValidationResult validation = getApiKeyClient().validateApiKey(key);
-            if (validation.isValidApiKey()) {
-                //valid api key
-        	return new ClientDetailsAdapter(key);
-            }else if (HttpStatus.SC_INTERNAL_SERVER_ERROR == validation.getHttpStatus()){
-        	//apikey service is faulty
-        	throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + key + ". Reason:" + validation.getErrorMessage());
-            } else {
-        	//invalid apikey
-        	throw new ClientRegistrationException("Invalid API key: "  + key 
-        		+ " Reason: " + validation.getHttpStatus() + " : " + validation.getErrorMessage());
-            }
-        	
+        
+	ApiKeyValidationResult validation;
+	try {
+            validation = getApiKeyClient().validateApiKey(key);
         } catch (ApiKeyValidationException | RuntimeException e) {
-          //service not accessible (e.g. IO Exception wrapped by the client, or other runtime exception )
-    	  throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + key, e);
+            //service not accessible (e.g. IO Exception wrapped by the client, or other runtime exception )
+      	  throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + key, e);
         }
+
+	//validation is never null after the invokation of validateApiKyy
+	if (validation != null && validation.isValidApiKey()) {
+	    // valid api key
+	    return new ClientDetailsAdapter(key);
+	} 
+	
+	if (validation == null || HttpStatus.SC_INTERNAL_SERVER_ERROR == validation.getHttpStatus()) {
+	    // apikey service is faulty
+	    String message = (validation == null) ? "unknown" : validation.getErrorMessage(); 
+	    throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + key
+		    + ". Reason:" + message);
+	} else {
+	    // invalid apikey
+	    throw new ClientRegistrationException("Invalid API key: " + key + " Reason: " + validation.getHttpStatus()
+		    + " : " + validation.getErrorMessage());
+	}        	
     }
     
     public String getApiKeyServiceUrl() {
