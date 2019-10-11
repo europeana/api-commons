@@ -31,7 +31,6 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
-import eu.europeana.api.commons.utils.JsonWebUtils;
 import eu.europeana.api.commons.web.controller.ApiResponseBuilder;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
@@ -109,7 +108,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	
 	protected ResponseEntity<String> buildErrorResponse(ApiResponse res, HttpStatus status) {
 		
-		String body = JsonWebUtils.toJson(res);
+		String body = serializeResponse(res);
 		
 		MultiValueMap<String, String> headers = buildHeadersMap();
 
