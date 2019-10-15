@@ -20,9 +20,42 @@
 	<dependencies>
 		<!-- Other -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>${version.commonsLang3}</version>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>${version.java.mongo.driver}</version>
+		</dependency>	
+		<dependency>
+			<groupId>eu.europeana.corelib</groupId>
+			<artifactId>corelib-definitions</artifactId>
+			<version>${version.corelib}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>eu.europeana.corelib</groupId>
+					<artifactId>corelib-utils</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mongodb.morphia</groupId>
+					<artifactId>morphia</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mongodb</groupId>
+					<artifactId>mongo-java-driver</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.module</groupId>
+					<artifactId>
+						jackson-module-jaxb-annotations
+					</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-1.2-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 	</dependencies>
