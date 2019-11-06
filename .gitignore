@@ -2,6 +2,7 @@
 .classpath
 bin/
 /.project
+*.properties 
 
 #IntelliJ project files
 .idea
