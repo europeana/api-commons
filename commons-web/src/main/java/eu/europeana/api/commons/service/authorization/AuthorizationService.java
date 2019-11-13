@@ -2,6 +2,8 @@ package eu.europeana.api.commons.service.authorization;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.core.Authentication;
+
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
@@ -21,8 +23,11 @@ public interface AuthorizationService {
      * verifies write access rights for particular api and operation
      * @param request The full HTTP request
      * @param operation The name of operation invoked through the http request
+     * @return authentication object containing user token
      * @throws ApplicationAuthenticationException if the access to the requested operation is not authorized
+     * @throws ApiKeyExtractionException
+     * @throws AuthorizationExtractionException
      */
-    public void authorizeWriteAccess(HttpServletRequest request, String operation) 
+    public Authentication authorizeWriteAccess(HttpServletRequest request, String operation) 
 	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException;
 }
