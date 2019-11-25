@@ -2,3 +2,21 @@
 .classpath
 bin/
 /.project
+*.properties 
+
+#IntelliJ project files
+.idea
+*.iml
+
+# Maven
+*/target/**
+
+# Temp files
+*~
+*.bak
+
+# Occult stuff & shit
+**/europeana.user.properties
+
+
+.gitignore
