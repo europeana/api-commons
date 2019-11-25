@@ -1,4 +1,5 @@
 package eu.europeana.api.commons.oauth2.service.impl;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -36,6 +37,11 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
     public ClientDetails loadClientByClientId(String key)
             throws OAuth2Exception, ClientRegistrationException {
         
+	//allow disabling apikey validation for read access
+	if(StringUtils.isBlank(getApiKeyServiceUrl())) {
+	    return null;
+	}
+	
 	ApiKeyValidationResult validation;
 	try {
             validation = getApiKeyClient().validateApiKey(key);
