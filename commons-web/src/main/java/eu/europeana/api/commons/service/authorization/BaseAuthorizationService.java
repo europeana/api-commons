@@ -84,18 +84,15 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     }
 
     
-    /*
-     * (non-Javadoc)
-     * 
-     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#
-     * authorizeWriteAccess(javax.servlet.http.HttpServletRequest, java.lang.String)
+    /* (non-Javadoc)
+     * @see eu.europeana.api.commons.service.authorization.AuthorizationService#authorizeWriteAccess(javax.servlet.http.HttpServletRequest, java.lang.String)
      */
-    public void authorizeWriteAccess(HttpServletRequest request, String operation)
+    public Authentication authorizeWriteAccess(HttpServletRequest request, String operation)
 	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-	List<? extends Authentication> authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier());
+    	List<? extends Authentication> authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier());
 
-	checkPermissions(authenticationList, getApiName(), operation);
+		return checkPermissions(authenticationList, getApiName(), operation);
     }
 
     /**
@@ -108,28 +105,28 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      * @throws ApplicationAuthenticationException if the access to the api operation is not authorized
      */
     @SuppressWarnings("unchecked")
-    protected void checkPermissions(List<? extends Authentication> authenticationList, String api, String operation) throws ApplicationAuthenticationException {
+    protected Authentication checkPermissions(List<? extends Authentication> authenticationList, String api, String operation) throws ApplicationAuthenticationException {
 
-	if(authenticationList == null || authenticationList.isEmpty()) {
+		if(authenticationList == null || authenticationList.isEmpty()) {
+			throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+					I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"No or invalid authorization provided"});
+		}
+	    	
+	    List<GrantedAuthority> authorityList;
+	
+		for (Authentication authentication : authenticationList) {
+	
+		    authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
+	
+		    if (api.equals((String) authentication.getDetails()) && isOperationAuthorized(operation, authorityList)) {
+		    	// access granted
+		    	return authentication;
+		    }
+		}
+	
+		// not authorized
 		throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-				I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"No or invalid authorization provided"});
-	}
-    	
-    List<GrantedAuthority> authorityList;
-
-	for (Authentication authentication : authenticationList) {
-
-	    authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
-
-	    if (api.equals((String) authentication.getDetails()) && isOperationAuthorized(operation, authorityList)) {
-		// access granted
-		return;
-	    }
-	}
-
-	// not authorized
-	throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-		I18nConstants.OPERATION_NOT_AUTHORIZED, null);
+			I18nConstants.OPERATION_NOT_AUTHORIZED, null);
     }
 
     /**
