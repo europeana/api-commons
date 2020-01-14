@@ -2,6 +2,8 @@ package eu.europeana.api.commons.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.core.Authentication;
+
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.service.authorization.AuthorizationService;
@@ -26,14 +28,14 @@ public abstract class BaseRestController {
      * This method adopts KeyCloack token from HTTP request and verifies write access rights for particular api and operation
      * @param request The HTTP request
      * @param operation The name of current operation
-     * @return true if authenticated, false otherwise
+     * @return authentication object containing user token
      * @throws ApplicationAuthenticationException
      * @throws AuthorizationExtractionException 
      * @throws ApiKeyExtractionException 
      */
-    public void verifyWriteAccess(String operation, HttpServletRequest request) 
+    public Authentication verifyWriteAccess(String operation, HttpServletRequest request) 
 	     throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
-	 getAuthorizationService().authorizeWriteAccess(request, operation); 	
+    	return getAuthorizationService().authorizeWriteAccess(request, operation); 	
     }
 
     /**

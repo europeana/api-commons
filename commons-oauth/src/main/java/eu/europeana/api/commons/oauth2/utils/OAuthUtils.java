@@ -40,6 +40,7 @@ public class OAuthUtils {
     public static final String RESOURCE_ACCESS = "resource_access";
     public static final String ROLES = "roles";
     public static final String PREFERRED_USERNAME = "preferred_username";
+    public static final String USER_ID = "sub"; 
 
     static JsonParser objectMapper = JsonParserFactory.create();
 
@@ -110,10 +111,10 @@ public class OAuthUtils {
 		for(String role : roles) {
 		    authorities.add(new SimpleGrantedAuthority(role));
 		}		
-		principal = (String) data.get(PREFERRED_USERNAME);
-	    	if (principal == null) {
-	    	    throw new AuthorizationExtractionException("User name not available in provided JWT token");
-	    	}
+		principal = (String) data.get(USER_ID);
+    	if (principal == null) {
+    	    throw new AuthorizationExtractionException("User id not available in provided JWT token");
+    	}
 		authenticationToken = 
 		    new EuropeanaAuthenticatonToken(authorities, details, principal);
 		authenticationList.add(authenticationToken);
