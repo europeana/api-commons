@@ -44,11 +44,11 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	String wsKey;
 	// check and verify jwt token
 	try {
-	    wsKey = OAuthUtils.extractApiKeyFromJwtToken(request, getSignatureVerifier());
+	    wsKey = OAuthUtils.extractApiKeyFromJwtToken(request, getSignatureVerifier(), getApiName());
 	    if (wsKey != null) {
 		return;// apikey is valid if the JWT Token is verified
 	    }
-	} catch (ApiKeyExtractionException e) {
+	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
 		    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
        }
@@ -90,9 +90,9 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     public Authentication authorizeWriteAccess(HttpServletRequest request, String operation)
 	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
 
-    	List<? extends Authentication> authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier());
-
-		return checkPermissions(authenticationList, getApiName(), operation);
+    	List<? extends Authentication> authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier(), getApiName());
+    	
+	return checkPermissions(authenticationList, getApiName(), operation);
     }
 
     /**
@@ -105,28 +105,29 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      * @throws ApplicationAuthenticationException if the access to the api operation is not authorized
      */
     @SuppressWarnings("unchecked")
-    protected Authentication checkPermissions(List<? extends Authentication> authenticationList, String api, String operation) throws ApplicationAuthenticationException {
+    protected Authentication checkPermissions(List<? extends Authentication> authenticationList, String api,
+	    String operation) throws ApplicationAuthenticationException {
 
-		if(authenticationList == null || authenticationList.isEmpty()) {
-			throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-					I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"No or invalid authorization provided"});
-		}
-	    	
-	    List<GrantedAuthority> authorityList;
-	
-		for (Authentication authentication : authenticationList) {
-	
-		    authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
-	
-		    if (api.equals((String) authentication.getDetails()) && isOperationAuthorized(operation, authorityList)) {
-		    	// access granted
-		    	return authentication;
-		    }
-		}
-	
-		// not authorized
-		throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-			I18nConstants.OPERATION_NOT_AUTHORIZED, null);
+	if (authenticationList == null || authenticationList.isEmpty()) {
+	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "No or invalid authorization provided" });
+	}
+
+	List<GrantedAuthority> authorityList;
+
+	for (Authentication authentication : authenticationList) {
+
+	    authorityList = (List<GrantedAuthority>) authentication.getAuthorities();
+
+	    if (api.equals(authentication.getDetails()) && isOperationAuthorized(operation, authorityList)) {
+		// access granted
+		return authentication;
+	    }
+	}
+
+	// not authorized
+	throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+		I18nConstants.OPERATION_NOT_AUTHORIZED, null);
     }
 
     /**
