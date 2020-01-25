@@ -14,12 +14,16 @@ public abstract class BaseRestController {
     /**
      * This method is used for validation of the provided api key
      * 
+     * This method is deprecated, to be replaced by verifyReadAccess
+     * 
      * @param request web request 
      * @throws ApplicationAuthenticationException if the apikey submitted with the request cannot be validated
+     * @throws AuthorizationExtractionException 
+     * @throws ApiKeyExtractionException 
      */
     @Deprecated
-    protected void validateApiKey(HttpServletRequest request) throws ApplicationAuthenticationException {
-	getAuthorizationService().authorizeReadAccess(request);
+    protected void validateApiKey(HttpServletRequest request) throws ApplicationAuthenticationException{
+	verifyReadAccess(request);
     }
     
     protected abstract AuthorizationService getAuthorizationService();
@@ -44,7 +48,7 @@ public abstract class BaseRestController {
      * @throws ApplicationAuthenticationException if the APIKey was not submitted with the request or the APIKey could not be validated 
      */
     public void verifyReadAccess(HttpServletRequest request) 
-	     throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	     throws ApplicationAuthenticationException{
 	 getAuthorizationService().authorizeReadAccess(request); 	
    }
 }
