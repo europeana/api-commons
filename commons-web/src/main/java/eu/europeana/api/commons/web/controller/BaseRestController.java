@@ -11,21 +11,6 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
 
 public abstract class BaseRestController {
 
-    /**
-     * This method is used for validation of the provided api key
-     * 
-     * This method is deprecated, to be replaced by verifyReadAccess
-     * 
-     * @param request web request 
-     * @throws ApplicationAuthenticationException if the apikey submitted with the request cannot be validated
-     * @throws AuthorizationExtractionException 
-     * @throws ApiKeyExtractionException 
-     */
-    @Deprecated
-    protected void validateApiKey(HttpServletRequest request) throws ApplicationAuthenticationException{
-	verifyReadAccess(request);
-    }
-    
     protected abstract AuthorizationService getAuthorizationService();
  
     /**
