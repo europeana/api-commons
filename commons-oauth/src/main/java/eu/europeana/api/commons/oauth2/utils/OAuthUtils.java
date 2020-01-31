@@ -116,10 +116,10 @@ public class OAuthUtils {
     private static void processResourceAccessClaims(String api, Map<String, Object> data,
 	    List<Authentication> authenticationList) throws ApiKeyExtractionException {
 	//verify scope, aud and resource access
-//	if(!verifyScope(api, data)) {
+	if(!verifyScope(api, data)) {
 	    //token not intended to have write access to current api
-//	    return;
-//	}
+	    return;
+	}
 	
 	if(!verifyAudience(api, data)) {
 	    //token not intended to have write access to current api
