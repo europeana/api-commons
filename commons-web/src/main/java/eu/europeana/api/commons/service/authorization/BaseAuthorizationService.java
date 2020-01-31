@@ -88,9 +88,15 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
      * @see eu.europeana.api.commons.service.authorization.AuthorizationService#authorizeWriteAccess(javax.servlet.http.HttpServletRequest, java.lang.String)
      */
     public Authentication authorizeWriteAccess(HttpServletRequest request, String operation)
-	    throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
+	    throws ApplicationAuthenticationException{
 
-    	List<? extends Authentication> authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier(), getApiName());
+    	List<? extends Authentication> authenticationList;
+	try {
+	    authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier(), getApiName());
+	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
+	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "Invalid token or ApiKey"}, HttpStatus.UNAUTHORIZED, e);
+	}
     	
 	return checkPermissions(authenticationList, getApiName(), operation);
     }
