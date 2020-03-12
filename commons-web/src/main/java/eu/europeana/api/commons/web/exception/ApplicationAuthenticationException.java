@@ -23,4 +23,7 @@ public class ApplicationAuthenticationException extends HttpException{
 		super(message, i18nKey, i18nParams, HttpStatus.UNAUTHORIZED);
 	}
 
+	public ApplicationAuthenticationException(String message, String i18nKey, String[] i18nParams, HttpStatus status) {
+		super(message, i18nKey, i18nParams, status);
+	}
 }

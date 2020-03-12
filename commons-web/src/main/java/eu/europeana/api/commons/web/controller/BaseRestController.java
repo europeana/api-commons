@@ -2,8 +2,10 @@ package eu.europeana.api.commons.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 
+import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.service.authorization.AuthorizationService;
@@ -11,21 +13,6 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
 
 public abstract class BaseRestController {
 
-    /**
-     * This method is used for validation of the provided api key
-     * 
-     * This method is deprecated, to be replaced by verifyReadAccess
-     * 
-     * @param request web request 
-     * @throws ApplicationAuthenticationException if the apikey submitted with the request cannot be validated
-     * @throws AuthorizationExtractionException 
-     * @throws ApiKeyExtractionException 
-     */
-    @Deprecated
-    protected void validateApiKey(HttpServletRequest request) throws ApplicationAuthenticationException{
-	verifyReadAccess(request);
-    }
-    
     protected abstract AuthorizationService getAuthorizationService();
  
     /**
@@ -38,8 +25,8 @@ public abstract class BaseRestController {
      * @throws ApiKeyExtractionException 
      */
     public Authentication verifyWriteAccess(String operation, HttpServletRequest request) 
-	     throws ApplicationAuthenticationException, ApiKeyExtractionException, AuthorizationExtractionException {
-    	return getAuthorizationService().authorizeWriteAccess(request, operation); 	
+	     throws ApplicationAuthenticationException{
+    	    return getAuthorizationService().authorizeWriteAccess(request, operation); 	
     }
 
     /**
