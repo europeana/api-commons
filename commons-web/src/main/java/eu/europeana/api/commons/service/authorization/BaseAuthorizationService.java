@@ -133,7 +133,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
 	// not authorized
 	throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-		I18nConstants.OPERATION_NOT_AUTHORIZED, null);
+		I18nConstants.OPERATION_NOT_AUTHORIZED, null, HttpStatus.FORBIDDEN);
     }
 
     /**
