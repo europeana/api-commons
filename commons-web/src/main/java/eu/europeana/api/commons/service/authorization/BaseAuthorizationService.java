@@ -116,7 +116,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
 	if (authenticationList == null || authenticationList.isEmpty()) {
 	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "No or invalid authorization provided" });
+		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "No or invalid authorization provided" }, HttpStatus.FORBIDDEN);
 	}
 
 	List<GrantedAuthority> authorityList;
