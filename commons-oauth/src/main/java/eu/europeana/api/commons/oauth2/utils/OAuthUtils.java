@@ -37,13 +37,17 @@ public class OAuthUtils {
     public static final String HEADER_XAPIKEY = "X-Api-Key";
     public static final String TYPE_APIKEY = "APIKEY";
     public static final String TYPE_BEARER = "Bearer";
+    //apikey
     public static final String AZP = "azp";
     public static final String EXP = "exp";
+    //api
     public static final String AUD = "aud";
+    //api
     public static final String SCOPE = "scope";
     public static final String RESOURCE_ACCESS = "resource_access";
     public static final String ROLES = "roles";
     public static final String PREFERRED_USERNAME = "preferred_username";
+    //user id
     public static final String USER_ID = "sub"; 
 
     static JsonParser objectMapper = JsonParserFactory.create();
