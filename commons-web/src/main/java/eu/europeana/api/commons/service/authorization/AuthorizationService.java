@@ -1,10 +1,13 @@
 package eu.europeana.api.commons.service.authorization;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.Authentication;
 
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public interface AuthorizationService {
 
@@ -26,4 +29,24 @@ public interface AuthorizationService {
      */
     public Authentication authorizeWriteAccess(HttpServletRequest request, String operation) 
 	    throws ApplicationAuthenticationException;
+    
+    /**
+     * This method compares If-Match header with the current etag value.
+     * 
+     * @param etag    The current etag value
+     * @param request The request containing If-Match header
+     * @throws HttpException
+     */
+    public void checkIfMatchHeader(String etag, HttpServletRequest request) throws HttpException;
+     
+    /**
+     * This method generates etag for response header.
+     * 
+     * @param timestamp The date of the last modification
+     * @param format       The MIME format
+     * @param version      The API version
+     * @return etag value
+     */
+    public String generateETag(Date timestamp, String format, String version);
+        
 }

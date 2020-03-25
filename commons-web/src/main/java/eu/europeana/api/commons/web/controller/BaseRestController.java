@@ -1,15 +1,16 @@
 package eu.europeana.api.commons.web.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 
-import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.service.authorization.AuthorizationService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HttpException;
 
 public abstract class BaseRestController {
 
@@ -38,4 +39,27 @@ public abstract class BaseRestController {
 	     throws ApplicationAuthenticationException{
 	 getAuthorizationService().authorizeReadAccess(request); 	
    }
+    
+    /**
+     * This method compares If-Match header with the current etag value.
+     * 
+     * @param etag    The current etag value
+     * @param request The request containing If-Match header
+     * @throws HttpException
+     */
+    public void checkIfMatchHeader(String etag, HttpServletRequest request) throws HttpException {
+    	getAuthorizationService().checkIfMatchHeader(etag, request);
+    }
+	
+    /**
+     * This method generates etag for response header.
+     * 
+     * @param timestamp The date of the last modification
+     * @param format       The MIME format
+     * @param version      The API version
+     * @return etag value
+     */
+    public String generateETag(Date timestamp, String format, String version) {
+		return getAuthorizationService().generateETag(timestamp, format, version);
+    }    
 }
