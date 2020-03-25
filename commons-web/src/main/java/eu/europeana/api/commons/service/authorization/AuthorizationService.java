@@ -26,4 +26,5 @@ public interface AuthorizationService {
      */
     public Authentication authorizeWriteAccess(HttpServletRequest request, String operation) 
 	    throws ApplicationAuthenticationException;
+        
 }

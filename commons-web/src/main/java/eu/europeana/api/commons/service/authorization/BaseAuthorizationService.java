@@ -161,8 +161,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	}
 
 	return false;
-    }
-
+    }    
+        
     /**
      * This method returns the api specific Role for the given role name
      * 
