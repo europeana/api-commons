@@ -7,13 +7,12 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Willem-Jan Boogerd www.eledge.net/contact
  */
-@JsonSerialize()
-@JsonInclude(content=Include.NON_EMPTY, value=Include.NON_EMPTY)
+//@JsonInclude(content=Include.NON_EMPTY, value=Include.NON_EMPTY)
+@JsonInclude(Include.NON_NULL)
 public abstract class ApiResponse {
 
 	public String apikey;
