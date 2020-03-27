@@ -50,7 +50,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    }
 	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
+		    new String[] { e.getMessage() }, HttpStatus.FORBIDDEN, e);
        }
 
 	// extract api key with other methods
@@ -58,13 +58,13 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    wsKey = OAuthUtils.extractApiKey(request);
 	} catch (ApiKeyExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
+		    new String[] { e.getMessage() }, HttpStatus.FORBIDDEN, e);
 	}
 
 	// check if null
 	if (wsKey == null)
 	    throw new ApplicationAuthenticationException(I18nConstants.MISSING_APIKEY, I18nConstants.MISSING_APIKEY,
-		    null, HttpStatus.UNAUTHORIZED, null);
+		    null, HttpStatus.FORBIDDEN, null);
 	// check if empty
 	if (StringUtils.isEmpty(wsKey))
 	    throw new ApplicationAuthenticationException(I18nConstants.EMPTY_APIKEY, I18nConstants.EMPTY_APIKEY, null);
@@ -75,7 +75,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	}  catch (ClientRegistrationException e) {
 	    //invalid api key
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { wsKey }, HttpStatus.UNAUTHORIZED, e);
+		    new String[] { wsKey }, HttpStatus.FORBIDDEN, e);
 	} catch (OAuth2Exception e) {
 	    //validation failed through API Key service issues
 	    //silently approve request
@@ -95,7 +95,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier(), getApiName());
 	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "Invalid token or ApiKey"}, HttpStatus.UNAUTHORIZED, e);
+		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "Invalid token or ApiKey"}, HttpStatus.FORBIDDEN, e);
 	}
     	
 	return checkPermissions(authenticationList, getApiName(), operation);
