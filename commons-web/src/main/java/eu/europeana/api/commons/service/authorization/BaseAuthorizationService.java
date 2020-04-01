@@ -1,6 +1,7 @@
 package eu.europeana.api.commons.service.authorization;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,9 @@ import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.exception.HeaderValidationException;
+import eu.europeana.api.commons.web.exception.HttpException;
+import eu.europeana.api.commons.web.http.HttpHeaders;
 
 public abstract class BaseAuthorizationService implements AuthorizationService {
 
@@ -162,6 +166,53 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
 	return false;
     }    
+        
+    /**
+     * This method compares If-Match header with the current etag value.
+     * 
+     * @param etag    The current etag value
+     * @param request The request containing If-Match header
+     * @throws HttpException
+     */
+    public void checkIfMatchHeader(String etag, HttpServletRequest request) throws HttpException {
+
+		String ifMatchHeader = request.getHeader(HttpHeaders.IF_MATCH);
+		if (ifMatchHeader != null) {
+		    try {
+				if (!etag.equals(ifMatchHeader))
+				    throw new HeaderValidationException(I18nConstants.INVALID_PARAM_VALUE, HttpHeaders.IF_MATCH,
+					    ifMatchHeader);
+		    } catch (NumberFormatException e) {
+				throw new HeaderValidationException(I18nConstants.INVALID_PARAM_VALUE, HttpHeaders.IF_MATCH,
+					ifMatchHeader);
+		    }
+		}
+    }
+    
+    /**
+     * This method generates etag for response header.
+     * 
+     * @param timestamp The date of the last modification
+     * @param format       The MIME format
+     * @param version      The API version
+     * @return etag value
+     */
+    public String generateETag(Date timestamp, String format, String version) {
+    	// add timestamp, format and version to an etag
+		Integer hashCode;
+		hashCode = (timestamp+format+version).hashCode();
+//		hashCode = modifiedDate.hashCode();
+//		
+//		// add ETag format 
+//		hashCode += '|'+getConfiguration().getEtagFormat().hashCode();
+//		
+//		// add the hascode of the api version
+//		String apiVersion = getConfiguration().getAnnotationApiVersion();
+//		if (apiVersion != null)
+//		    hashCode += '|'+apiVersion.hashCode();
+	
+		return hashCode.toString();
+    }
         
     /**
      * This method returns the api specific Role for the given role name
