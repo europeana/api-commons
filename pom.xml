@@ -61,7 +61,7 @@
 		<version.spring>5.1.7.RELEASE</version.spring>
 		<version.springSecurityOauth>2.3.6.RELEASE</version.springSecurityOauth>
 		<version.log4j2>2.9.1</version.log4j2>
-		<version.commonsLang3>3.0</version.commonsLang3>
+		<version.commonsLang3>3.9</version.commonsLang3>
 		<version.annotationLd>1.1.5</version.annotationLd>
 		<version.springBoot>2.1.5.RELEASE</version.springBoot>
 		<version.springSecurityJwt>1.0.10.RELEASE</version.springSecurityJwt>
