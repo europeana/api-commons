@@ -1,5 +1,6 @@
-package eu.europeana.api.commons.oauth2.service.impl;import javax.annotation.Resource;
+package eu.europeana.api.commons.oauth2.service.impl;
 
+import javax.annotation.Resource;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
