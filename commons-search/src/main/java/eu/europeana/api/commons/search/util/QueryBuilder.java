@@ -11,6 +11,8 @@ import eu.europeana.api.commons.definitions.search.impl.QueryImpl;
 public class QueryBuilder {
 
 	private static final String COLON = ":";
+	//
+	public static final String PARAM_QUERY_OPERATOR = "q.op"; 
 
 	/**
 	 * 

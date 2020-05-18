@@ -21,6 +21,11 @@
 	<dependencies>
 		<!-- Other -->
 		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>${version.javax.annotation}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>${version.commonsLang3}</version>
@@ -83,7 +88,7 @@
 			<artifactId>spring-test</artifactId>
 			<version>${version.spring}</version>
 		</dependency>
-        <dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
