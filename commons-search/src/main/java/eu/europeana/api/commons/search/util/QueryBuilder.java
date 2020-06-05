@@ -7,11 +7,15 @@ import org.apache.solr.client.solrj.SolrQuery;
 
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.impl.QueryImpl;
+import eu.europeana.api.commons.definitions.utils.RandomUtils;
 
 public class QueryBuilder {
 
 	private static final String COLON = ":";
-
+	//
+	public static final String PARAM_QUERY_OPERATOR = "q.op"; 
+	private static final String SORT_RANDOM = "random";
+	
 	/**
 	 * 
 	 * @param queryString The query string e.g. "drama"
@@ -164,10 +168,28 @@ public class QueryBuilder {
 			inputArray = StringUtils.splitByWholeSeparator(field, "+");
 			fieldName = inputArray[0];
 			verifySortField(fieldName);
+			fieldName = processSortField(fieldName);
 			
 			order = (inputArray.length == 2) ? SolrQuery.ORDER.valueOf( inputArray[1]): SolrQuery.ORDER.asc; 
 			solrQuery.addSort(fieldName, order);		
 		}		
+	}
+
+	protected String processSortField(String fieldName) {
+	    //handle random search
+	    if(SORT_RANDOM.equals(fieldName)) {
+		return SORT_RANDOM + "_" + generateRandomSeed();
+	    }
+	    return fieldName;
+	    
+	}
+
+	String generateRandomSeed() {
+	    return RandomUtils.randomString(getSeedLength());
+	}
+
+	private int getSeedLength() {
+	    return 10;
 	}
 	
 		

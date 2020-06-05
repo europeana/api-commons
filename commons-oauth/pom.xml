@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>0.2.8</version>
+		<version>0.2.9</version>
 		<artifactId>commons-api-services</artifactId>
 	</parent>
 
@@ -20,6 +20,11 @@
 
 	<dependencies>
 		<!-- Other -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>${version.javax.annotation}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -83,7 +88,7 @@
 			<artifactId>spring-test</artifactId>
 			<version>${version.spring}</version>
 		</dependency>
-        <dependency>
+		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
