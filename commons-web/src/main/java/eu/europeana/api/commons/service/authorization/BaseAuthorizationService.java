@@ -94,8 +94,13 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     public Authentication authorizeWriteAccess(HttpServletRequest request, String operation)
 	    throws ApplicationAuthenticationException{
 
-    	List<? extends Authentication> authenticationList;
-	try {
+    	if(getSignatureVerifier() == null) {
+    	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
+		    I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] { "No signature key configured for verification of JWT Token"}, HttpStatus.INTERNAL_SERVER_ERROR);
+    	}
+	
+	List<? extends Authentication> authenticationList;
+    	try {
 	    authenticationList = OAuthUtils.processJwtToken(request, getSignatureVerifier(), getApiName());
 	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
