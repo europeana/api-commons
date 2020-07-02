@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
@@ -19,31 +20,36 @@ import eu.europeana.api.commons.web.http.HttpHeaders;
 public abstract class BaseRestController {
 
     protected abstract AuthorizationService getAuthorizationService();
- 
+
     /**
-     * This method adopts KeyCloack token from HTTP request and verifies write access rights for particular api and operation
-     * @param request The HTTP request
+     * This method adopts KeyCloack token from HTTP request and verifies write
+     * access rights for particular api and operation
+     * 
+     * @param request   The HTTP request
      * @param operation The name of current operation
      * @return authentication object containing user token
      * @throws ApplicationAuthenticationException
-     * @throws AuthorizationExtractionException 
-     * @throws ApiKeyExtractionException 
+     * @throws AuthorizationExtractionException
+     * @throws ApiKeyExtractionException
      */
-    public Authentication verifyWriteAccess(String operation, HttpServletRequest request) 
-	     throws ApplicationAuthenticationException{
-    	    return getAuthorizationService().authorizeWriteAccess(request, operation); 	
+    public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
+	    throws ApplicationAuthenticationException {
+	return getAuthorizationService().authorizeWriteAccess(request, operation);
     }
 
     /**
-     * Processes the HTTP request and validates the provided APIKey (see also Europeana APIKEY service) 
+     * Processes the HTTP request and validates the provided APIKey (see also
+     * Europeana APIKEY service)
+     * 
      * @param request the full HTTP request
-     * @throws ApplicationAuthenticationException if the APIKey was not submitted with the request or the APIKey could not be validated 
+     * @throws ApplicationAuthenticationException if the APIKey was not submitted
+     *                                            with the request or the APIKey
+     *                                            could not be validated
      */
-    public void verifyReadAccess(HttpServletRequest request) 
-	     throws ApplicationAuthenticationException{
-	 getAuthorizationService().authorizeReadAccess(request); 	
-   }
-    
+    public void verifyReadAccess(HttpServletRequest request) throws ApplicationAuthenticationException {
+	getAuthorizationService().authorizeReadAccess(request);
+    }
+
     /**
      * This method compares If-Match header with the current etag value.
      * 
@@ -52,31 +58,24 @@ public abstract class BaseRestController {
      * @throws HttpException
      */
     public void checkIfMatchHeader(String etag, HttpServletRequest request) throws HttpException {
-		String ifMatchHeader = request.getHeader(HttpHeaders.IF_MATCH);
-		if (ifMatchHeader != null) {
-		    try {
-				if (!etag.equals(ifMatchHeader))
-				    throw new HeaderValidationException(I18nConstants.INVALID_PARAM_VALUE, HttpHeaders.IF_MATCH,
-					    ifMatchHeader);
-		    } catch (NumberFormatException e) {
-				throw new HeaderValidationException(I18nConstants.INVALID_PARAM_VALUE, HttpHeaders.IF_MATCH,
-					ifMatchHeader);
-		    }
-		}
+	String ifMatchHeader = request.getHeader(HttpHeaders.IF_MATCH);
+	if (ifMatchHeader != null && !ifMatchHeader.equals(etag)) {
+	    //if the tags doesn't match throw exception
+	    throw new HeaderValidationException(I18nConstants.INVALID_PARAM_VALUE, HttpHeaders.IF_MATCH, ifMatchHeader);
+	}
     }
-	
+
     /**
      * This method generates etag for response header.
      * 
      * @param timestamp The date of the last modification
-     * @param format       The MIME format
-     * @param version      The API version
+     * @param format    The MIME format
+     * @param version   The API version
      * @return etag value
      */
     public String generateETag(Date timestamp, String format, String version) {
-    	// add timestamp, format and version to an etag
-		Integer hashCode;
-		hashCode = (timestamp+format+version).hashCode();
-		return hashCode.toString();
-    }    
+	// add timestamp, format and version to an etag
+	Integer hashCode = (timestamp + format + version).hashCode();
+	return hashCode.toString();
+    }
 }
