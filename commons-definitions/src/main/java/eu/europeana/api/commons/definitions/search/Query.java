@@ -1,21 +1,6 @@
 package eu.europeana.api.commons.definitions.search;
 
 public interface Query {
-
-	public static final String PAGE = "page";
-	public static final String PAGE_SIZE = "pageSize";
-	public static final String RESULT_LIMIT = "limit";
-	public static final String SORT = "sort";
-	public static final String QUERY = "query";
-	public static final String QF = "qf";
-	public static final String FACET = "facet";
-	public static final String LANG = "lang";
-	public static final String PROFILE = "profile";
-	public static final String FL = "fl";
-	
-	public static final String PROFILE_MINIMAL = "minimal";
-	public static final String PROFILE_STANDARD = "standard";
-	
 	
 	void setFacetFields(String[] facetFields);
 
