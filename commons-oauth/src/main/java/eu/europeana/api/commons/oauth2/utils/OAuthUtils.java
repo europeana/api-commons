@@ -23,7 +23,7 @@ import org.springframework.security.oauth2.common.util.JsonParserFactory;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
-import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticatonToken;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 
 
 /**
@@ -117,7 +117,7 @@ public class OAuthUtils {
 //    }
 
     @SuppressWarnings("unchecked")
-    private static void processResourceAccessClaims(String api, Map<String, Object> data,
+    public static void processResourceAccessClaims(String api, Map<String, Object> data,
 	    List<Authentication> authenticationList) throws ApiKeyExtractionException {
 	//verify scope, aud and resource access
 	if(!verifyScope(api, data)) {
@@ -140,7 +140,7 @@ public class OAuthUtils {
 	
 	// each API in resource_access should be processed and
 	// EuropeanaAuthenticationToken will be created for the current API
-	EuropeanaAuthenticatonToken authenticationToken;
+	EuropeanaAuthenticationToken authenticationToken;
 	Collection<GrantedAuthority> authorities;
 	String details;
 	Map<String, Object> rolesMap;
@@ -161,7 +161,7 @@ public class OAuthUtils {
 		authorities.add(new SimpleGrantedAuthority(role));
 	    }
 
-	    authenticationToken = new EuropeanaAuthenticatonToken(authorities, details, principal);
+	    authenticationToken = new EuropeanaAuthenticationToken(authorities, details, principal);
 	    authenticationList.add(authenticationToken);
 	}
     }      
@@ -206,35 +206,46 @@ public class OAuthUtils {
      * @throws ApiKeyExtractionException if the token cannot be parsed or it is expired 
      * @throws AuthorizationExtractionException if the subject is not defined in the token
      */
-    public static String extractApiKeyFromJwtToken(HttpServletRequest request, RsaVerifier signatureVerifier, String api)
+    public static Map<String, Object> extractCustomData(HttpServletRequest request, RsaVerifier signatureVerifier, String api)
 	    throws ApiKeyExtractionException, AuthorizationExtractionException {
-	String jwtToken = extractPayloadFromAuthorizationHeader(request, TYPE_BEARER);
+	String encodedToken = extractPayloadFromAuthorizationHeader(request, TYPE_BEARER);
 	// if authorization header or JWT token not present in request return null
-	if (jwtToken == null)
+	if (encodedToken == null)
 	    return null;
 	// use case 4
 	// Obtain the JWT token from the Authorization header
-	return extractApiKey(jwtToken, signatureVerifier, api);
+	return extractCustomData(encodedToken, signatureVerifier, api);
     }
-
-    /**
-     * Obtain apikey from JWT token using
-     * 
-     * @param encodedToken the JWT token as string 
-     * @param signatureVerifier RsaVerifier initialized with the public key used to
-     *                          verify the token signature
-     * @param api the api for which access is requested
-     * @return the extracted apikey 
-     * @throws ApiKeyExtractionException if the token is expired or the apikey is not found in the token
-     * @throws AuthorizationExtractionException 
-     * 
-     */
-    protected static String extractApiKey(String encodedToken, RsaVerifier signatureVerifier, String api)
+    
+    
+    public static String extractApiKeyFromJwtToken(HttpServletRequest request, RsaVerifier signatureVerifier, String api)
 	    throws ApiKeyExtractionException, AuthorizationExtractionException {
-
-	Map<String, Object> data = extractCustomData(encodedToken, signatureVerifier, api);
+	Map<String, Object> data = extractCustomData(request, signatureVerifier, api);
+	if (data == null)
+	    return null;
+	// use case 4
+	// Obtain the JWT token from the Authorization header
 	return extractApiKey(data);
     }
+
+//    /**
+//     * Obtain apikey from JWT token using
+//     * 
+//     * @param encodedToken the JWT token as string 
+//     * @param signatureVerifier RsaVerifier initialized with the public key used to
+//     *                          verify the token signature
+//     * @param api the api for which access is requested
+//     * @return the extracted apikey 
+//     * @throws ApiKeyExtractionException if the token is expired or the apikey is not found in the token
+//     * @throws AuthorizationExtractionException 
+//     * 
+//     */
+//    protected static String extractApiKey(String encodedToken, RsaVerifier signatureVerifier, String api)
+//	    throws ApiKeyExtractionException, AuthorizationExtractionException {
+//
+//	Map<String, Object> data = extractCustomData(encodedToken, signatureVerifier, api);
+//	return extractApiKey(data);
+//    }
 
     /**
      * This method extracts custom data from encoded JWT token, 
@@ -266,7 +277,7 @@ public class OAuthUtils {
      * @return
      * @throws ApiKeyExtractionException
      */
-    private static String extractApiKey(Map<String, Object> data) throws ApiKeyExtractionException {
+    public static String extractApiKey(Map<String, Object> data) throws ApiKeyExtractionException {
 	String apikey = (String) data.get(AZP);
 	if (apikey == null || StringUtils.isEmpty(apikey))
 	    throw new ApiKeyExtractionException("API KEY not available in provided JWT token");

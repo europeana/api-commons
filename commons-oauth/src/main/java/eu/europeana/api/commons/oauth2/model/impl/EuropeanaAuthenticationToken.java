@@ -14,7 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
  * @author GrafR
  *
  */
-public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
+public class EuropeanaAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
      * 
@@ -23,7 +23,7 @@ public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
     String principal = null;
     
     
-    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> grantedAuthorities) {
+    public EuropeanaAuthenticationToken(Collection<? extends GrantedAuthority> grantedAuthorities) {
 	super(grantedAuthorities);
     }
 
@@ -33,7 +33,7 @@ public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
      * @param api the API for which access is requested
      * @param principal the username 
      */
-    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> grantedAuthorities, String api, String principal) {
+    public EuropeanaAuthenticationToken(Collection<? extends GrantedAuthority> grantedAuthorities, String api, String principal) {
 	super(grantedAuthorities);
 	setDetails(api);
 	this.principal = principal;

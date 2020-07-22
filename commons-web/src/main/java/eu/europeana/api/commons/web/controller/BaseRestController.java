@@ -46,8 +46,8 @@ public abstract class BaseRestController {
      *                                            with the request or the APIKey
      *                                            could not be validated
      */
-    public void verifyReadAccess(HttpServletRequest request) throws ApplicationAuthenticationException {
-	getAuthorizationService().authorizeReadAccess(request);
+    public Authentication verifyReadAccess(HttpServletRequest request) throws ApplicationAuthenticationException {
+	return getAuthorizationService().authorizeReadAccess(request);
     }
 
     /**
