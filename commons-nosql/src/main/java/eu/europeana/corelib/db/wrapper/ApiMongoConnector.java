@@ -35,7 +35,8 @@ public class ApiMongoConnector {
 	private static final Logger log = LogManager.getLogger(ApiMongoConnector.class);
 	SSLContext sslContext = null;
 	MongoClient mongoClient = null;
-
+	int DEFAULT_IDLE_TIME = 5000;  
+	
 	/**
 	 * Default constructor
 	 */
@@ -56,12 +57,21 @@ public class ApiMongoConnector {
 	 * @return the datastore
 	 */
 	public Datastore createDatastore(String connectionUri, String truststore, String truststorePass) {
+	    return createDatastore(connectionUri, truststore, truststorePass, DEFAULT_IDLE_TIME);
+	}
+
+	public Datastore createDatastore(String connectionUri, String truststore, String truststorePass, int maxConnectionIdleTime) {
 		Datastore datastore = null;
 		Morphia connection = new Morphia();
 		try {
 			log.debug("Connecting to mongo server:" + connectionUri);
 			
 			MongoClientOptions.Builder mco = buildMongoConnectionOptions(connectionUri, truststore, truststorePass);
+			if(maxConnectionIdleTime > 0) {
+			    mco.maxConnectionIdleTime(maxConnectionIdleTime);
+			} else {
+			    mco.maxConnectionIdleTime(DEFAULT_IDLE_TIME);
+			} 
 			
 			MongoClientURI mongoUri = new MongoClientURI(connectionUri, mco);
 			mongoClient = new MongoClient(mongoUri);
@@ -74,7 +84,6 @@ public class ApiMongoConnector {
 		}
 		return datastore;
 	}
-
 
 	private MongoClientOptions.Builder buildMongoConnectionOptions(String connectionUri, String truststore,
 			String truststorePass) {
