@@ -60,10 +60,11 @@ public class OAuthUtils {
      * @param request API request that is expected to contain an apikey submitted in one of the above mentioned ways
      * @return The extracted apikey, or null if not found in the request object
      * @throws ApiKeyExtractionException if the authorization header doesn't have one of the supported types
+     * @throws AuthorizationExtractionException 
      * 
      * @see #extractPayloadFromAuthorizationHeader(HttpServletRequest, String)
      */
-    public static String extractApiKey(HttpServletRequest request) throws ApiKeyExtractionException {
+    public static String extractApiKey(HttpServletRequest request) throws ApiKeyExtractionException, AuthorizationExtractionException {
 	String wskeyParam = request.getParameter(CommonApiConstants.PARAM_WSKEY);
 	// use case 1
 	if (wskeyParam != null)
@@ -73,7 +74,12 @@ public class OAuthUtils {
 	if (xApiKeyHeader != null)
 	    return xApiKeyHeader;
 
-	return extractPayloadFromAuthorizationHeader(request, TYPE_APIKEY);
+	String apikey = extractPayloadFromAuthorizationHeader(request, TYPE_APIKEY);
+	if(apikey == null) {
+	    throw new ApiKeyExtractionException("No APIKey provided within the request or authoization header!");
+	}
+	
+	return apikey;
     }
     
     /**
@@ -175,13 +181,15 @@ public class OAuthUtils {
      * @return the payload of authorization header
      * @throws ApiKeyExtractionException if the type of the Authorization header is
      *                                   not supported.
+     * @throws AuthorizationExtractionException 
      */
     private static String extractPayloadFromAuthorizationHeader(HttpServletRequest request, String authorizationType)
-	    throws ApiKeyExtractionException {
+	    throws ApiKeyExtractionException, AuthorizationExtractionException {
 	String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 	// if authorization not present return null
-	if (authorization == null)
-	    return null;
+	if (authorization == null) {
+	    throw new AuthorizationExtractionException("No authentication information provided, Authorization header not submitted with the request! ");
+	}
 
 	// validate header format first
 	if (!authorization.startsWith(TYPE_BEARER) && !authorization.startsWith(TYPE_APIKEY))
