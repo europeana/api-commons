@@ -1,5 +1,6 @@
 package eu.europeana.api.commons.service.authorization;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -99,9 +100,16 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 			null, HttpStatus.FORBIDDEN, null);
 
 	    if (data.containsKey(OAuthUtils.USER_ID)) {
-		// if user ID is available return Authentication object
-		authentication = new EuropeanaAuthenticationToken(null, getApiName(),
-			(String) data.get(OAuthUtils.USER_ID));
+		List<Authentication> authList = new ArrayList<Authentication>(); 
+		OAuthUtils.processResourceAccessClaims(getApiName(), data, authList);
+		if(!authList.isEmpty()) {
+		    authentication = authList.get(0);
+		}else {
+		    ////return Authentication object for read only user
+		    authentication = new EuropeanaAuthenticationToken(null, getApiName(),
+				(String) data.get(OAuthUtils.USER_ID));
+		    
+		}
 	    }
 	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
