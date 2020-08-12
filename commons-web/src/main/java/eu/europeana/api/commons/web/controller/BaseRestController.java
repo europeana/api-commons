@@ -4,7 +4,6 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
@@ -12,7 +11,6 @@ import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.service.authorization.AuthorizationService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
-
 import eu.europeana.api.commons.web.exception.HeaderValidationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
