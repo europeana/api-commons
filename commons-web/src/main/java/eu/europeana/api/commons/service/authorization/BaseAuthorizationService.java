@@ -53,12 +53,12 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    authentication = authorizeReadByJwtToken(request);
 	}else {
 	    //user id not available, verify apiKey only
-	    authorizeReadByApiKey(request);    
+	    authentication = authorizeReadByApiKey(request);    
 	}
 	return authentication;
     }
 
-    private void authorizeReadByApiKey(HttpServletRequest request) throws ApplicationAuthenticationException {
+    private Authentication authorizeReadByApiKey(HttpServletRequest request) throws ApplicationAuthenticationException {
 	String wsKey;
 	// extract api key with other methods
 	try{
@@ -84,6 +84,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    // silently approve request
 	    getLog().info("Invocation of API Key Service failed. Silently approve apikey: " + wsKey, e);
 	}
+	
+	return new EuropeanaAuthenticationToken(null, getApiName(), wsKey);
     }
 
     private Authentication authorizeReadByJwtToken(HttpServletRequest request)
