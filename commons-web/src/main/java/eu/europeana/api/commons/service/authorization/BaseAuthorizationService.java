@@ -49,7 +49,9 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     public Authentication authorizeReadAccess(HttpServletRequest request) throws ApplicationAuthenticationException {
 	Authentication authentication = null;
 	// check and verify jwt token
-	if (request.getHeader(HttpHeaders.AUTHORIZATION) != null) {
+	String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+	if (authorization != null && authorization.startsWith(OAuthUtils.TYPE_BEARER)) {
+	    //if jwt token submitted
 	    authentication = authorizeReadByJwtToken(request);
 	}else {
 	    //user id not available, verify apiKey only

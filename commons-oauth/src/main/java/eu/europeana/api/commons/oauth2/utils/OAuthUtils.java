@@ -76,7 +76,7 @@ public class OAuthUtils {
 
 	String apikey = extractPayloadFromAuthorizationHeader(request, TYPE_APIKEY);
 	if(apikey == null) {
-	    throw new ApiKeyExtractionException("No APIKey provided within the request or authoization header!");
+	    throw new ApiKeyExtractionException("No APIKey provided within the request or authorization header!");
 	}
 	
 	return apikey;
