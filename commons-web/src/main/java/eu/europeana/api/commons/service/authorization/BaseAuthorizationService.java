@@ -23,6 +23,7 @@ import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
@@ -87,7 +88,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    getLog().info("Invocation of API Key Service failed. Silently approve apikey: " + wsKey, e);
 	}
 	
-	return new EuropeanaAuthenticationToken(null, getApiName(), wsKey);
+	return new EuropeanaAuthenticationToken(null, getApiName(), wsKey, 
+		new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS));
     }
 
     private Authentication authorizeReadByJwtToken(HttpServletRequest request)
@@ -110,8 +112,13 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 		    authentication = authList.get(0);
 		}else {
 		    ////return Authentication object for read only user
+		    String userName = (String) data.get(OAuthUtils.PREFERRED_USERNAME);
+		    if(userName == null) {
+			userName = EuropeanaApiCredentials.USER_ANONYMOUS;
+		    }
 		    authentication = new EuropeanaAuthenticationToken(null, getApiName(),
-				(String) data.get(OAuthUtils.USER_ID));
+				(String) data.get(OAuthUtils.USER_ID),
+				new EuropeanaApiCredentials(userName));
 		    
 		}
 	    }

@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.common.util.JsonParserFactory;
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaApiCredentials;
 import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 
 
@@ -46,10 +47,11 @@ public class OAuthUtils {
     public static final String SCOPE = "scope";
     public static final String RESOURCE_ACCESS = "resource_access";
     public static final String ROLES = "roles";
+    //user name
     public static final String PREFERRED_USERNAME = "preferred_username";
     //user id
     public static final String USER_ID = "sub"; 
-
+    
     static JsonParser objectMapper = JsonParserFactory.create();
 
     /**
@@ -112,15 +114,6 @@ public class OAuthUtils {
 	return authenticationList;
     }
 
-//    private static void addRegularUserAuthenticationToken(String api, String principal,
-//	    List<Authentication> authenticationList) {
-//	
-//	//write level access granted only if 
-//	List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-//	authorities.add(new SimpleGrantedAuthority(Role.ROLE_USER));		    
-//	EuropeanaAuthenticatonToken regularUserToken = new EuropeanaAuthenticatonToken(authorities, api, principal);
-//	authenticationList.add(regularUserToken);
-//    }
 
     @SuppressWarnings("unchecked")
     public static void processResourceAccessClaims(String api, Map<String, Object> data,
@@ -143,6 +136,7 @@ public class OAuthUtils {
 	
 	Map<String, Object> resourceAccessMap = (Map<String, Object>) data.get(RESOURCE_ACCESS);
 	String principal = (String) data.get(USER_ID);
+	String userName = (String) data.get(USER_ID);
 	
 	// each API in resource_access should be processed and
 	// EuropeanaAuthenticationToken will be created for the current API
@@ -167,7 +161,7 @@ public class OAuthUtils {
 		authorities.add(new SimpleGrantedAuthority(role));
 	    }
 
-	    authenticationToken = new EuropeanaAuthenticationToken(authorities, details, principal);
+	    authenticationToken = new EuropeanaAuthenticationToken(authorities, details, principal, new EuropeanaApiCredentials(userName));
 	    authenticationList.add(authenticationToken);
 	}
     }      
@@ -236,25 +230,6 @@ public class OAuthUtils {
 	return extractApiKey(data);
     }
 
-//    /**
-//     * Obtain apikey from JWT token using
-//     * 
-//     * @param encodedToken the JWT token as string 
-//     * @param signatureVerifier RsaVerifier initialized with the public key used to
-//     *                          verify the token signature
-//     * @param api the api for which access is requested
-//     * @return the extracted apikey 
-//     * @throws ApiKeyExtractionException if the token is expired or the apikey is not found in the token
-//     * @throws AuthorizationExtractionException 
-//     * 
-//     */
-//    protected static String extractApiKey(String encodedToken, RsaVerifier signatureVerifier, String api)
-//	    throws ApiKeyExtractionException, AuthorizationExtractionException {
-//
-//	Map<String, Object> data = extractCustomData(encodedToken, signatureVerifier, api);
-//	return extractApiKey(data);
-//    }
-
     /**
      * This method extracts custom data from encoded JWT token, 
      * verifying it with the provided key
@@ -271,7 +246,8 @@ public class OAuthUtils {
 	    Jwt token = JwtHelper.decodeAndVerify(encodedToken, signatureVerifier);
 	    data = objectMapper.parseMap(token.getClaims());
 	    verifyTokenExpiration(data);
-	    verifySubject(data);	   
+	    verifySubject(data);
+	    verifyUserName(data);
 	} catch (RuntimeException e) {
 	    throw new ApiKeyExtractionException("Unexpected exception occured when processing JWT Token", e);
 	}
@@ -358,6 +334,13 @@ public class OAuthUtils {
 	//verify subject (user id)
 	if (!data.containsKey(USER_ID)) {
 		    throw new AuthorizationExtractionException("User id not available in provided JWT token");
+	}
+    }
+    
+    private static void verifyUserName(Map<String, Object> data) throws AuthorizationExtractionException {
+	//verify subject (user id)
+	if (!data.containsKey(PREFERRED_USERNAME)) {
+		    throw new AuthorizationExtractionException("Preffered User Name not available in provided JWT token");
 	}
     }
 
