@@ -11,9 +11,10 @@ public interface AuthorizationService {
     /**
      * Processes the HTTP request and validates the provided APIKey (see also Europeana APIKEY service) 
      * @param request the full HTTP request
+     * @return 
      * @throws ApplicationAuthenticationException if the APIKey was not submitted with the request or the APIKey could not be validated 
      */
-    public void authorizeReadAccess(HttpServletRequest request)
+    public Authentication authorizeReadAccess(HttpServletRequest request)
 		throws ApplicationAuthenticationException;
 
     /**

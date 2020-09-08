@@ -1,7 +1,7 @@
 package eu.europeana.api.commons.definitions.search;
 
 public interface Query {
-
+	
 	void setFacetFields(String[] facetFields);
 
 	String[] getFacetFields();

@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+import eu.europeana.api.commons.oauth2.model.ApiCredentials;
+
 /**
  * This class maps contents of JwtToken
  * 
@@ -14,18 +16,19 @@ import org.springframework.security.core.GrantedAuthority;
  * @author GrafR
  *
  */
-public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
+public class EuropeanaAuthenticationToken extends AbstractAuthenticationToken {
 
     /**
      * 
      */
     private static final long serialVersionUID = -3956175951431237501L;
     String principal = null;
+    ApiCredentials credentials;
     
     
-    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> grantedAuthorities) {
-	super(grantedAuthorities);
-    }
+//    public EuropeanaAuthenticationToken(Collection<? extends GrantedAuthority> grantedAuthorities) {
+//	super(grantedAuthorities);
+//    }
 
     /**
      * This constructor supports also details
@@ -33,15 +36,16 @@ public class EuropeanaAuthenticatonToken extends AbstractAuthenticationToken {
      * @param api the API for which access is requested
      * @param principal the username 
      */
-    public EuropeanaAuthenticatonToken(Collection<? extends GrantedAuthority> grantedAuthorities, String api, String principal) {
+    public EuropeanaAuthenticationToken(Collection<? extends GrantedAuthority> grantedAuthorities, String api, String principal, ApiCredentials credentials) {
 	super(grantedAuthorities);
 	setDetails(api);
 	this.principal = principal;
+	this.credentials = credentials;
     }
 
     @Override
     public Object getCredentials() {
-	return null;
+	return credentials;
     }
 
     @Override
