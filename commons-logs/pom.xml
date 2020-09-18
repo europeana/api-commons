@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.europeana.api.commons</groupId>
+		<relativePath>../pom.xml</relativePath>
+		<version>0.2.10</version>
+		<artifactId>commons-api-services</artifactId>
+	</parent>
+
+	<artifactId>commons-logs</artifactId>
+	<name>Api Commons - Shared log structure</name>
+	<organization>
+		<name>Europeana Foundation + AIT</name>
+	</organization>
+	<url>http://www.europeanalabs.eu</url>
+
+	<dependencies>
+
+		<!-- Other -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${version.commonsLang3}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!--		&lt;!&ndash; Other &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.mongodb</groupId>-->
+<!--			<artifactId>mongo-java-driver</artifactId>-->
+<!--			<version>${version.java.mongo.driver}</version>-->
+<!--		</dependency>	-->
+<!--		<dependency>-->
+<!--			<groupId>eu.europeana.corelib</groupId>-->
+<!--			<artifactId>corelib-definitions</artifactId>-->
+<!--			<version>${version.corelib}</version>-->
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<groupId>eu.europeana.corelib</groupId>-->
+<!--					<artifactId>corelib-utils</artifactId>-->
+<!--				</exclusion>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.mongodb.morphia</groupId>-->
+<!--					<artifactId>morphia</artifactId>-->
+<!--				</exclusion>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.mongodb</groupId>-->
+<!--					<artifactId>mongo-java-driver</artifactId>-->
+<!--				</exclusion>-->
+<!--				<exclusion>-->
+<!--					<groupId>com.fasterxml.jackson.module</groupId>-->
+<!--					<artifactId>-->
+<!--						jackson-module-jaxb-annotations-->
+<!--					</artifactId>-->
+<!--				</exclusion>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.apache.logging.log4j</groupId>-->
+<!--					<artifactId>log4j-core</artifactId>-->
+<!--				</exclusion>-->
+<!--				<exclusion>-->
+<!--					<groupId>org.apache.logging.log4j</groupId>-->
+<!--					<artifactId>log4j-1.2-api</artifactId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
+<!--		</dependency>-->
+		
+	</dependencies>
+	
+	
+	<build>
+		<!-- it seems that final name is not inhereted from parent pom -->
+		<finalName>${project.artifactId}-${project.version}</finalName>
+	</build>
+
+</project>
