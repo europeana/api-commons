@@ -32,6 +32,7 @@ public class LogMessage {
     private String xB3SpanId;
     private String xB3TraceId;
     private String xGlobalTransId;
+    private String javaMethod;
 
     public void setApp_guid(String app_guid) {
         this.app_guid = app_guid;
@@ -141,6 +142,10 @@ public class LogMessage {
         this.wskey = wskey;
     }
 
+    public void setJavaMethod(String javaMethod) {
+        this.javaMethod = javaMethod;
+    }
+
     @Override
     public String toString() {
         return "LogMessage{" + "\n" +
@@ -171,7 +176,7 @@ public class LogMessage {
                 ", xB3TraceId='" + xB3TraceId + '\'' +"\n" +
                 ", global trabs id ='" + xGlobalTransId + '\'' +"\n" +
                 ", wskey ='" + wskey + '\'' +"\n" +
-
+                ", javaMethod ='" + javaMethod + '\'' +"\n" +
                 '}';
     }
 }

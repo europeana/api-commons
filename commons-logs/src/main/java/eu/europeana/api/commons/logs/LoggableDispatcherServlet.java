@@ -78,6 +78,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         logMessage.setBytes(getResponsePayload(responseToCache).getBytes().length);
         logMessage.setWskey(requestToCache.getParameter(LogConstants.WSKEY));
         logMessage.setPort(requestToCache.getServerPort());
+        logMessage.setJavaMethod(handler.getHandler().toString());
 
         // get the client's Ip and Geo Location
         String clientIP = getClientIP(requestToCache);
@@ -170,14 +171,11 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             return new RawDBGeoIPLocationService().getLocation(ipAddress);
         } catch (IOException e) {
             LOG.error("Could not load the GeoLite2-City mapping file ", e);
-        } catch (GeoIp2Exception e) {
-            if (e instanceof AddressNotFoundException) {
+        } catch (AddressNotFoundException e) {
                 LOG.error("Could not find the address {} in the database ", ipAddress);
-            } else {
+            } catch (GeoIp2Exception e) {
                 LOG.error("Address not found for IP {} ", ipAddress, e);
             }
-
-        }
         return null;
     }
 
