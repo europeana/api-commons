@@ -1,41 +1,37 @@
 package eu.europeana.api.commons.logs;
 
-import java.util.Date;
-
 /**
  * Created by Srishti on 14 September 2020
  */
 public class LogMessage {
 
-        private String app_guid;
-        private String app_name;
-        private String bytes;
-        private Location clientLocation;
-        private String clientIPv4;
-        private Location location;
-
-        private String gorouterTime;
-
-        private String httpVersion;
-        private int instance;
-        private String ipV4;
-        private String originCode;
-        private String processTime;
-        private String referer;
-        private int httpStatus;
-        private String serverDate;
-        private String serverTime;
-        private String serverTimeZoneOffset;
-        private String type;
-        private String urlQuery;
-        private String urlPath;
-        private String userAgent;
-        private String vcapRequestId;
-        private String method;
-        private String xB3parentSpanId;
-        private String xB3SpanId;
-        private String xB3TraceId;
-        private String xGlobalTransId;
+    private String app_guid;
+    private String app_name;
+    private long bytes;
+    private GeoIP clientLocation;
+    private String clientIPv4;
+    private GeoIP location;
+    private String wskey;
+    private long gorouterTime;
+    private String httpVersion;
+    private int port;
+    private String ipV4;
+    private long processTime;
+    private String referer;
+    private int httpStatus;
+    private String serverDate;
+    private String serverTime;
+    private String serverTimeZoneOffset;
+    private String type;
+    private String urlQuery;
+    private String urlPath;
+    private String userAgent;
+    private String vcapRequestId;
+    private String method;
+    private String xB3parentSpanId;
+    private String xB3SpanId;
+    private String xB3TraceId;
+    private String xGlobalTransId;
 
     public void setApp_guid(String app_guid) {
         this.app_guid = app_guid;
@@ -45,11 +41,11 @@ public class LogMessage {
         this.app_name = app_name;
     }
 
-    public void setBytes(String bytes) {
+    public void setBytes(long bytes) {
         this.bytes = bytes;
     }
 
-    public void setClientLocation(Location clientLocation) {
+    public void setClientLocation(GeoIP clientLocation) {
         this.clientLocation = clientLocation;
     }
 
@@ -57,11 +53,11 @@ public class LogMessage {
         this.clientIPv4 = clientIPv4;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(GeoIP location) {
         this.location = location;
     }
 
-    public void setGorouterTime(String gorouterTime) {
+    public void setGorouterTime(long gorouterTime) {
         this.gorouterTime = gorouterTime;
     }
 
@@ -69,19 +65,15 @@ public class LogMessage {
         this.httpVersion = httpVersion;
     }
 
-    public void setInstance(int instance) {
-        this.instance = instance;
-    }
-
     public void setIpV4(String ipV4) {
         this.ipV4 = ipV4;
     }
 
-    public void setOriginCode(String originCode) {
-        this.originCode = originCode;
+    public void setPort(int port) {
+        this.port = port;
     }
 
-    public void setProcessTime(String processTime) {
+    public void setProcessTime(long processTime) {
         this.processTime = processTime;
     }
 
@@ -145,6 +137,10 @@ public class LogMessage {
         this.xGlobalTransId = xGlobalTransId;
     }
 
+    public void setWskey(String wskey) {
+        this.wskey = wskey;
+    }
+
     @Override
     public String toString() {
         return "LogMessage{" + "\n" +
@@ -156,9 +152,8 @@ public class LogMessage {
                 ", location=" + location +"\n" +
                 ", gorouterTime='" + gorouterTime + '\'' +"\n" +
                 ", httpVersion='" + httpVersion + '\'' +"\n" +
-                ", instance=" + instance +"\n" +
+                ", port=" + port +"\n" +
                 ", ipV4='" + ipV4 + '\'' +"\n" +
-                ", originCode='" + originCode + '\'' +"\n" +
                 ", processTime='" + processTime + '\'' +"\n" +
                 ", referer='" + referer + '\'' +"\n" +
                 ", httpStatus=" + httpStatus +"\n" +
@@ -175,6 +170,8 @@ public class LogMessage {
                 ", xB3SpanId='" + xB3SpanId + '\'' +"\n" +
                 ", xB3TraceId='" + xB3TraceId + '\'' +"\n" +
                 ", global trabs id ='" + xGlobalTransId + '\'' +"\n" +
+                ", wskey ='" + wskey + '\'' +"\n" +
+
                 '}';
     }
 }

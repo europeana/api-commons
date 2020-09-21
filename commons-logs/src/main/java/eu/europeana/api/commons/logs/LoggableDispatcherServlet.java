@@ -1,5 +1,7 @@
 package eu.europeana.api.commons.logs;
 
+import com.maxmind.geoip2.exception.AddressNotFoundException;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,9 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by Srishti on 14 September 2020
@@ -27,6 +33,9 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        long startTime = System.currentTimeMillis();
+        String serverTime = getCurrentDateTime();
+
         if (!(request instanceof ContentCachingRequestWrapper)) {
             request = new ContentCachingRequestWrapper(request);
         }
@@ -45,65 +54,142 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         } catch (Exception e) {
             LOG.error("Exception occurred while invoking DispatcherServlet", e);
         } finally {
-            logRequest(request, response, handler);
-
+            long processTime = System.currentTimeMillis() - startTime;
+            logRequest(request, response, handler, processTime, serverTime);
             updateResponse(response);
         }
     }
 
-    private void logRequest(HttpServletRequest requestToCache, HttpServletResponse responseToCache, HandlerExecutionChain handler) {
+    /**
+     * Forms the LogMessage
+     *
+     * @param requestToCache
+     * @param responseToCache
+     * @param handler
+     */
+    private void logRequest(HttpServletRequest requestToCache, HttpServletResponse responseToCache, HandlerExecutionChain handler,
+                            long processTime, String serverTime) {
         LogMessage logMessage = new LogMessage();
-        //Enumeration<String> headers = requestToCache.getHeaderNames();
-        for (Enumeration<?> e = requestToCache.getHeaderNames(); e.hasMoreElements();) {
-            String nextHeaderName = (String) e.nextElement();
-            String headerValue = requestToCache.getHeader(nextHeaderName);
-            System.out.println(nextHeaderName + "   " +headerValue);
-        }
 
-        Collection<String> list = responseToCache.getHeaderNames();
+        // TODO Have to decide if we will still set this values here
+        logMessage.setApp_guid(""); // app_id
 
-        for (String s : responseToCache.getHeaderNames()) {
-            System.out.println(s + "=== " + responseToCache.getHeader(s));
-        }
-        logMessage.setApp_guid(requestToCache.getHeader("app_id"));
+        logMessage.setApp_name(StringUtils.substringBefore(requestToCache.getHeader(LogConstants.HOST), LogConstants.HOST_SEPERATOR));
+        logMessage.setBytes(getResponsePayload(responseToCache).getBytes().length);
+        logMessage.setWskey(requestToCache.getParameter(LogConstants.WSKEY));
+        logMessage.setPort(requestToCache.getServerPort());
 
-        logMessage.setApp_name("");
-        logMessage.setBytes(String.valueOf(responseToCache.getBufferSize()));
-        logMessage.setClientLocation(new Location());
-        logMessage.setClientIPv4(requestToCache.getRemoteAddr());
-        logMessage.setLocation(new Location());
-        logMessage.setGorouterTime("");
+        // get the client's Ip and Geo Location
+        String clientIP = getClientIP(requestToCache);
+        // TODO Verify which Ip is this exactly; for now getting IPV4
+        String ipV4 = getIPV4();
+
+        logMessage.setClientIPv4(clientIP);
+        logMessage.setIpV4(ipV4);
+        logMessage.setClientLocation(getGeoLocation(clientIP));
+        logMessage.setLocation(getGeoLocation(ipV4));
+
+        // TODO figure out how we will calculate this
+        // Gorouter Time : is the total time it takes for the request to go through the
+        // Gorouter initially plus the time it takes for the response to travel back through the Gorouter. This does not include
+        // the time the request spends traversing the network to the app. This also does not include the time the
+        // app spends forming a response.
+        //logMessage.setGorouterTime(goRouterTime);
 
         logMessage.setHttpVersion(StringUtils.substringAfter(requestToCache.getProtocol(), "/"));
-
-        logMessage.setInstance(1);
-        logMessage.setOriginCode("");
-        logMessage.setProcessTime("");
-        logMessage.setReferer(requestToCache.getHeader("Referer"));
+        logMessage.setReferer(requestToCache.getHeader(LogConstants.REFERER));
         logMessage.setHttpStatus(responseToCache.getStatus());
+        logMessage.setProcessTime(processTime);
+        // server date and time
+        logMessage.setServerDate(StringUtils.substringBefore(serverTime, "T"));
+        logMessage.setServerTime(StringUtils.substringBetween(serverTime, "T", "Z"));
+        logMessage.setServerTimeZoneOffset(LogConstants.SERVER_TIMEZONE_OFFSET);
 
-        logMessage.setServerDate(requestToCache.getHeader("Date"));
-        logMessage.setServerTime(" ");
-
-        logMessage.setServerTimeZoneOffset("+00:00");
         logMessage.setUrlQuery(requestToCache.getQueryString());
         logMessage.setUrlPath(requestToCache.getPathInfo());
-        logMessage.setUserAgent(requestToCache.getHeader("User-Agent"));
-
-        logMessage.setVcapRequestId(requestToCache.getHeader("Vcap-Request-Id"));
+        logMessage.setUserAgent(requestToCache.getHeader(LogConstants.USER_AGENT));
+        logMessage.setVcapRequestId(requestToCache.getHeader(LogConstants.X_VCAP_REQUEST_ID));
         logMessage.setMethod(requestToCache.getMethod());
-        logMessage.setxB3parentSpanId(requestToCache.getHeader("x-b3-parentspanid"));
-        logMessage.setxB3SpanId(requestToCache.getHeader("x-b3-spanid"));
-        logMessage.setxB3TraceId(requestToCache.getHeader("x-b3-traceid"));
-        logMessage.setxGlobalTransId(requestToCache.getHeader("x_global_transaction_id"));
+        logMessage.setxB3parentSpanId(requestToCache.getHeader(LogConstants.X_B3_PARENT_SPAN_ID));
+        logMessage.setxB3SpanId(requestToCache.getHeader(LogConstants.X_B3_SPAN_ID));
+        logMessage.setxB3TraceId(requestToCache.getHeader(LogConstants.X_B3_TRACE_ID));
+        logMessage.setxGlobalTransId(requestToCache.getHeader(LogConstants.X_GLOBAL_TRANSACTION_ID));
 
         LOG.info(logMessage);
     }
 
+    /**
+     * Gets the current date and time in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' format
+     *
+     * @return date in yyyy-MM-dd'T'HH:mm:ss.SSS'Z' format
+     */
+    private String getCurrentDateTime() {
+        DateFormat df = new SimpleDateFormat(LogConstants.DATE_FORMAT, Locale.US);
+        df.setTimeZone(TimeZone.getTimeZone(LogConstants.TIME_ZONE));
+        return df.format(new Date());
+    }
+
+    /**
+     * Gets the client's Ip first from X-FORWARDED-FOR (format : client Ip, proxy, proxy)
+     * if null get the remote Address
+     *
+     * @param request
+     * @return client's IP
+     */
+    private static String getClientIP(HttpServletRequest request) {
+        String ipAddress = request.getHeader(LogConstants.X_FORWARDED_FOR);
+        if (StringUtils.isNotEmpty(ipAddress)) {
+            return ipAddress.contains(",") ? ipAddress.split(",")[0] : ipAddress;
+        } else {
+            return request.getRemoteAddr();
+        }
+    }
+
+    /**
+     * Gets the IpV4 address
+     *
+     * @return IPV4 address
+     */
+    private static String getIPV4() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            LOG.error("Unknown Host ", e);
+        }
+        return "";
+    }
+
+    /**
+     * Gets the GeoIp Location
+     * @param ipAddress the ip address to get the location
+     *
+     * @return GeoIp
+     */
+    private GeoIP getGeoLocation(String ipAddress) {
+        try {
+            return new RawDBGeoIPLocationService().getLocation(ipAddress);
+        } catch (IOException e) {
+            LOG.error("Could not load the GeoLite2-City mapping file ", e);
+        } catch (GeoIp2Exception e) {
+            if (e instanceof AddressNotFoundException) {
+                LOG.error("Could not find the address {} in the database ", ipAddress);
+            } else {
+                LOG.error("Address not found for IP {} ", ipAddress, e);
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * Gets the response
+     *
+     * @param response
+     * @return the response
+     */
     private String getResponsePayload(HttpServletResponse response) {
         ContentCachingResponseWrapper wrapper = WebUtils.getNativeResponse(response, ContentCachingResponseWrapper.class);
         if (wrapper != null) {
-
             byte[] buf = wrapper.getContentAsByteArray();
             if (buf.length > 0) {
                 int length = Math.min(buf.length, BUFFERLENGTH);
@@ -124,7 +210,4 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             responseWrapper.copyBodyToResponse();
         }
     }
-
-
 }
-
