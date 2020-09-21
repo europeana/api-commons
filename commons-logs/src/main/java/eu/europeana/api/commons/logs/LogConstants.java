@@ -19,5 +19,7 @@ public class LogConstants {
     protected static final String X_GLOBAL_TRANSACTION_ID = "x_global_transaction_id";
     protected static final String REFERER                = "Referer";
     protected static final String X_FORWARDED_FOR        = "X-FORWARDED-FOR";
+    protected static final String CF_CONNECTING_IP       = "CF-Connecting-IP";
+    protected static final String CF_IP_COUNTRY          = "CF-IPCountry";
 }
 

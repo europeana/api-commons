@@ -33,6 +33,8 @@ public class LogMessage {
     private String xB3TraceId;
     private String xGlobalTransId;
     private String javaMethod;
+    private String cfConnectingIp;
+    private String cfIpCountry;
 
     public void setApp_guid(String app_guid) {
         this.app_guid = app_guid;
@@ -146,6 +148,14 @@ public class LogMessage {
         this.javaMethod = javaMethod;
     }
 
+    public void setCfConnectingIp(String cfConnectingIp) {
+        this.cfConnectingIp = cfConnectingIp;
+    }
+
+    public void setCfIpCountry(String cfIpCountry) {
+        this.cfIpCountry = cfIpCountry;
+    }
+
     @Override
     public String toString() {
         return "LogMessage{" + "\n" +
@@ -177,6 +187,8 @@ public class LogMessage {
                 ", global trabs id ='" + xGlobalTransId + '\'' +"\n" +
                 ", wskey ='" + wskey + '\'' +"\n" +
                 ", javaMethod ='" + javaMethod + '\'' +"\n" +
+                ", cfConectingIp ='" + cfConnectingIp + '\'' +"\n" +
+                ", cfIp country ='" + cfIpCountry + '\'' +"\n" +
                 '}';
     }
 }

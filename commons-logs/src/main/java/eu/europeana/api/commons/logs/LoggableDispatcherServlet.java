@@ -115,6 +115,8 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         logMessage.setxB3SpanId(requestToCache.getHeader(LogConstants.X_B3_SPAN_ID));
         logMessage.setxB3TraceId(requestToCache.getHeader(LogConstants.X_B3_TRACE_ID));
         logMessage.setxGlobalTransId(requestToCache.getHeader(LogConstants.X_GLOBAL_TRANSACTION_ID));
+        logMessage.setCfConnectingIp(requestToCache.getHeader(LogConstants.CF_CONNECTING_IP));
+        logMessage.setCfIpCountry(requestToCache.getHeader(LogConstants.CF_IP_COUNTRY));
 
         LOG.info(logMessage);
     }
