@@ -1,7 +1,5 @@
 package eu.europeana.api.commons.logs;
 
-import com.maxmind.geoip2.exception.AddressNotFoundException;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +29,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
 
     @Override
     protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long startTime = System.currentTimeMillis();
+        long appRequestTime = System.currentTimeMillis();
         String serverTime = getCurrentDateTime();
 
         if (!(request instanceof ContentCachingRequestWrapper)) {
@@ -54,71 +50,104 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         } catch (Exception e) {
             LOG.error("Exception occurred while invoking DispatcherServlet", e);
         } finally {
-            long processTime = System.currentTimeMillis() - startTime;
-            logRequest(request, response, handler, processTime, serverTime);
+            long processTime = System.currentTimeMillis() - appRequestTime;
+            // time for the response to travel back through the router
+            long start = System.currentTimeMillis();
             updateResponse(response);
+            long goRouterTime = (System.currentTimeMillis() - start) + getGoRouterInitialTime(request, appRequestTime);
+            logRequest(request, response, processTime, goRouterTime, serverTime);
         }
     }
 
     /**
      * Forms the LogMessage
      *
-     * @param requestToCache
-     * @param responseToCache
-     * @param handler
+     * @param request
+     * @param response
      */
-    private void logRequest(HttpServletRequest requestToCache, HttpServletResponse responseToCache, HandlerExecutionChain handler,
-                            long processTime, String serverTime) {
+    private void logRequest(HttpServletRequest request, HttpServletResponse response, long processTime,
+                            long goRouterTime, String serverTime) {
         LogMessage logMessage = new LogMessage();
 
-        // TODO Have to decide if we will still set this values here
-        logMessage.setApp_guid(""); // app_id
+        logMessage.setAppName(request.getHeader(LogConstants.HOST));
+        logMessage.setServerDate(serverTime);
+        logMessage.setMethod(request.getMethod());
+        logMessage.setUrlPath(getFullURL(request));
+        logMessage.setHttpVersion(request.getProtocol());
+        logMessage.setHttpStatus(response.getStatus());
+        logMessage.setBytes(getResponsePayload(response).getBytes().length);
+        logMessage.setUserAgent(request.getHeader(LogConstants.USER_AGENT));
 
-        logMessage.setApp_name(StringUtils.substringBefore(requestToCache.getHeader(LogConstants.HOST), LogConstants.HOST_SEPERATOR));
-        logMessage.setBytes(getResponsePayload(responseToCache).getBytes().length);
-        logMessage.setWskey(requestToCache.getParameter(LogConstants.WSKEY));
-        logMessage.setPort(requestToCache.getServerPort());
-        logMessage.setJavaMethod(handler.getHandler().toString());
+        // TODO the two Ips : identify them. First if a proxy from X_FORWARDED_FOR
+        // TODO identify second one ex: "10.135.29.195:40128" "149.81.69.225:61214"
 
-        // get the client's Ip and Geo Location
-        String clientIP = getClientIP(requestToCache);
-        // TODO Verify which Ip is this exactly; for now getting IPV4
-        String ipV4 = getIPV4();
-
-        logMessage.setClientIPv4(clientIP);
-        logMessage.setIpV4(ipV4);
-        logMessage.setClientLocation(getGeoLocation(clientIP));
-        logMessage.setLocation(getGeoLocation(ipV4));
-
-        // TODO figure out how we will calculate this
-        // Gorouter Time : is the total time it takes for the request to go through the
-        // Gorouter initially plus the time it takes for the response to travel back through the Gorouter. This does not include
-        // the time the request spends traversing the network to the app. This also does not include the time the
-        // app spends forming a response.
-        //logMessage.setGorouterTime(goRouterTime);
-
-        logMessage.setHttpVersion(StringUtils.substringAfter(requestToCache.getProtocol(), "/"));
-        logMessage.setReferer(requestToCache.getHeader(LogConstants.REFERER));
-        logMessage.setHttpStatus(responseToCache.getStatus());
-        logMessage.setProcessTime(processTime);
-        // server date and time
-        logMessage.setServerDate(StringUtils.substringBefore(serverTime, "T"));
-        logMessage.setServerTime(StringUtils.substringBetween(serverTime, "T", "Z"));
-        logMessage.setServerTimeZoneOffset(LogConstants.SERVER_TIMEZONE_OFFSET);
-
-        logMessage.setUrlQuery(requestToCache.getQueryString());
-        logMessage.setUrlPath(requestToCache.getPathInfo());
-        logMessage.setUserAgent(requestToCache.getHeader(LogConstants.USER_AGENT));
-        logMessage.setVcapRequestId(requestToCache.getHeader(LogConstants.X_VCAP_REQUEST_ID));
-        logMessage.setMethod(requestToCache.getMethod());
-        logMessage.setxB3parentSpanId(requestToCache.getHeader(LogConstants.X_B3_PARENT_SPAN_ID));
-        logMessage.setxB3SpanId(requestToCache.getHeader(LogConstants.X_B3_SPAN_ID));
-        logMessage.setxB3TraceId(requestToCache.getHeader(LogConstants.X_B3_TRACE_ID));
-        logMessage.setxGlobalTransId(requestToCache.getHeader(LogConstants.X_GLOBAL_TRANSACTION_ID));
-        logMessage.setCfConnectingIp(requestToCache.getHeader(LogConstants.CF_CONNECTING_IP));
-        logMessage.setCfIpCountry(requestToCache.getHeader(LogConstants.CF_IP_COUNTRY));
-
+        logMessage.setxForwardedFor(request.getHeader(LogConstants.X_FORWARDED_FOR));
+        logMessage.setxForwardedProto(request.getHeader(LogConstants.X_FORWARDED_PROTO));
+        logMessage.setVcapRequestId(request.getHeader(LogConstants.X_VCAP_REQUEST_ID));
+        logMessage.setResponseTime(processTime);
+        logMessage.setGorouterTime(goRouterTime);
+        logMessage.setAppId(request.getHeader(LogConstants.X_CF_APPLICATIONID));
+        logMessage.setAppIndex(request.getHeader(LogConstants.X_CF_INSTANCEINDEX));
+        logMessage.setxCfRoutererror(request.getHeader(LogConstants.X_CF_ROUTE_ERROR));
+        logMessage.setxGlobalTransactionId(request.getHeader(LogConstants.X_GLOBAL_TRANSACTION_ID));
+        logMessage.setTrueClientIp(getClientIP(request));
+        logMessage.setxB3Traceid(request.getHeader(LogConstants.X_B3_TRACE_ID));
+        logMessage.setxB3Spanid(request.getHeader(LogConstants.X_B3_SPAN_ID));
+        logMessage.setxB3Parentspanid(request.getHeader(LogConstants.X_B3_PARENT_SPAN_ID));
+        logMessage.setB3(request.getHeader(LogConstants.B3));
         LOG.info(logMessage);
+    }
+
+    /**
+     * Calculates the total time it takes for the request to go through
+     * the Gorouter initially
+     * Difference of x_request_start : the time when router receives the request
+     * and the startTime ( the time when application receives the request)
+     * <p>
+     * x_request_start : When a request comes in to the router, the routing layer
+     * adds a header called X-Request-Start that is a timestamp of when the request was first received.
+     * For Nginx 1.2.6 or higher : the time is in milliseconds
+     *
+     * @param request
+     * @param appRequestTime the time application receives the request
+     * @return long value
+     */
+    private static long getGoRouterInitialTime(HttpServletRequest request, long appRequestTime) {
+        String requestStartTime = request.getHeader(LogConstants.X_REQUEST_START);
+        if (!StringUtils.isEmpty(requestStartTime)) {
+            return appRequestTime - parseLong(requestStartTime);
+        }
+        return 0L;
+    }
+
+    /**
+     * Converts String value to long
+     *
+     * @param value String value to be converted
+     * @return long value
+     */
+    private static long parseLong(String value) {
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            LOG.error("NumberFormat Exception while parsing {} to long ", value, e);
+        }
+        return 0L;
+    }
+
+    /**
+     * Gets the complete url
+     *
+     * @return full url
+     */
+    private static String getFullURL(HttpServletRequest request) {
+        StringBuilder requestURL = new StringBuilder(request.getRequestURI());
+        String queryString = request.getQueryString();
+        if (queryString == null) {
+            return requestURL.toString();
+        } else {
+            return requestURL.append('?').append(queryString).toString();
+        }
     }
 
     /**
@@ -133,52 +162,25 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
     }
 
     /**
-     * Gets the client's Ip first from X-FORWARDED-FOR (format : client Ip, proxy, proxy)
+     * Gets the client's Ip first from x-client-ip,
+     * if empty fetch from x-forwarded-for (format : client Ip, proxy, proxy)
      * if null get the remote Address
      *
      * @param request
      * @return client's IP
      */
     private static String getClientIP(HttpServletRequest request) {
-        String ipAddress = request.getHeader(LogConstants.X_FORWARDED_FOR);
+        String ipAddress = request.getHeader(LogConstants.X_CLIENT_IP);
         if (StringUtils.isNotEmpty(ipAddress)) {
-            return ipAddress.contains(",") ? ipAddress.split(",")[0] : ipAddress;
+            return ipAddress;
         } else {
-            return request.getRemoteAddr();
-        }
-    }
-
-    /**
-     * Gets the IpV4 address
-     *
-     * @return IPV4 address
-     */
-    private static String getIPV4() {
-        try {
-            return InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            LOG.error("Unknown Host ", e);
-        }
-        return "";
-    }
-
-    /**
-     * Gets the GeoIp Location
-     * @param ipAddress the ip address to get the location
-     *
-     * @return GeoIp
-     */
-    private GeoIP getGeoLocation(String ipAddress) {
-        try {
-            return new RawDBGeoIPLocationService().getLocation(ipAddress);
-        } catch (IOException e) {
-            LOG.error("Could not load the GeoLite2-City mapping file ", e);
-        } catch (AddressNotFoundException e) {
-                LOG.error("Could not find the address {} in the database ", ipAddress);
-            } catch (GeoIp2Exception e) {
-                LOG.error("Address not found for IP {} ", ipAddress, e);
+            ipAddress = request.getHeader(LogConstants.X_FORWARDED_FOR);
+            if (StringUtils.isNotEmpty(ipAddress)) {
+                return ipAddress.contains(",") ? ipAddress.split(",")[0] : ipAddress;
+            } else {
+                return "-";
             }
-        return null;
+        }
     }
 
     /**
@@ -203,11 +205,15 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         return "[unknown]";
     }
 
-    private void updateResponse(HttpServletResponse response) throws IOException {
+    private void updateResponse(HttpServletResponse response) {
         ContentCachingResponseWrapper responseWrapper =
                 WebUtils.getNativeResponse(response, ContentCachingResponseWrapper.class);
         if (responseWrapper != null) {
-            responseWrapper.copyBodyToResponse();
+            try {
+                responseWrapper.copyBodyToResponse();
+            } catch (IOException e) {
+                LOG.error("Error occurred while updating the response ", e);
+            }
         }
     }
 }

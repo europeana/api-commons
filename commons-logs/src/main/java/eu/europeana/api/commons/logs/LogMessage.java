@@ -5,191 +5,142 @@ package eu.europeana.api.commons.logs;
  */
 public class LogMessage {
 
-    private String app_guid;
-    private String app_name;
-    private long bytes;
-    private GeoIP clientLocation;
-    private String clientIPv4;
-    private GeoIP location;
-    private String wskey;
-    private long gorouterTime;
-    private String httpVersion;
-    private int port;
-    private String ipV4;
-    private long processTime;
-    private String referer;
-    private int httpStatus;
+    private String appName;
     private String serverDate;
-    private String serverTime;
-    private String serverTimeZoneOffset;
-    private String type;
-    private String urlQuery;
-    private String urlPath;
-    private String userAgent;
-    private String vcapRequestId;
     private String method;
-    private String xB3parentSpanId;
-    private String xB3SpanId;
-    private String xB3TraceId;
-    private String xGlobalTransId;
-    private String javaMethod;
-    private String cfConnectingIp;
-    private String cfIpCountry;
+    private String urlPath;
+    private String httpVersion;
+    private int httpStatus;
+    private long bytes;
+    private String userAgent;
+    private String xForwardedFor;
+    private String xForwardedProto;
+    private String vcapRequestId;
+    private long responseTime;
+    private long gorouterTime;
+    private String appId;
+    private String appIndex;
+    private String xCfRoutererror;
+    private String xGlobalTransactionId;
+    private String trueClientIp;
+    private String xB3Traceid;
+    private String xB3Spanid;
+    private String xB3Parentspanid;
+    private String b3;
 
-    public void setApp_guid(String app_guid) {
-        this.app_guid = app_guid;
-    }
-
-    public void setApp_name(String app_name) {
-        this.app_name = app_name;
-    }
-
-    public void setBytes(long bytes) {
-        this.bytes = bytes;
-    }
-
-    public void setClientLocation(GeoIP clientLocation) {
-        this.clientLocation = clientLocation;
-    }
-
-    public void setClientIPv4(String clientIPv4) {
-        this.clientIPv4 = clientIPv4;
-    }
-
-    public void setLocation(GeoIP location) {
-        this.location = location;
-    }
-
-    public void setGorouterTime(long gorouterTime) {
-        this.gorouterTime = gorouterTime;
-    }
-
-    public void setHttpVersion(String httpVersion) {
-        this.httpVersion = httpVersion;
-    }
-
-    public void setIpV4(String ipV4) {
-        this.ipV4 = ipV4;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public void setProcessTime(long processTime) {
-        this.processTime = processTime;
-    }
-
-    public void setReferer(String referer) {
-        this.referer = referer;
-    }
-
-    public void setHttpStatus(int httpStatus) {
-        this.httpStatus = httpStatus;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
     public void setServerDate(String serverDate) {
         this.serverDate = serverDate;
     }
 
-    public void setServerTime(String serverTime) {
-        this.serverTime = serverTime;
-    }
-
-    public void setServerTimeZoneOffset(String serverTimeZoneOffset) {
-        this.serverTimeZoneOffset = serverTimeZoneOffset;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setUrlQuery(String urlQuery) {
-        this.urlQuery = urlQuery;
+    public void setMethod(String method) {
+        this.method = method;
     }
 
     public void setUrlPath(String urlPath) {
         this.urlPath = urlPath;
     }
 
+    public void setHttpVersion(String httpVersion) {
+        this.httpVersion = httpVersion;
+    }
+
+    public void setHttpStatus(int httpStatus) {
+        this.httpStatus = httpStatus;
+    }
+
+    public void setBytes(long bytes) {
+        this.bytes = bytes;
+    }
+
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+    }
+
+    public void setxForwardedFor(String xForwardedFor) {
+        this.xForwardedFor = xForwardedFor;
+    }
+
+    public void setxForwardedProto(String xForwardedProto) {
+        this.xForwardedProto = xForwardedProto;
     }
 
     public void setVcapRequestId(String vcapRequestId) {
         this.vcapRequestId = vcapRequestId;
     }
 
-    public void setMethod(String method) {
-        this.method = method;
+    public void setResponseTime(long responseTime) {
+        this.responseTime = responseTime;
     }
 
-    public void setxB3parentSpanId(String xB3parentSpanId) {
-        this.xB3parentSpanId = xB3parentSpanId;
+    public void setGorouterTime(long gorouterTime) {
+        this.gorouterTime = gorouterTime;
     }
 
-    public void setxB3SpanId(String xB3SpanId) {
-        this.xB3SpanId = xB3SpanId;
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 
-    public void setxB3TraceId(String xB3TraceId) {
-        this.xB3TraceId = xB3TraceId;
+    public void setAppIndex(String appIndex) {
+        this.appIndex = appIndex;
     }
 
-    public void setxGlobalTransId(String xGlobalTransId) {
-        this.xGlobalTransId = xGlobalTransId;
+    public void setxCfRoutererror(String xCfRoutererror) {
+        this.xCfRoutererror = xCfRoutererror;
     }
 
-    public void setWskey(String wskey) {
-        this.wskey = wskey;
+    public void setxGlobalTransactionId(String xGlobalTransactionId) {
+        this.xGlobalTransactionId = xGlobalTransactionId;
     }
 
-    public void setJavaMethod(String javaMethod) {
-        this.javaMethod = javaMethod;
+    public void setTrueClientIp(String trueClientIp) {
+        this.trueClientIp = trueClientIp;
     }
 
-    public void setCfConnectingIp(String cfConnectingIp) {
-        this.cfConnectingIp = cfConnectingIp;
+    public void setxB3Traceid(String xB3Traceid) {
+        this.xB3Traceid = xB3Traceid;
     }
 
-    public void setCfIpCountry(String cfIpCountry) {
-        this.cfIpCountry = cfIpCountry;
+    public void setxB3Spanid(String xB3Spanid) {
+        this.xB3Spanid = xB3Spanid;
+    }
+
+    public void setxB3Parentspanid(String xB3Parentspanid) {
+        this.xB3Parentspanid = xB3Parentspanid;
+    }
+
+    public void setB3(String b3) {
+        this.b3 = b3;
     }
 
     @Override
     public String toString() {
-        return "LogMessage{" + "\n" +
-                "app_guid='" + app_guid + '\'' + "\n" +
-                ", app_name='" + app_name + '\'' +"\n" +
-                ", bytes='" + bytes + '\'' +"\n" +
-                ", clientLocation=" + clientLocation +"\n" +
-                ", clientIPv4='" + clientIPv4 + '\'' +"\n" +
-                ", location=" + location +"\n" +
-                ", gorouterTime='" + gorouterTime + '\'' +"\n" +
-                ", httpVersion='" + httpVersion + '\'' +"\n" +
-                ", port=" + port +"\n" +
-                ", ipV4='" + ipV4 + '\'' +"\n" +
-                ", processTime='" + processTime + '\'' +"\n" +
-                ", referer='" + referer + '\'' +"\n" +
-                ", httpStatus=" + httpStatus +"\n" +
-                ", serverDate=" + serverDate +"\n" +
-                ", serverTime='" + serverTime + '\'' +"\n" +
-                ", serverTimeZoneOffset='" + serverTimeZoneOffset + '\'' +"\n" +
-                ", type='" + type + '\'' +"\n" +
-                ", urlQuery='" + urlQuery + '\'' +"\n" +
-                ", urlPath='" + urlPath + '\'' +"\n" +
-                ", userAgent='" + userAgent + '\'' +"\n" +
-                ", vcapRequestId='" + vcapRequestId + '\'' +"\n" +
-                ", method='" + method + '\'' +"\n" +
-                ", xB3parentSpanId='" + xB3parentSpanId + '\'' +"\n" +
-                ", xB3SpanId='" + xB3SpanId + '\'' +"\n" +
-                ", xB3TraceId='" + xB3TraceId + '\'' +"\n" +
-                ", global trabs id ='" + xGlobalTransId + '\'' +"\n" +
-                ", wskey ='" + wskey + '\'' +"\n" +
-                ", javaMethod ='" + javaMethod + '\'' +"\n" +
-                ", cfConectingIp ='" + cfConnectingIp + '\'' +"\n" +
-                ", cfIp country ='" + cfIpCountry + '\'' +"\n" +
-                '}';
+        return "OUT " +
+                appName + " - " +
+                "[" + serverDate + "] " +
+                "\"" + method + " " +
+                   urlPath  +
+                " " + httpVersion + "\" " +
+                 + httpStatus + " 0 " +
+                 + bytes + "-" +
+                  "\"" + userAgent + "\"" +
+                " x_forwarded_for:'" + xForwardedFor + '\'' +
+                " x_forwarded_proto:'" + xForwardedProto + '\'' +
+                " vcap_request_id:'" + vcapRequestId + '\'' +
+                " response_time:" + responseTime +
+                " gorouter_time:" + gorouterTime +
+                " app_id:'" + appId + '\'' +
+                " app_index:'" + appIndex + '\'' +
+                " x_cf_routererror:'" + xCfRoutererror + '\'' +
+                " x_global_transaction_id:'" + xGlobalTransactionId + '\'' +
+                " true_client_ip:'" + trueClientIp + '\'' +
+                " x_b3_traceid:'" + xB3Traceid + '\'' +
+                " x_b3_spanid:'" + xB3Spanid + '\'' +
+                " x_b3_parentspanid:'" + xB3Parentspanid + '\'' +
+                " b3:'" + b3 + '\'';
     }
 }
 
