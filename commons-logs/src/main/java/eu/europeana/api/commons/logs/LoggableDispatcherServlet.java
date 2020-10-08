@@ -57,7 +57,6 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             updateResponse(response);
             long goRouterTime = (System.currentTimeMillis() - start) + getGoRouterInitialTime(request, appRequestTime);
             logRequest(request, response, processTime, goRouterTime, serverTime, bytes);
-
         }
     }
 
@@ -66,6 +65,10 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
      *
      * @param request
      * @param response
+     * @param processTime
+     * @param goRouterTime
+     * @param serverTime
+     * @param bytes
      */
     private void logRequest(HttpServletRequest request, HttpServletResponse response, long processTime,
                             long goRouterTime, String serverTime, long bytes) {
@@ -81,8 +84,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         logMessage.setUserAgent(request.getHeader(LogConstants.USER_AGENT));
 
         String ip = getXForwardedForIp(request,true);
-        ip.concat(":"+ request.getHeader(LogConstants.X_FORWARDED_PORT));
-        logMessage.setIpPort(ip);
+        logMessage.setIpPort(ip.concat(":"+ request.getHeader(LogConstants.X_FORWARDED_PORT)));
 
         // TODO : how to get IBM CF IP and port
         logMessage.setCfIpPort("-");
@@ -104,8 +106,8 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
     }
 
     /**
-     * Calculates the total time it takes for the request to go through
-     * the Gorouter initially
+     * Calculates the initial time it takes for the request to go through
+     * the Gorouter (initially)
      * Difference of x_request_start : the time when router receives the request
      * and the startTime ( the time when application receives the request)
      * <p>
