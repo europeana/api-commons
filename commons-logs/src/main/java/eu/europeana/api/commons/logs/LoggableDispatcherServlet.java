@@ -51,11 +51,13 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             LOG.error("Exception occurred while invoking DispatcherServlet", e);
         } finally {
             long processTime = System.currentTimeMillis() - appRequestTime;
+            long bytes = getResponsePayload(response).getBytes().length;
             // time for the response to travel back through the router
             long start = System.currentTimeMillis();
             updateResponse(response);
             long goRouterTime = (System.currentTimeMillis() - start) + getGoRouterInitialTime(request, appRequestTime);
-            logRequest(request, response, processTime, goRouterTime, serverTime);
+            logRequest(request, response, processTime, goRouterTime, serverTime, bytes);
+
         }
     }
 
@@ -66,7 +68,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
      * @param response
      */
     private void logRequest(HttpServletRequest request, HttpServletResponse response, long processTime,
-                            long goRouterTime, String serverTime) {
+                            long goRouterTime, String serverTime, long bytes) {
         LogMessage logMessage = new LogMessage();
 
         logMessage.setAppName(request.getHeader(LogConstants.HOST));
@@ -75,12 +77,15 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         logMessage.setUrlPath(getFullURL(request));
         logMessage.setHttpVersion(request.getProtocol());
         logMessage.setHttpStatus(response.getStatus());
-        logMessage.setBytes(getResponsePayload(response).getBytes().length);
+        logMessage.setBytes(bytes);
         logMessage.setUserAgent(request.getHeader(LogConstants.USER_AGENT));
 
-        // TODO the two Ips : identify them. First if a proxy from X_FORWARDED_FOR
-        // TODO identify second one ex: "10.135.29.195:40128" "149.81.69.225:61214"
+        String ip = getXForwardedForIp(request,true);
+        ip.concat(":"+ request.getHeader(LogConstants.X_FORWARDED_PORT));
+        logMessage.setIpPort(ip);
 
+        // TODO : how to get IBM CF IP and port
+        logMessage.setCfIpPort("-");
         logMessage.setxForwardedFor(request.getHeader(LogConstants.X_FORWARDED_FOR));
         logMessage.setxForwardedProto(request.getHeader(LogConstants.X_FORWARDED_PROTO));
         logMessage.setVcapRequestId(request.getHeader(LogConstants.X_VCAP_REQUEST_ID));
@@ -114,7 +119,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
      */
     private static long getGoRouterInitialTime(HttpServletRequest request, long appRequestTime) {
         String requestStartTime = request.getHeader(LogConstants.X_REQUEST_START);
-        if (!StringUtils.isEmpty(requestStartTime)) {
+        if (StringUtils.isNotEmpty(requestStartTime)) {
             return appRequestTime - parseLong(requestStartTime);
         }
         return 0L;
@@ -174,14 +179,31 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         if (StringUtils.isNotEmpty(ipAddress)) {
             return ipAddress;
         } else {
-            ipAddress = request.getHeader(LogConstants.X_FORWARDED_FOR);
-            if (StringUtils.isNotEmpty(ipAddress)) {
-                return ipAddress.contains(",") ? ipAddress.split(",")[0] : ipAddress;
-            } else {
-                return "-";
-            }
+            return getXForwardedForIp(request,false);
         }
     }
+
+    /**
+     * Gets the Ip address from x-forwarded-for (format : client Ip, proxy, proxy)
+     * if proxy is true will fetch the last proxy
+     *
+     * @param request
+     * @return IP or proxy
+     */
+    private static String getXForwardedForIp(HttpServletRequest request, boolean proxy) {
+        String ipAddress = request.getHeader(LogConstants.X_FORWARDED_FOR);
+        if (StringUtils.isNotEmpty(ipAddress) && ipAddress.contains(",")) {
+            String [] addresses = ipAddress.split(",");
+            if (proxy) {
+                return addresses[addresses.length-1];
+            } else {
+                return addresses[0];
+            }
+        }
+        return  "-";
+    }
+
+
 
     /**
      * Gets the response

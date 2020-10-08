@@ -20,6 +20,7 @@ public class LogConstants {
     protected static final String X_B3_TRACE_ID          = "x-b3-traceid";
     protected static final String X_GLOBAL_TRANSACTION_ID = "x_global_transaction_id";
     protected static final String X_FORWARDED_FOR        = "x-forwarded-for";
+    protected static final String X_FORWARDED_PORT        = "x-forwarded-port";
     protected static final String X_FORWARDED_PROTO      = "x-forwarded-proto";
     protected static final String X_CF_ROUTE_ERROR       = "x-cf-route-error";
     protected static final String X_CF_APPLICATIONID     = "x-cf-applicationid";

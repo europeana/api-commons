@@ -13,6 +13,8 @@ public class LogMessage {
     private int httpStatus;
     private long bytes;
     private String userAgent;
+    private String ipPort;
+    private String cfIpPort;
     private String xForwardedFor;
     private String xForwardedProto;
     private String vcapRequestId;
@@ -116,6 +118,14 @@ public class LogMessage {
         this.b3 = b3;
     }
 
+    public void setIpPort(String ipPort) {
+        this.ipPort = ipPort;
+    }
+
+    public void setCfIpPort(String cfIpPort) {
+        this.cfIpPort = cfIpPort;
+    }
+
     @Override
     public String toString() {
         return "OUT " +
@@ -125,8 +135,10 @@ public class LogMessage {
                    urlPath  +
                 " " + httpVersion + "\" " +
                  + httpStatus + " 0 " +
-                 + bytes + "-" +
-                  "\"" + userAgent + "\"" +
+                 + bytes + " \'-\' " +
+                  "\"" + userAgent + "\" " +
+                  "\'" + ipPort + "\'" +
+                "\'" + cfIpPort + "\'" +
                 " x_forwarded_for:'" + xForwardedFor + '\'' +
                 " x_forwarded_proto:'" + xForwardedProto + '\'' +
                 " vcap_request_id:'" + vcapRequestId + '\'' +
