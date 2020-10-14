@@ -22,22 +22,24 @@
 
 	<repositories>
 		<repository>
-			<id>artifactory.eanadev.org</id>
-			<name>artifactory.eanadev.org-releases (external libs)</name>
-			<url>http://artifactory.eanadev.org/artifactory/ext-release-local/</url>
-		</repository>
-		<repository>
-			<id>libs-release-local</id>
+			<id>libs-release</id>
 			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
 		</repository>
 		<repository>
-			<id>libs-snapshots-local</id>
+			<id>libs-snapshots</id>
 			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
+		<repository>
+			<id>repo1-cache</id>
+			<name>repo1-cache</name>
+			<url>http://artifactory.eanadev.org/artifactory/repo1-cache/</url>
+		</repository>
+		
+		
 	</repositories>
-
+	
 	<distributionManagement>
 		<snapshotRepository>
 			<id>artifactory.eanadev.org</id>
@@ -54,8 +56,9 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.apiCommons>0.2.11-SNAPSHOT</version.apiCommons>
+		<version.javac.release>9</version.javac.release>
 		<version.java>1.9</version.java>
+		<version.apiCommons>0.2.11-SNAPSHOT</version.apiCommons>
 		<version.org.junit.jupiter>5.6.2</version.org.junit.jupiter>
 		<version.springSecurity>4.2.12.RELEASE</version.springSecurity>
 		<version.spring>5.2.7.RELEASE</version.spring>
@@ -102,11 +105,16 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<!-- 
+					<version>3.8.1</version>
+					 -->
 					<configuration>
+						<release>${version.javac.release}</release>
 						<source>${version.java}</source>
 						<target>${version.java}</target>
 					</configuration>
 				</plugin>
+				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
