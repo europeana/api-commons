@@ -17,7 +17,7 @@
 		<module>commons-oauth</module>
 		<module>commons-search</module>
 		<module>commons-web</module>
-		
+		<module>commons-error</module>
 	</modules>
 
 	<repositories>
