@@ -131,16 +131,18 @@ public class ApiMongoConnector {
 	}
 
 	private SSLContext initSSLContext(String truststore, String truststorePass) {
-		try {
-			// TODO - make keystore type and SSL version configurable
-			String trustStoreLocation = "/config/" + truststore;
-			URL trustStoreUri = getClass().getResource(trustStoreLocation);
-			if (trustStoreUri == null)
-				throw new FileNotFoundException("cannot find trustore file in classpath: " + trustStoreLocation);
-
+		
+		// TODO - make keystore type and SSL version configurable
+		String trustStoreLocation = "/config/" + truststore;
+		URL trustStoreUri = getClass().getResource(trustStoreLocation);
+		if (trustStoreUri == null) {
+		    throw new MongoClientException("cannot find trustore file in classpath: " + trustStoreLocation);  
+		}
+		
+		try(FileInputStream stream = new FileInputStream(new File(trustStoreUri.getFile()))) {
 			KeyStore jks = KeyStore.getInstance("JKS");
-
-			jks.load(new FileInputStream(new File(trustStoreUri.getFile())), truststorePass.toCharArray());
+			
+			jks.load(stream, truststorePass.toCharArray());
 
 			String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
