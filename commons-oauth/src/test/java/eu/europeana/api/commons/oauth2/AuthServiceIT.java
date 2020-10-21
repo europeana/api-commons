@@ -23,7 +23,7 @@ import eu.europeana.apikey.client.exception.ApiKeyValidationException;
  * @author GrafR
  *
  */
-public class AuthServiceTest {
+public class AuthServiceIT {
 
 	private final Logger log = LogManager.getLogger(getClass());
 	

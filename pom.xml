@@ -6,7 +6,7 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
-	<version>0.2.10</version>
+	<version>0.2.11</version>
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 
@@ -17,27 +17,29 @@
 		<module>commons-oauth</module>
 		<module>commons-search</module>
 		<module>commons-web</module>
-		
+		<module>commons-error</module>
 	</modules>
 
 	<repositories>
 		<repository>
-			<id>artifactory.eanadev.org</id>
-			<name>artifactory.eanadev.org-releases (external libs)</name>
-			<url>http://artifactory.eanadev.org/artifactory/ext-release-local/</url>
-		</repository>
-		<repository>
-			<id>libs-release-local</id>
+			<id>libs-release</id>
 			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
 		</repository>
 		<repository>
-			<id>libs-snapshots-local</id>
+			<id>libs-snapshots</id>
 			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
 		</repository>
+		<repository>
+			<id>repo1-cache</id>
+			<name>repo1-cache</name>
+			<url>http://artifactory.eanadev.org/artifactory/repo1-cache/</url>
+		</repository>
+		
+		
 	</repositories>
-
+	
 	<distributionManagement>
 		<snapshotRepository>
 			<id>artifactory.eanadev.org</id>
@@ -54,11 +56,12 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<version.apiCommons>0.2.10</version.apiCommons>
-		<version.java>1.8</version.java>
-		<version.org.junit.jupiter>5.1.0</version.org.junit.jupiter>
+		<version.javac.release>9</version.javac.release>
+		<version.java>1.9</version.java>
+		<version.apiCommons>0.2.11</version.apiCommons>
+		<version.org.junit.jupiter>5.6.2</version.org.junit.jupiter>
 		<version.springSecurity>4.2.12.RELEASE</version.springSecurity>
-		<version.spring>5.1.7.RELEASE</version.spring>
+		<version.spring>5.2.7.RELEASE</version.spring>
 		<version.springSecurityOauth>2.3.6.RELEASE</version.springSecurityOauth>
 		<version.log4j2>2.9.1</version.log4j2>
 		<version.commonsLang3>3.9</version.commonsLang3>
@@ -71,6 +74,7 @@
 		<version.corelib>2.9.2</version.corelib>
 		<version.java.mongo.driver>3.4.0</version.java.mongo.driver>
 		<version.javax.annotation>1.3.2</version.javax.annotation>
+		<version.commonsIO>2.5</version.commonsIO>	
 	</properties>
 
 	<build>
@@ -102,11 +106,16 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
 					<configuration>
+						<!-- to be used starting with version 3.5.0 
+						<release>${version.javac.release}</release>
+						 -->
 						<source>${version.java}</source>
 						<target>${version.java}</target>
 					</configuration>
 				</plugin>
+				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
