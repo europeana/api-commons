@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.WebRequest;
 
+import java.time.OffsetDateTime;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Component
 public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
 
-    @Value("${server.error.include-stacktrace}")
+    @Value("${server.error.include-stacktrace:ON_PARAM}")
     private ErrorProperties.IncludeStacktrace includeStacktrace;
 
     @Override
@@ -39,7 +40,22 @@ public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
 
         addCodeFieldIfAvailable(errorAttributes, webRequest);
 
+        handleMessageField(errorAttributes, webRequest);
+
+        // override timestamp field with human-readable format
+        errorAttributes.put("timestamp", OffsetDateTime.now().toString());
+
         return errorAttributes;
+    }
+
+    /**
+     * Only include message value for custom exception types (instances of EuropeanaApiException).
+     */
+    private void handleMessageField(Map<String, Object> errorAttributes, WebRequest webRequest) {
+        final Throwable throwable = super.getError(webRequest);
+        if (!(throwable instanceof EuropeanaApiException)) {
+            errorAttributes.put("message", "");
+        }
     }
 
     /**
