@@ -40,23 +40,12 @@ public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
 
         addCodeFieldIfAvailable(errorAttributes, webRequest);
 
-        handleMessageField(errorAttributes, webRequest);
-
         // override timestamp field with human-readable format
         errorAttributes.put("timestamp", OffsetDateTime.now().toString());
 
         return errorAttributes;
     }
 
-    /**
-     * Only include message value for custom exception types (instances of EuropeanaApiException).
-     */
-    private void handleMessageField(Map<String, Object> errorAttributes, WebRequest webRequest) {
-        final Throwable throwable = super.getError(webRequest);
-        if (!(throwable instanceof EuropeanaApiException)) {
-            errorAttributes.put("message", "");
-        }
-    }
 
     /**
      * Spring-Boot uses the "trace" parameter to include a field with stacktrace data (see also application.yml)
