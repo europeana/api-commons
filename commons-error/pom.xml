@@ -3,7 +3,7 @@
     <parent>
         <artifactId>commons-api-services</artifactId>
         <groupId>eu.europeana.api.commons</groupId>
-        <version>0.2.12</version>
+        <version>0.2.13-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
