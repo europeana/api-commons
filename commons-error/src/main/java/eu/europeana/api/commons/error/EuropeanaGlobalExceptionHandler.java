@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,14 @@ public class EuropeanaGlobalExceptionHandler {
                 LOG.error("Caught exception: {}", e.getMessage());
             }
         }
+    }
+
+    /**
+     * Checks whether stacktrace for exceptions should be included in responses
+     * @return true if IncludeStacktrace config is not disabled on server
+     */
+    protected boolean stackTraceEnabled(){
+        return includeStacktraceConfig != ErrorProperties.IncludeStacktrace.NEVER;
     }
 
     /**
@@ -89,10 +98,15 @@ public class EuropeanaGlobalExceptionHandler {
     }
 
     /**
-     * Checks whether stacktrace for exceptions should be included in responses
-     * @return true if IncludeStacktrace config is not disabled on server
+     * MissingServletRequestParameterException thrown when a required parameter is not included in a request.
      */
-    protected boolean stackTraceEnabled(){
-        return includeStacktraceConfig != ErrorProperties.IncludeStacktrace.NEVER;
+    @ExceptionHandler
+    public ResponseEntity<EuropeanaApiErrorResponse> handleInputValidationError(MissingServletRequestParameterException e, HttpServletRequest httpRequest) {
+        EuropeanaApiErrorResponse response = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled()))
+                .setStatus(HttpStatus.BAD_REQUEST.value())
+                .setError(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .setMessage(e.getMessage())
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
