@@ -65,6 +65,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
         <!-- For testing error response contents (not possible with MockMvc)-->
         <!-- This issue https://github.com/rest-assured/rest-assured/issues/1175 prevent us from upgrading to 4.3.1 -->
         <dependency>
@@ -85,6 +91,7 @@
             <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>
