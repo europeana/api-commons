@@ -19,7 +19,6 @@ public class EuropeanaApiErrorResponse {
     private final int status;
     private final String error;
 
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final String message;
 
     private final OffsetDateTime timestamp = OffsetDateTime.now();
