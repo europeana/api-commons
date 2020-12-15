@@ -5,6 +5,7 @@ import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,7 +32,8 @@ public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
         europeanaErrorAttributes.put("error", defaultErrorAttributes.get("error"));
         // message not shown
         europeanaErrorAttributes.put("timestamp", OffsetDateTime.now());
-        europeanaErrorAttributes.put("path", defaultErrorAttributes.get("path"));
+        // casting is safe here as webRequest will always be a HttpServletRequest
+        europeanaErrorAttributes.put("path", ResponseUtils.getRequestPath((HttpServletRequest) webRequest));
 
         return europeanaErrorAttributes;
     }

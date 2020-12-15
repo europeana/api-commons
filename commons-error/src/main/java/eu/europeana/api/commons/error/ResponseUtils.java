@@ -34,7 +34,6 @@ public class ResponseUtils {
     public static String getRequestPath(HttpServletRequest httpRequest) {
         return
                 httpRequest.getQueryString() == null ? String.valueOf(httpRequest.getRequestURL()) :
-                        String.join("", httpRequest.getRequestURL(), "?", httpRequest.getQueryString());
-
+                        String.valueOf(httpRequest.getRequestURL().append("?").append(httpRequest.getQueryString()));
     }
 }
