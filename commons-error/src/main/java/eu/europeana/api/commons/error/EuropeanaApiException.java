@@ -1,5 +1,8 @@
 package eu.europeana.api.commons.error;
 
+
+import org.springframework.http.HttpStatus;
+
 /**
  * Base error class for this application. All other application errors should extend this class
  */
@@ -72,4 +75,21 @@ public class EuropeanaApiException extends Exception {
         return this.errorCode;
     }
 
+    /**
+     * Indicates whether the error message should be include in responses. This is set to true by default.
+     * @return boolean indicating whether the exception message should be exposed to end users
+     */
+    public boolean doExposeMessage() {
+        return true;
+    }
+
+    /**
+     * Gets the HTTP status for this exception.
+     * By default this returns HttpStatus.INTERNAL_SERVER_ERROR
+     *
+     * @return HTTP status for exception
+     */
+    public HttpStatus getResponseStatus() {
+        return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
 }
