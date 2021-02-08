@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -65,7 +66,10 @@ public class EuropeanaGlobalExceptionHandler {
                 .setCode(e.getErrorCode())
                 .build();
 
-        return new ResponseEntity<>(response, e.getResponseStatus());
+        return ResponseEntity
+                .status(e.getResponseStatus())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     /**
@@ -80,7 +84,11 @@ public class EuropeanaGlobalExceptionHandler {
                 .setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     /**
@@ -94,7 +102,11 @@ public class EuropeanaGlobalExceptionHandler {
                 .setError(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .setMessage(e.getMessage())
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 
     /**
@@ -107,6 +119,10 @@ public class EuropeanaGlobalExceptionHandler {
                 .setError(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .setMessage(e.getMessage())
                 .build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
     }
 }
