@@ -1,5 +1,8 @@
 package eu.europeana.api.commons.error;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,12 +10,15 @@ import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 
 /**
  * Global exception handler that catches all errors and logs the interesting ones
@@ -124,5 +130,24 @@ public class EuropeanaGlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
+    }
+
+    /**
+     * Handler for AuthenticationException
+     * works for the exceptions thrown by spring security custom filters
+     */
+    @ExceptionHandler
+    public void handleAuthenticationError(AuthenticationException e, HttpServletRequest httpRequest, HttpServletResponse response) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        EuropeanaApiErrorResponse errorResponse = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled()))
+                .setStatus(HttpStatus.UNAUTHORIZED.value())
+                .setError(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .setMessage("Not authorized")
+                .build();
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        response.getOutputStream().println(mapper.writeValueAsString(errorResponse));
     }
 }
