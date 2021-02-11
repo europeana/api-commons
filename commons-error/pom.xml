@@ -3,7 +3,7 @@
     <parent>
         <artifactId>commons-api-services</artifactId>
         <groupId>eu.europeana.api.commons</groupId>
-        <version>0.3.1-SNAPSHOT</version>
+        <version>0.2.13</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -65,12 +65,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${version.jackson}</version>
-        </dependency>
-
         <!-- For testing error response contents (not possible with MockMvc)-->
         <!-- This issue https://github.com/rest-assured/rest-assured/issues/1175 prevent us from upgrading to 4.3.1 -->
         <dependency>
@@ -91,7 +85,6 @@
             <version>4.2.0</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 </project>
