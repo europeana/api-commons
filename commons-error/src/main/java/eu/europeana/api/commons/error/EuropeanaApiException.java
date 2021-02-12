@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
  */
 public class EuropeanaApiException extends Exception {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1354471712894853562L;
     private final String errorCode;
 
     /**
