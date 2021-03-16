@@ -71,7 +71,7 @@
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.apikeyUtils>1.4</version.apikeyUtils>
 		<version.corelib>2.9.2</version.corelib>
-		<version.java.mongo.driver>3.12.8</version.java.mongo.driver>
+		<version.java.mongo.driver>3.4.0</version.java.mongo.driver>
 		<version.javax.annotation>1.3.2</version.javax.annotation>
 		<version.commonsIO>2.5</version.commonsIO>	
 	</properties>
