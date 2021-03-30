@@ -42,6 +42,7 @@ public class ApiMongoConnector {
 	public ApiMongoConnector() {
 	}
 
+
 	/**
 	 * Mongo create datastore
 	 * 
@@ -75,7 +76,6 @@ public class ApiMongoConnector {
 			mongoClient = new MongoClient(mongoUri);
 			
 			datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
-			datastore.ensureIndexes();
 			log.info(String.format("Connection to db '%s' mongo server was successful", mongoUri.getDatabase()));
 		} catch (MongoException e) {
 			//runtime exceptions will be logged by the system 
