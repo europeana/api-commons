@@ -1,7 +1,5 @@
 package eu.europeana.api.commons.error;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Component;
@@ -19,45 +17,26 @@ import java.util.Map;
 @Component
 public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
 
-    @Value("${server.error.include-stacktrace:ON_PARAM}")
-    private ErrorProperties.IncludeStacktrace includeStacktrace;
-
+    /**
+     * Used by Spring to display errors with no custom handler.
+     * Since we explicitly return {@link EuropeanaApiErrorResponse} on errors within controllers, this method is only invoked when
+     * a request isn't handled by any controller.
+     */
     @Override
     public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions sbOptions) {
-        final Map<String, Object> errorAttributes = new LinkedHashMap<>();
-        ErrorAttributeOptions options = includeStacktrace(sbOptions, webRequest);
+        final Map<String, Object> defaultErrorAttributes = super.getErrorAttributes(webRequest, sbOptions);
 
-        errorAttributes.put("success", "false");
-
-        // Spring-Boot uses a LinkedHashMap for error attributes, so to control the order of elements and have our added
-        // 'success' field first, we insert the original attributes after that.
-        final Map<String, Object> sbAttributes = super.getErrorAttributes(webRequest, options);
-        for (Map.Entry<String, Object> attribute : sbAttributes.entrySet()) {
-            errorAttributes.put(attribute.getKey(), attribute.getValue());
-        }
-
-        addPathRequestParameters(errorAttributes, webRequest);
-
-        addCodeFieldIfAvailable(errorAttributes, webRequest);
-
-        // override timestamp field with human-readable format
-        errorAttributes.put("timestamp", OffsetDateTime.now().toString());
-
-        return errorAttributes;
+        // use LinkedHashMap to guarantee display order
+        LinkedHashMap<String, Object> europeanaErrorAttributes = new LinkedHashMap<>();
+        europeanaErrorAttributes.put("success", false);
+        europeanaErrorAttributes.put("status", defaultErrorAttributes.get("status"));
+        europeanaErrorAttributes.put("error", defaultErrorAttributes.get("error"));
+        // message not shown
+        europeanaErrorAttributes.put("timestamp", OffsetDateTime.now());
+        addPathRequestParameters(europeanaErrorAttributes, webRequest);
+        return europeanaErrorAttributes;
     }
 
-
-    /**
-     * Spring-Boot uses the "trace" parameter to include a field with stacktrace data (see also application.yml)
-     * We do the same when a "debug" parameter is provided (if
-     */
-    private ErrorAttributeOptions includeStacktrace(ErrorAttributeOptions originalOptions, WebRequest request) {
-        if (ErrorProperties.IncludeStacktrace.ON_PARAM.equals(includeStacktrace) &&
-                request.getParameter("debug") != null) {
-            return originalOptions.including(ErrorAttributeOptions.Include.STACK_TRACE);
-        }
-        return originalOptions;
-    }
 
     /**
      * Spring errors only return the error path and not the parameters, so we add those ourselves.
@@ -84,18 +63,4 @@ public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
             errorAttributes.put("path", errorAttributes.get("path") + s.toString());
         }
     }
-
-    /**
-     * If the error is an AbstractApiException and contains an error code, we add that to the error
-     */
-    private void addCodeFieldIfAvailable(Map<String, Object> errorAttributes, WebRequest webRequest) {
-        final Throwable throwable = super.getError(webRequest);
-        if (throwable instanceof EuropeanaApiException) {
-            EuropeanaApiException apiException = (EuropeanaApiException) throwable;
-            if (!StringUtils.isEmpty(apiException.getErrorCode())) {
-                errorAttributes.put("code", apiException.getErrorCode());
-            }
-        }
-    }
-
 }

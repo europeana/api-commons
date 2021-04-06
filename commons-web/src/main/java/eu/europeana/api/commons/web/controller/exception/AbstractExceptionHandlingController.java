@@ -68,7 +68,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req,
 			HttpServletResponse response) throws IOException {
 
-		boolean includeErrorStack = new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
+		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 
@@ -81,7 +81,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response)
 			throws IOException {
 
-		boolean includeErrorStack =new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
+		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 
@@ -94,7 +94,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 			HttpServletResponse response) throws IOException {
 
 		
-		boolean includeErrorStack = new Boolean(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
+		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		
 		HttpStatus statusCode = statusCodeMap.get(ex.getClass());
 		if(statusCode == null)

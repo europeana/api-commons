@@ -4,9 +4,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+import org.apache.jena.riot.lang.ReaderRIOTRDFXML;
 import org.apache.log4j.Logger;
 
 import org.apache.jena.datatypes.RDFDatatype;
@@ -34,8 +36,20 @@ public class TurtleRecordWriter implements AutoCloseable {
     private BufferedWriter bufferedWriter;
     private Map<String, String> map = new HashMap<>();
 
-    public TurtleRecordWriter(OutputStream out) {
+    public TurtleRecordWriter(OutputStream out) throws NoSuchFieldException, IllegalAccessException {
         bufferedWriter = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), BUFFER_SIZE);
+        disableErrorForSpaceURI();
+
+    }
+
+    /** set the field 'errorForSpaceInURI' to false.
+     * This to overcome th error of spaces in URLs in the record data. See: EA-2066
+     * using reflection to disable the validation of the field.
+     */
+    private void disableErrorForSpaceURI() throws NoSuchFieldException, IllegalAccessException {
+        Field f = ReaderRIOTRDFXML.class.getDeclaredField("errorForSpaceInURI");
+        f.setAccessible(true);
+        f.set(null, false);
     }
 
     public void write(Model m ) throws IOException {

@@ -2,7 +2,6 @@ package eu.europeana.corelib.db.wrapper;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -77,6 +76,7 @@ public class ApiMongoConnector {
 			mongoClient = new MongoClient(mongoUri);
 			
 			datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
+			datastore.ensureIndexes();
 			log.info(String.format("Connection to db '%s' mongo server was successful", mongoUri.getDatabase()));
 		} catch (MongoException e) {
 			//runtime exceptions will be logged by the system 
