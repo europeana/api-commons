@@ -62,13 +62,13 @@
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>0.3.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-definitions</artifactId>
-			<version>0.3.4-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
