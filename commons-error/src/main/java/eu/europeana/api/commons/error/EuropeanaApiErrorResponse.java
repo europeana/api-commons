@@ -1,6 +1,7 @@
 package eu.europeana.api.commons.error;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -21,6 +22,7 @@ public class EuropeanaApiErrorResponse {
 
     private final String message;
 
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final OffsetDateTime timestamp = OffsetDateTime.now();
 
     private final String trace;
