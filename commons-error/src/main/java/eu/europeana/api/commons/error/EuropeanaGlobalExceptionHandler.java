@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -96,6 +97,25 @@ public class EuropeanaGlobalExceptionHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
+
+    /**
+     * Handler for HttpRequestMethodNotSupportedException errors
+     * Make sure we return 405 instead of 500 response when http method is not supported; also include error message
+     */
+    @ExceptionHandler
+    public ResponseEntity<EuropeanaApiErrorResponse> handleHttpMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest httpRequest) {
+        EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
+                .setStatus(HttpStatus.METHOD_NOT_ALLOWED.value())
+                .setError(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
+                .setMessage(e.getMessage())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.METHOD_NOT_ALLOWED)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(response);
+    }
+
 
     /**
      * Handler for ConstraintValidation errors
