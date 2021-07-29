@@ -38,18 +38,8 @@ public class TurtleRecordWriter implements AutoCloseable {
 
     public TurtleRecordWriter(OutputStream out) throws NoSuchFieldException, IllegalAccessException {
         bufferedWriter = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), BUFFER_SIZE);
-        disableErrorForSpaceURI();
+        RiotRdfUtils.disableErrorForSpaceURI();
 
-    }
-
-    /** set the field 'errorForSpaceInURI' to false.
-     * This to overcome th error of spaces in URLs in the record data. See: EA-2066
-     * using reflection to disable the validation of the field.
-     */
-    private void disableErrorForSpaceURI() throws NoSuchFieldException, IllegalAccessException {
-        Field f = ReaderRIOTRDFXML.class.getDeclaredField("errorForSpaceInURI");
-        f.setAccessible(true);
-        f.set(null, false);
     }
 
     public void write(Model m ) throws IOException {
