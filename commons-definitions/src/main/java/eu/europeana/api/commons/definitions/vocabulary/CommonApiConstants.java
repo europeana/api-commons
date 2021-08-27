@@ -37,6 +37,8 @@ public interface CommonApiConstants {
 
     public static final String PROFILE_MINIMAL = "minimal";
     public static final String PROFILE_STANDARD = "standard";
+    public static final String PROFILE_DEBUG = "debug";
+
 
     /**
      * Search API response

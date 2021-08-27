@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 
@@ -83,7 +84,8 @@ public class EuropeanaApiErrorResponse {
 
         public Builder(HttpServletRequest httpRequest, Exception e, boolean stacktraceEnabled) {
             this.path = ResponseUtils.getRequestPath(httpRequest);
-            if (stacktraceEnabled && httpRequest.getParameter("debug") != null ) {
+            boolean includeErrorStack = httpRequest.getParameter(CommonApiConstants.QUERY_PARAM_PROFILE).equals(CommonApiConstants.PROFILE_DEBUG);
+            if (stacktraceEnabled && includeErrorStack) {
                 this.trace = ResponseUtils.getExceptionStackTrace(e);
             }
         }
