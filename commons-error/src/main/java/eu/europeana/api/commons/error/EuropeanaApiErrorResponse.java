@@ -85,9 +85,9 @@ public class EuropeanaApiErrorResponse {
         public Builder(HttpServletRequest httpRequest, Exception e, boolean stacktraceEnabled) {
             this.path = ResponseUtils.getRequestPath(httpRequest);
             boolean includeErrorStack = false;
-            // check if profile=debug
+            // check if profile contains debug
             if (httpRequest.getParameter(CommonApiConstants.QUERY_PARAM_PROFILE) != null) {
-                includeErrorStack = httpRequest.getParameter(CommonApiConstants.QUERY_PARAM_PROFILE).equals(CommonApiConstants.PROFILE_DEBUG);
+                includeErrorStack = httpRequest.getParameter(CommonApiConstants.QUERY_PARAM_PROFILE).contains(CommonApiConstants.PROFILE_DEBUG);
             }
             if (stacktraceEnabled && includeErrorStack) {
                 this.trace = ResponseUtils.getExceptionStackTrace(e);
