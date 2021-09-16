@@ -32,6 +32,7 @@ public interface CommonApiConstants {
 
     //views
     public static final String QUERY_PARAM_PROFILE = "profile";
+    public static final String QUERY_PARAM_PROFILE_SEPARATOR = ",";
     public static final String QUERY_PARAM_FACET = "facet";
     public static final String FL = "fl";
 
