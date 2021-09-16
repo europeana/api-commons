@@ -1,12 +1,17 @@
 package eu.europeana.api.commons.error;
 
 
+import static eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants.QUERY_PARAM_PROFILE_SEPARATOR;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
+import org.springframework.util.StringUtils;
 
 /**
  * This class contains fields to be returned by APIs when an error occurs within the application.
@@ -83,7 +88,14 @@ public class EuropeanaApiErrorResponse {
 
         public Builder(HttpServletRequest httpRequest, Exception e, boolean stacktraceEnabled) {
             this.path = ResponseUtils.getRequestPath(httpRequest);
-            if (stacktraceEnabled && httpRequest.getParameter("debug") != null ) {
+            boolean includeErrorStack = false;
+            String profileParamString = httpRequest.getParameter(CommonApiConstants.QUERY_PARAM_PROFILE);
+            // check if profile contains debug
+            if (StringUtils.hasLength(profileParamString)) {
+                includeErrorStack = List.of(profileParamString.split(QUERY_PARAM_PROFILE_SEPARATOR))
+                    .contains(CommonApiConstants.PROFILE_DEBUG);
+            }
+            if (stacktraceEnabled && includeErrorStack) {
                 this.trace = ResponseUtils.getExceptionStackTrace(e);
             }
         }

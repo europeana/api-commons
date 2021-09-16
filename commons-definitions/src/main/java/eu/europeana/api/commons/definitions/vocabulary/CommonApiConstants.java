@@ -32,11 +32,14 @@ public interface CommonApiConstants {
 
     //views
     public static final String QUERY_PARAM_PROFILE = "profile";
+    public static final String QUERY_PARAM_PROFILE_SEPARATOR = ",";
     public static final String QUERY_PARAM_FACET = "facet";
     public static final String FL = "fl";
 
     public static final String PROFILE_MINIMAL = "minimal";
     public static final String PROFILE_STANDARD = "standard";
+    public static final String PROFILE_DEBUG = "debug";
+
 
     /**
      * Search API response
