@@ -4,6 +4,7 @@ public class UsageStatsFields {
 
     public static final String TYPE               = "type";
     public static final String CREATED            = "created";
+    public static final String OVERALL_TOTAL_TYPE = "OverallTotal";
 
     public static final String PRIVATE_SETS       = "NumberOfPrivateSets";
     public static final String PUBLIC_SETS        = "NumberOfPublicSets";
