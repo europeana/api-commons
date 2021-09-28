@@ -17,21 +17,20 @@ public class FacetFieldViewImpl implements FacetFieldView{
 	
 	public FacetFieldViewImpl(FacetField solrFacetField) {
 		this.solrFacetField = solrFacetField;
+		//init value count map
+		this.valueCountMap = new TreeMap<String, Long>();
+		if(solrFacetField != null  && !solrFacetField.getValues().isEmpty()) {
+			for(Count entry: solrFacetField.getValues())
+				valueCountMap.put(entry.getName(), entry.getCount());			
+		}
 	}
 
+	public FacetFieldViewImpl(SortedMap<String, Long> valueCountMap) {
+		this.valueCountMap = valueCountMap;
+	}
+	
 	@Override
 	public Map<String, Long> getValueCountMap() {
-		if(solrFacetField.getValues() == null || solrFacetField.getValues().isEmpty())
-			return null;
-		
-		if(valueCountMap == null){
-			valueCountMap = new TreeMap<String, Long>();
-		 
-			for(Count entry: solrFacetField.getValues())
-				valueCountMap.put(entry.getName(), entry.getCount());
-			
-		}	
-		
 		return valueCountMap;
 	}
 	
