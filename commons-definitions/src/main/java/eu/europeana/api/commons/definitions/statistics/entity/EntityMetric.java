@@ -12,14 +12,31 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EntityMetric extends Metric {
 
-    @JsonProperty(UsageStatsFields.ENTITIES_PER_LANG_TYPE)
-    private List<EntitiesPerLanguage> entities;
+    /**
+     * Entities per Type
+     */
+    @JsonProperty(UsageStatsFields.ENTITIES_PER_TYPE)
+    private EntityStats entitiesPerType;
 
-    public List<EntitiesPerLanguage> getEntities() {
-        return entities;
+    /**
+     * Entities per language with values calculated on percentage basis
+     */
+    @JsonProperty(UsageStatsFields.ENTITIES_PER_LANG)
+    private List<EntitiesPerLanguage> entitiesPerLanguages;
+
+    public List<EntitiesPerLanguage> getEntitiesPerLanguages() {
+        return entitiesPerLanguages;
     }
 
-    public void setEntities(List<EntitiesPerLanguage> entities) {
-        this.entities = entities;
+    public void setEntitiesPerLanguages(List<EntitiesPerLanguage> entitiesPerLanguages) {
+        this.entitiesPerLanguages = entitiesPerLanguages;
+    }
+
+    public EntityStats getEntitiesPerType() {
+        return entitiesPerType;
+    }
+
+    public void setEntitiesPerType(EntityStats entitiesPerType) {
+        this.entitiesPerType = entitiesPerType;
     }
 }
