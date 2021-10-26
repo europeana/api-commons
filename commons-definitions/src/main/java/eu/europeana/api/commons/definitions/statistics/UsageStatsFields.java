@@ -12,8 +12,8 @@ public class UsageStatsFields {
     public static final String SETS_PER_USER      = "AverageSetsPerUser";
 
     // entity constants
-    public static final String ENTITIES_PER_LANG = "entitiesPerLanguage";
-    public static final String ENTITIES_PER_TYPE = "entitiesPerType";
+    public static final String ENTITIES_PER_LANG = "perLanguage";
+    public static final String ENTITIES_PER_TYPE = "perType";
     public static final String ENTITY_LANG   = "language";
     public static final String TIMESPAN      = "timespan";
     public static final String PLACE         = "place";
