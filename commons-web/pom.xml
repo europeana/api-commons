@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<relativePath>../pom.xml</relativePath>
-		<version>0.3.9-SNAPSHOT</version>
+		<version>0.3.9</version>
 	 	<artifactId>commons-api-services</artifactId>
 	</parent>
 
@@ -20,19 +20,19 @@
 	<dependency>
 		<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-definitions</artifactId>
-			<version>${project.version}</version>
+			<version>0.3.9</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>${project.version}</version>
+			<version>0.3.9</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-oauth</artifactId>
-			<version>${project.version}</version>
+			<version>0.3.9</version>
 		</dependency>
 		
 		<dependency>
