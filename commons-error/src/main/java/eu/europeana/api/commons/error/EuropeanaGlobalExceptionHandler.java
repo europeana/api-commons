@@ -89,13 +89,14 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleOtherExceptionTypes(Exception e, HttpServletRequest httpRequest) {
         LOG.error("Error: ", e);
+        HttpStatus responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
-                .setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .setStatus(responseStatus.value())
+                .setError(responseStatus.getReasonPhrase())
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .status(responseStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
@@ -106,9 +107,10 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleHttpMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest httpRequest) {
+        HttpStatus responseStatus = HttpStatus.METHOD_NOT_ALLOWED;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
-                .setStatus(HttpStatus.METHOD_NOT_ALLOWED.value())
-                .setError(HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase())
+                .setStatus(responseStatus.value())
+                .setError(responseStatus.getReasonPhrase())
                 .setMessage(e.getMessage())
                 .build();
 
@@ -121,7 +123,7 @@ public class EuropeanaGlobalExceptionHandler {
         if (supportedMethods != null) {
             headers.setAllow(supportedMethods);
         }
-        return new ResponseEntity<>(response, headers, HttpStatus.METHOD_NOT_ALLOWED);
+        return new ResponseEntity<>(response, headers, responseStatus);
     }
 
 
@@ -131,14 +133,15 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleInputValidationError(ConstraintViolationException e, HttpServletRequest httpRequest) {
+        HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
-                .setStatus(HttpStatus.BAD_REQUEST.value())
-                .setError(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .setStatus(responseStatus.value())
+                .setError(responseStatus.getReasonPhrase())
                 .setMessage(e.getMessage())
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(responseStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
@@ -148,14 +151,15 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleInputValidationError(MissingServletRequestParameterException e, HttpServletRequest httpRequest) {
+        HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         EuropeanaApiErrorResponse response = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled()))
-                .setStatus(HttpStatus.BAD_REQUEST.value())
-                .setError(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .setStatus(responseStatus.value())
+                .setError(responseStatus.getReasonPhrase())
                 .setMessage(e.getMessage())
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(responseStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
     }
@@ -167,14 +171,15 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleAuthenticationError(AuthenticationException e,
         HttpServletRequest httpRequest) {
+        HttpStatus responseStatus = HttpStatus.UNAUTHORIZED;
         EuropeanaApiErrorResponse errorResponse = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
-            .setStatus(HttpStatus.UNAUTHORIZED.value())
-            .setError(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+            .setStatus(responseStatus.value())
+            .setError(responseStatus.getReasonPhrase())
             .setMessage("Not authorized")
             .build();
 
         return ResponseEntity
-            .status(errorResponse.getStatus())
+            .status(responseStatus)
             .contentType(MediaType.APPLICATION_JSON)
             .body(errorResponse);
     }
@@ -186,14 +191,15 @@ public class EuropeanaGlobalExceptionHandler {
     public ResponseEntity<EuropeanaApiErrorResponse> handleMediaTypeNotAcceptableException(
         HttpMediaTypeNotAcceptableException e, HttpServletRequest httpRequest) {
 
+        HttpStatus responseStatus = HttpStatus.NOT_ACCEPTABLE;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
-            .setStatus(HttpStatus.NOT_ACCEPTABLE.value())
-            .setError(HttpStatus.NOT_ACCEPTABLE.getReasonPhrase())
+            .setStatus(responseStatus.value())
+            .setError(responseStatus.getReasonPhrase())
             .setMessage("Server could not generate a response that is acceptable by the client")
             .build();
 
         return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST.value())
+            .status(responseStatus)
             .contentType(MediaType.APPLICATION_JSON)
             .body(response);
     }
@@ -211,14 +217,15 @@ public class EuropeanaGlobalExceptionHandler {
             // just return the first error
             error = fieldErrors.get(0).getField() + " " + fieldErrors.get(0).getDefaultMessage();
         }
+        HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
-            .setStatus(HttpStatus.BAD_REQUEST.value())
+            .setStatus(responseStatus.value())
             .setMessage("Invalid request body")
             .setError(error)
             .build();
 
         return ResponseEntity
-            .status(response.getStatus())
+            .status(responseStatus)
             .contentType(MediaType.APPLICATION_JSON)
             .body(response);
     }
