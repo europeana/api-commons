@@ -1,7 +1,9 @@
 package eu.europeana.api.commons.web.controller;
 
+import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
 import java.util.Date;
 
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.security.core.Authentication;
@@ -76,4 +78,18 @@ public abstract class BaseRestController {
 	Integer hashCode = (timestamp + format + version).hashCode();
 	return hashCode.toString();
     }
+
+  /**
+   * Gets all HTTP methods implemented across the application, that match the url pattern for the
+   * current request. This is useful in populating the HTTP Allow header when generating API
+   * responses
+   */
+  protected String getMethodsForRequestPattern(HttpServletRequest request,
+      AbstractRequestPathMethodService requestMethodService) {
+    Optional<String> methodsForRequestPattern =
+        requestMethodService.getMethodsForRequestPattern(request);
+
+    return methodsForRequestPattern.orElse(request.getMethod());
+  }
+
 }
