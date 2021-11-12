@@ -81,7 +81,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	} catch (ClientRegistrationException e) {
 	    // invalid api key
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { wsKey }, HttpStatus.FORBIDDEN, e);
+		    new String[] { wsKey }, HttpStatus.UNAUTHORIZED, e);
 	} catch (OAuth2Exception e) {
 	    // validation failed through API Key service issues
 	    // silently approve request
@@ -103,7 +103,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    // check if null
 	    if (wsKey == null)
 		throw new ApplicationAuthenticationException(I18nConstants.MISSING_APIKEY, I18nConstants.MISSING_APIKEY,
-			null, HttpStatus.FORBIDDEN, null);
+			null, HttpStatus.UNAUTHORIZED, null);
 
 	    if (data.containsKey(OAuthUtils.USER_ID)) {
 		List<Authentication> authList = new ArrayList<Authentication>(); 
@@ -122,9 +122,9 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 		    
 		}
 	    }
-	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
-	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
+	} catch (Exception e) {
+	    throw new ApplicationAuthenticationException(I18nConstants.JWT_TOKEN_ERROR, I18nConstants.JWT_TOKEN_ERROR,
+			    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
 	}
 
 	return authentication;
