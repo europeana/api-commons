@@ -123,7 +123,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 		}
 	    }
 	} catch (Exception e) {
-	    throw new ApplicationAuthenticationException(I18nConstants.JWT_TOKEN_ERROR, I18nConstants.JWT_TOKEN_ERROR,
+	    throw new ApplicationAuthenticationException(e.getMessage(), I18nConstants.JWT_TOKEN_ERROR,
 			    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
 	}
 
