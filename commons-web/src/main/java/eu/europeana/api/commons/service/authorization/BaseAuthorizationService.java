@@ -37,9 +37,19 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	return log;
     }
 
-    protected RsaVerifier getSignatureVerifier() {
-	if (signatureVerifier == null)
-	    signatureVerifier = new RsaVerifier(getSignatureKey());
+    protected RsaVerifier getSignatureVerifier() throws ApplicationAuthenticationException {
+	if (signatureVerifier == null) {
+		String signatureKey = getSignatureKey();
+	    if(signatureKey==null || signatureKey.isBlank()) {
+	    	throw new ApplicationAuthenticationException(I18nConstants.EMPTY_JWTTOKEN_SIGNATUREKEY, I18nConstants.EMPTY_JWTTOKEN_SIGNATUREKEY, null);
+	    }
+	    try {
+	    	signatureVerifier = new RsaVerifier(getSignatureKey());
+	    }
+	    catch (RuntimeException e) {
+	    	throw new ApplicationAuthenticationException(I18nConstants.INVALID_JWTTOKEN_SIGNATUREKEY, I18nConstants.INVALID_JWTTOKEN_SIGNATUREKEY, null);
+	    }
+	}
 	return signatureVerifier;
     }
 
@@ -122,8 +132,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 		    
 		}
 	    }
-	} catch (Exception e) {
-	    throw new ApplicationAuthenticationException(e.getMessage(), I18nConstants.JWT_TOKEN_ERROR,
+	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
+	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_JWTTOKEN, I18nConstants.INVALID_JWTTOKEN,
 			    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
 	}
 
