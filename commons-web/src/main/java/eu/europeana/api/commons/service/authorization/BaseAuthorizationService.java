@@ -39,10 +39,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
     protected RsaVerifier getSignatureVerifier() throws ApplicationAuthenticationException {
 	if (signatureVerifier == null) {
-		String signatureKey = getSignatureKey();
-	    if(signatureKey==null || signatureKey.isBlank()) {
-	    	throw new ApplicationAuthenticationException(I18nConstants.EMPTY_JWTTOKEN_SIGNATUREKEY, I18nConstants.EMPTY_JWTTOKEN_SIGNATUREKEY, null);
-	    }
 	    try {
 	    	signatureVerifier = new RsaVerifier(getSignatureKey());
 	    }

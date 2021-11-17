@@ -9,7 +9,6 @@ public interface I18nConstants {
 	//401
 	static final String INVALID_APIKEY = "error.invalid_apikey";
 	static final String INVALID_JWTTOKEN = "error.invalid_jwttoken";
-	static final String EMPTY_JWTTOKEN_SIGNATUREKEY = "error.empty_jwttoken_signaturekey";
 	static final String INVALID_JWTTOKEN_SIGNATUREKEY = "error.invalid_jwttoken_signaturekey";
 	static final String EMPTY_APIKEY = "error.empty_apikey";
 	static final String MISSING_APIKEY = "error.missing_apikey";
