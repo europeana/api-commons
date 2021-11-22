@@ -4,7 +4,7 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
-	<version>0.3.11</version>
+	<version>0.3.12-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 
