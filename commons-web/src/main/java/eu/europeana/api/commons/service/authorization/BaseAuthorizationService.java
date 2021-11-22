@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
@@ -37,17 +38,12 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	return log;
     }
 
-    protected RsaVerifier getSignatureVerifier() throws ApplicationAuthenticationException {
-	if (signatureVerifier == null) {
-	    try {
-	    	signatureVerifier = new RsaVerifier(getSignatureKey());
-	    }
-	    catch (RuntimeException e) {
-	    	throw new ApplicationAuthenticationException(I18nConstants.INVALID_JWTTOKEN_SIGNATUREKEY, I18nConstants.INVALID_JWTTOKEN_SIGNATUREKEY, null);
-	    }
+	protected RsaVerifier getSignatureVerifier() {
+		if (signatureVerifier == null) {
+			signatureVerifier = new RsaVerifier(getSignatureKey());
+		}
+		return signatureVerifier;
 	}
-	return signatureVerifier;
-    }
 
     @Override
     /**
