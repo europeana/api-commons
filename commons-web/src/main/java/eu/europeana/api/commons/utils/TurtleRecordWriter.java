@@ -1,34 +1,27 @@
 package eu.europeana.api.commons.utils;
 
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.XSD;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML;
-import org.apache.log4j.Logger;
-
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.XSD;
-
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * Write RDF record in Turtle format
  */
 public class TurtleRecordWriter implements AutoCloseable {
-    private static final Logger LOG  = Logger.getLogger(TurtleRecordWriter.class);
+
+    private static final Logger LOG  = LogManager.getLogger(TurtleRecordWriter.class);
 
     private static final int KB = 1024;
     private static final int BUFFER_SIZE = 32 * KB;

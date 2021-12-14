@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.europeana.api.commons</groupId>
@@ -18,26 +19,6 @@
 		<module>commons-error</module>
 	</modules>
 
-	<repositories>
-		<repository>
-			<id>libs-release</id>
-			<name>europeana-releases</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
-		</repository>
-		<repository>
-			<id>libs-snapshots</id>
-			<name>europeana-snapshots</name>
-			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
-		</repository>
-		<repository>
-			<id>repo1-cache</id>
-			<name>repo1-cache</name>
-			<url>http://artifactory.eanadev.org/artifactory/repo1-cache/</url>
-		</repository>
-		
-		
-	</repositories>
-	
 	<distributionManagement>
 		<snapshotRepository>
 			<id>artifactory.eanadev.org</id>
@@ -57,23 +38,43 @@
 		<java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-		<version.org.junit.jupiter>5.6.2</version.org.junit.jupiter>
-		<version.springSecurity>4.2.12.RELEASE</version.springSecurity>
-		<version.spring>5.2.7.RELEASE</version.spring>
+
+		<version.spring>5.3.13</version.spring>
+		<version.springBoot>2.6.1</version.springBoot>
+		<version.springSecurityJwt>1.1.1.RELEASE</version.springSecurityJwt>
 		<version.springSecurityOauth>2.5.1.RELEASE</version.springSecurityOauth>
-		<version.log4j2>2.15.0</version.log4j2>
+		<version.log4j2>2.16.0</version.log4j2>
 		<version.commonsLang3>3.9</version.commonsLang3>
 		<version.annotationLd>1.1.7</version.annotationLd>
-		<version.springBoot>2.1.5.RELEASE</version.springBoot>
-		<version.springSecurityJwt>1.0.10.RELEASE</version.springSecurityJwt>
-		<version.jackson>2.9.10</version.jackson>
+		<version.jackson>2.13.0</version.jackson>
 		<version.jaxb>2.3.1</version.jaxb>
-		<version.apikeyUtils>1.4</version.apikeyUtils>
+		<version.apikeyUtils>1.5</version.apikeyUtils>
 		<version.java.mongo.driver>3.4.0</version.java.mongo.driver>
 		<version.javax.annotation>1.3.2</version.javax.annotation>
 		<version.commonsIO>2.5</version.commonsIO>
 		<version.javax.ws.rs>2.0.1</version.javax.ws.rs>
+		<version.org.junit.jupiter>5.6.2</version.org.junit.jupiter>
 	</properties>
+
+	<repositories>
+		<repository>
+			<id>libs-release</id>
+			<name>europeana-releases</name>
+			<url>http://artifactory.eanadev.org/artifactory/libs-release/</url>
+		</repository>
+		<repository>
+			<id>libs-snapshots</id>
+			<name>europeana-snapshots</name>
+			<url>http://artifactory.eanadev.org/artifactory/libs-snapshot/</url>
+		</repository>
+		<repository>
+			<id>repo1-cache</id>
+			<name>repo1-cache</name>
+			<url>http://artifactory.eanadev.org/artifactory/repo1-cache/</url>
+	</repository>
+
+
+	</repositories>
 
 	<build>
 		<!-- configure source and output locations -->
@@ -141,8 +142,28 @@
 		</plugin>
       </plugins>
     </pluginManagement>
-  
-				
+
+
+		<plugins>
+			<!-- This will be active when running the verify or install goal
+				 To skip (e.g. during debugging) use 'mvn clean package')-->
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>6.5.0</version>
+				<configuration>
+					<assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+					<skipSystemScope>true</skipSystemScope>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 
 	</build>
 </project>

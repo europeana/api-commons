@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>commons-api-services</artifactId>
         <groupId>eu.europeana.api.commons</groupId>
         <version>0.3.12-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>commons-error</artifactId>
     <name>Api Commons - Error</name>
 
     <properties>
-        <spring-boot.version>2.3.3.RELEASE</spring-boot.version>
-        <spring.version>5.2.8.RELEASE</spring.version>
+        <spring-boot.version>2.5.7</spring-boot.version>
+        <spring.version>5.3.13</spring.version>
     </properties>
 
     <dependencies>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
@@ -10,10 +11,11 @@
 
 	<artifactId>commons-definitions</artifactId>
 	<name>Api Commons - Shared data structures and constants</name>
+	<url>http://pro.europeana.eu</url>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
-	<url>http://www.europeanalabs.eu</url>
+
 
 	<dependencies>
 		<!-- Other -->
@@ -32,7 +34,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.12.4</version>
+			<version>${version.jackson}</version>
 		</dependency>
 	</dependencies>
 	
