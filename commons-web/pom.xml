@@ -62,6 +62,11 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
 		
 		<dependency>
 		    <groupId>javax.ws.rs</groupId>
@@ -107,9 +112,13 @@
 		<!-- Turtle dependencies -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>apache-jena</artifactId>
-			<version>4.3.1</version>
-			<type>pom</type>
+			<artifactId>jena-core</artifactId>
+			<version>${version.jena}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-arq</artifactId>
+			<version>${version.jena}</version>
 		</dependency>
 
 		<dependency>
