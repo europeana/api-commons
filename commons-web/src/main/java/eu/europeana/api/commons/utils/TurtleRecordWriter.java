@@ -1,34 +1,27 @@
 package eu.europeana.api.commons.utils;
 
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.XSD;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-import org.apache.jena.riot.lang.ReaderRIOTRDFXML;
-import org.apache.log4j.Logger;
-
-import org.apache.jena.datatypes.RDFDatatype;
-import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.ResIterator;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.XSD;
-
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * Write RDF record in Turtle format
  */
 public class TurtleRecordWriter implements AutoCloseable {
-    private static final Logger LOG  = Logger.getLogger(TurtleRecordWriter.class);
+
+    private static final Logger LOG  = LogManager.getLogger(TurtleRecordWriter.class);
 
     private static final int KB = 1024;
     private static final int BUFFER_SIZE = 32 * KB;
@@ -38,18 +31,8 @@ public class TurtleRecordWriter implements AutoCloseable {
 
     public TurtleRecordWriter(OutputStream out) throws NoSuchFieldException, IllegalAccessException {
         bufferedWriter = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8), BUFFER_SIZE);
-        disableErrorForSpaceURI();
+        RiotRdfUtils.disableErrorForSpaceURI();
 
-    }
-
-    /** set the field 'errorForSpaceInURI' to false.
-     * This to overcome th error of spaces in URLs in the record data. See: EA-2066
-     * using reflection to disable the validation of the field.
-     */
-    private void disableErrorForSpaceURI() throws NoSuchFieldException, IllegalAccessException {
-        Field f = ReaderRIOTRDFXML.class.getDeclaredField("errorForSpaceInURI");
-        f.setAccessible(true);
-        f.set(null, false);
     }
 
     public void write(Model m ) throws IOException {
@@ -180,10 +163,14 @@ public class TurtleRecordWriter implements AutoCloseable {
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             switch (c) {
+                case '\t':
+                case '\b':
+                case '\n':
+                case '\r':
+                case '\f':
                 case '\"':
                 case '\\':
-                    bufferedWriter.append('\\').append(c);
-                    continue;
+                    escapeUnicode(c); continue;
                 default: // Do nothing
             }
             bufferedWriter.append(c);

@@ -3,36 +3,37 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
+		<artifactId>commons-api-services</artifactId>
+		<version>0.3.14-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
-		<version>0.3.4-SNAPSHOT</version>
-	 	<artifactId>commons-api-services</artifactId>
 	</parent>
 
 	<artifactId>commons-web</artifactId>
 	<name>Api Commons - Web</name>
+	<url>https://pro.europeana.eu</url>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
-	<url>http://www.europeanalabs.eu</url>
+
 
 	<dependencies>
 	
 	<dependency>
 		<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-definitions</artifactId>
-			<version>0.3.3-SNAPSHOT</version>
+			<version>0.3.14-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>0.3.4-SNAPSHOT</version>
+			<version>0.3.14-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-oauth</artifactId>
-			<version>0.3.4-SNAPSHOT</version>
+			<version>0.3.14-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
@@ -60,11 +61,16 @@
 			<artifactId>log4j-core</artifactId>
 			<version>${version.log4j2}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+			<version>${version.log4j2}</version>
+		</dependency>
 		
 		<dependency>
 		    <groupId>javax.ws.rs</groupId>
 		    <artifactId>javax.ws.rs-api</artifactId>
-		    <version>2.0-m01</version>
+		    <version>${version.javax.ws.rs}</version>
 		</dependency>
 		
 		<!-- 
@@ -105,9 +111,13 @@
 		<!-- Turtle dependencies -->
 		<dependency>
 			<groupId>org.apache.jena</groupId>
-			<artifactId>apache-jena</artifactId>
-			<version>3.13.0</version>
-			<type>pom</type>
+			<artifactId>jena-core</artifactId>
+			<version>${version.jena}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-arq</artifactId>
+			<version>${version.jena}</version>
 		</dependency>
 
 		<dependency>

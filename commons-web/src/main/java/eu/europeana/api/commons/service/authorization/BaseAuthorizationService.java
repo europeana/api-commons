@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
@@ -37,11 +38,12 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	return log;
     }
 
-    protected RsaVerifier getSignatureVerifier() {
-	if (signatureVerifier == null)
-	    signatureVerifier = new RsaVerifier(getSignatureKey());
-	return signatureVerifier;
-    }
+	protected RsaVerifier getSignatureVerifier() {
+		if (signatureVerifier == null) {
+			signatureVerifier = new RsaVerifier(getSignatureKey());
+		}
+		return signatureVerifier;
+	}
 
     @Override
     /**
@@ -81,7 +83,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	} catch (ClientRegistrationException e) {
 	    // invalid api key
 	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { wsKey }, HttpStatus.FORBIDDEN, e);
+		    new String[] { wsKey }, HttpStatus.UNAUTHORIZED, e);
 	} catch (OAuth2Exception e) {
 	    // validation failed through API Key service issues
 	    // silently approve request
@@ -103,7 +105,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    // check if null
 	    if (wsKey == null)
 		throw new ApplicationAuthenticationException(I18nConstants.MISSING_APIKEY, I18nConstants.MISSING_APIKEY,
-			null, HttpStatus.FORBIDDEN, null);
+			null, HttpStatus.UNAUTHORIZED, null);
 
 	    if (data.containsKey(OAuthUtils.USER_ID)) {
 		List<Authentication> authList = new ArrayList<Authentication>(); 
@@ -123,8 +125,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 		}
 	    }
 	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
-	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY, I18nConstants.INVALID_APIKEY,
-		    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
+	    throw new ApplicationAuthenticationException(I18nConstants.INVALID_JWTTOKEN, I18nConstants.INVALID_JWTTOKEN,
+			    new String[] { e.getMessage() }, HttpStatus.UNAUTHORIZED, e);
 	}
 
 	return authentication;

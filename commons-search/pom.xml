@@ -3,23 +3,27 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
-		<relativePath>../pom.xml</relativePath>
-		<version>0.3.4-SNAPSHOT</version>
 		<artifactId>commons-api-services</artifactId>
+		<version>0.3.14-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>commons-search</artifactId>
 	<name>Api Commons - Base for Generic Search specifications</name>
+	<url>https://pro.europeana.eu</url>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
-	<url>http://www.europeanalabs.eu</url>
+
+	<properties>
+		<version.apacheSolr>8.11.0</version.apacheSolr>
+	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-definitions</artifactId>
-			<version>0.3.4-SNAPSHOT</version>
+			<version>0.3.14-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
@@ -42,10 +46,6 @@
 		</dependency>
 
 	</dependencies>
-
-	<properties>
-		<version.apacheSolr>7.7.2</version.apacheSolr>
-	</properties>
 
 	<build>
 		<!-- it seems that final name is not inhereted from parent pom -->

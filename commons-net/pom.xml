@@ -3,17 +3,17 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
-		<relativePath>../pom.xml</relativePath>
-		<version>0.3.4-SNAPSHOT</version>
 		<artifactId>commons-api-services</artifactId>
+		<version>0.3.14-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>commons-net</artifactId>
 	<name>Api Commons - Networking utilities</name>
+	<url>https://pro.europeana.eu</url>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
-	<url>http://www.europeanalabs.eu</url>
 
 	<dependencies>
 		<!-- Other -->

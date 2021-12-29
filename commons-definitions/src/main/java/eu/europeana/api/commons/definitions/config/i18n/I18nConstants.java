@@ -8,6 +8,7 @@ public interface I18nConstants {
 	
 	//401
 	static final String INVALID_APIKEY = "error.invalid_apikey";
+	static final String INVALID_JWTTOKEN = "error.invalid_jwttoken";
 	static final String EMPTY_APIKEY = "error.empty_apikey";
 	static final String MISSING_APIKEY = "error.missing_apikey";
 	static final String INVALID_API_NAME = "error.invalid_api_name";
@@ -23,7 +24,6 @@ public interface I18nConstants {
 	static final String INVALID_HEADER_FORMAT = "error.entity_invalid_header_format";
 	static final String BASE64_DECODING_FAIL = "error.entity_base64_encoding_fail";
 	static final String EXPIRATION_TIMESTAMP_NOT_VALID = "error.expiration_timestamp_not_valid";
-	static final String INVALID_JWT_TOKEN = "error.invalid_jwt_token";	
 	static final String JWT_TOKEN_ERROR = "error.jwt_token_error";	
 	
 }

@@ -151,7 +151,7 @@ public class OAuthUtils {
 
 	Map<String, Object> resourceAccessMap = (Map<String, Object>) data.get(RESOURCE_ACCESS);
 	String principal = (String) data.get(USER_ID);
-	String userName = (String) data.get(USER_ID);
+	String userName = (String) data.get(PREFERRED_USERNAME);
 
 	// each API in resource_access should be processed and
 	// EuropeanaAuthenticationToken will be created for the current API

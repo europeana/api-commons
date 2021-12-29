@@ -54,10 +54,10 @@ public class EuropeanaApiErrorController extends AbstractErrorController {
         }
     }
 
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
+//    @Override
+//    public String getErrorPath() {
+//        return "/error";
+//    }
 
     /**
      * Override default Spring-Boot error endpoint
