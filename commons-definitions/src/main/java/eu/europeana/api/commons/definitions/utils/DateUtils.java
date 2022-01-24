@@ -16,14 +16,10 @@ public class DateUtils {
     	return res;
     }
 
-    public static Date convertStrToDate(String str) {
+    public static Date convertStrToDate(String str) throws ParseException {
     	Date res = null; 
     	DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-    	try {
-			res = formatter.parse(str);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+    	res = formatter.parse(str);
     	return res;
     }
 }
