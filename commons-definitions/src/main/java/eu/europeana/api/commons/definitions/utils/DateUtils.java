@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Date;
@@ -62,7 +63,7 @@ public class DateUtils {
   public static OffsetDateTime parseToOffsetDateTime(String isoDateTime) throws DateParsingException {
     try {
       TemporalAccessor timeAccessor = DateTimeFormatter.ISO_INSTANT.parse(isoDateTime);
-      return OffsetDateTime.from(Instant.from(timeAccessor));
+      return OffsetDateTime.from(Instant.from(timeAccessor).atOffset(ZoneOffset.UTC));
     } catch (RuntimeException e) {
       throw new DateParsingException(e);
     }
