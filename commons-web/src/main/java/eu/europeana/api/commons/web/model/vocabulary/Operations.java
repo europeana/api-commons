@@ -9,5 +9,7 @@ public interface Operations {
 	public static final String DELETE = "delete";
 	
 	//admin
-	public static final String ADMIN_ALL = "admin_all";	
+	public static final String ADMIN_ALL = "admin_all";
+	public static final String PERMANENT_DELETE = "perm_delete";
+    
 }
