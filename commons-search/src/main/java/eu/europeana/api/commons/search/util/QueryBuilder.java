@@ -168,7 +168,7 @@ public class QueryBuilder {
 	SolrQuery.ORDER order;
 
 	for (String field : inputFields) {
-	    inputArray = StringUtils.splitByWholeSeparator(field, "+");
+	    inputArray = StringUtils.splitByWholeSeparator(field, " ");
 	    fieldName = inputArray[0];
 	    verifySortField(fieldName);
 	    fieldName = processSortField(fieldName);

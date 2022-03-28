@@ -1,7 +1,7 @@
-/.settings/
-.classpath
+**/.settings/
+**.classpath
 bin/
-/.project
+**/.project
 *.properties 
 
 #IntelliJ project files
@@ -19,4 +19,3 @@ bin/
 **/europeana.user.properties
 
 
-.gitignore

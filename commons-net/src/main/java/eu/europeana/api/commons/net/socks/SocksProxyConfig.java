@@ -1,11 +1,9 @@
 package eu.europeana.api.commons.net.socks;
 
 import java.net.Authenticator;
-import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
 

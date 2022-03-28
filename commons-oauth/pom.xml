@@ -1,22 +1,19 @@
-<?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
-		<relativePath>../pom.xml</relativePath>
-		<version>0.2.10</version>
 		<artifactId>commons-api-services</artifactId>
+		<version>0.3.14-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>commons-oauth</artifactId>
 	<name>Api Commons - OAuth</name>
+	<url>https://pro.europeana.eu</url>
 	<organization>
 		<name>Europeana Foundation + AIT</name>
 	</organization>
-	<url>https://api.europeana.eu</url>
 
 	<dependencies>
 		<!-- Other -->
@@ -65,13 +62,13 @@
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>${version.apiCommons}</version>
+			<version>0.3.14-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-definitions</artifactId>
-			<version>${version.apiCommons}</version>
+			<version>0.3.14-SNAPSHOT</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->

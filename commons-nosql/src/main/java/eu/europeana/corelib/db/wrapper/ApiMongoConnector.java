@@ -2,7 +2,6 @@ package eu.europeana.corelib.db.wrapper;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -77,6 +76,7 @@ public class ApiMongoConnector {
 			mongoClient = new MongoClient(mongoUri);
 			
 			datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
+			datastore.ensureIndexes();
 			log.info(String.format("Connection to db '%s' mongo server was successful", mongoUri.getDatabase()));
 		} catch (MongoException e) {
 			//runtime exceptions will be logged by the system 
@@ -131,16 +131,18 @@ public class ApiMongoConnector {
 	}
 
 	private SSLContext initSSLContext(String truststore, String truststorePass) {
-		try {
-			// TODO - make keystore type and SSL version configurable
-			String trustStoreLocation = "/config/" + truststore;
-			URL trustStoreUri = getClass().getResource(trustStoreLocation);
-			if (trustStoreUri == null)
-				throw new FileNotFoundException("cannot find trustore file in classpath: " + trustStoreLocation);
-
+		
+		// TODO - make keystore type and SSL version configurable
+		String trustStoreLocation = "/config/" + truststore;
+		URL trustStoreUri = getClass().getResource(trustStoreLocation);
+		if (trustStoreUri == null) {
+		    throw new MongoClientException("cannot find trustore file in classpath: " + trustStoreLocation);  
+		}
+		
+		try(FileInputStream stream = new FileInputStream(new File(trustStoreUri.getFile()))) {
 			KeyStore jks = KeyStore.getInstance("JKS");
-
-			jks.load(new FileInputStream(new File(trustStoreUri.getFile())), truststorePass.toCharArray());
+			
+			jks.load(stream, truststorePass.toCharArray());
 
 			String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
