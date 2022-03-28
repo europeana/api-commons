@@ -132,12 +132,12 @@ public class LogMessage {
                 appName + " - " +
                 "[" + serverDate + "] " +
                 "\"" + method + " " +
-                   urlPath  +
+                urlPath  +
                 " " + httpVersion + "\" " +
-                 + httpStatus + " 0 " +
-                 + bytes + " \'-\' " +
-                  "\"" + userAgent + "\" " +
-                  "\'" + ipPort + "\'" +
+                + httpStatus + " 0 " +
+                + bytes + " \'-\' " +
+                "\"" + userAgent + "\" " +
+                "\'" + ipPort + "\'" +
                 "\'" + cfIpPort + "\'" +
                 " x_forwarded_for:'" + xForwardedFor + '\'' +
                 " x_forwarded_proto:'" + xForwardedProto + '\'' +

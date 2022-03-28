@@ -3,11 +3,7 @@ package eu.europeana.api.commons.logs;
 /**
  * Created by Srishti on 14 September 2020
  */
-public class LogConstants {
-
-    private LogConstants() {
-        // constructor to hide the implicit one
-    }
+public final class LogConstants {
 
     protected static final String HOST                   = "host";
     protected static final String DATE_FORMAT            = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -27,6 +23,10 @@ public class LogConstants {
     protected static final String X_CF_INSTANCEINDEX     = "x-cf-instanceindex";
     protected static final String X_REQUEST_START        = "x-request-start";
     protected static final String X_CLIENT_IP            = "x-client-ip";
+
+    private LogConstants() {
+        // constructor to hide the implicit one
+    }
 
 }
 

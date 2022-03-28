@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 import org.springframework.web.util.WebUtils;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,10 +25,10 @@ import java.util.TimeZone;
 public class LoggableDispatcherServlet extends DispatcherServlet {
 
     private static final Logger LOG = LogManager.getLogger(LoggableDispatcherServlet.class);
-    private static final int BUFFERLENGTH = 5120;
+    private static final int BUFFER_LENGTH = 5120;
 
     @Override
-    protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected void doDispatch(HttpServletRequest request, HttpServletResponse response) {
         long appRequestTime = System.currentTimeMillis();
         String serverTime = getCurrentDateTime();
 
@@ -38,12 +38,6 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         if (!(response instanceof ContentCachingResponseWrapper)) {
             response = new ContentCachingResponseWrapper(response);
         }
-        HandlerExecutionChain handler = null;
-        try {
-            handler = getHandler(request);
-        } catch (Exception e) {
-            LOG.error("Exception occurred while retrieving HandlerExecutionChain from HttpServletRequest", e);
-        }
 
         try {
             super.doDispatch(request, response);
@@ -51,7 +45,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
             LOG.error("Exception occurred while invoking DispatcherServlet", e);
         } finally {
             long processTime = System.currentTimeMillis() - appRequestTime;
-            long bytes = getResponsePayload(response).getBytes().length;
+            long bytes = getResponsePayload(response).getBytes(StandardCharsets.UTF_8).length;
             // time for the response to travel back through the router
             long start = System.currentTimeMillis();
             updateResponse(response);
@@ -218,7 +212,7 @@ public class LoggableDispatcherServlet extends DispatcherServlet {
         if (wrapper != null) {
             byte[] buf = wrapper.getContentAsByteArray();
             if (buf.length > 0) {
-                int length = Math.min(buf.length, BUFFERLENGTH);
+                int length = Math.min(buf.length, BUFFER_LENGTH);
                 try {
                     return new String(buf, 0, length, wrapper.getCharacterEncoding());
                 } catch (UnsupportedEncodingException ex) {
