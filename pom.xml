@@ -16,6 +16,7 @@
 		<module>commons-search</module>
 		<module>commons-web</module>
 		<module>commons-error</module>
+    <module>commons-logs</module>
 	</modules>
 
 	<distributionManagement>
