@@ -27,13 +27,13 @@
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>0.3.14-SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-oauth</artifactId>
-			<version>0.3.14-SNAPSHOT</version>
+			<version>${version}</version>
 		</dependency>
 		
 		<dependency>
