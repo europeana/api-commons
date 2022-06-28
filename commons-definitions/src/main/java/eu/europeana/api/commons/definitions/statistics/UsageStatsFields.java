@@ -10,6 +10,9 @@ public class UsageStatsFields {
     public static final String PUBLIC_SETS        = "NumberOfPublicSets";
     public static final String ITEMS_LIKED        = "NumberOfItemsLiked";
     public static final String SETS_PER_USER      = "AverageSetsPerUser";
+    public static final String NUMBER_OF_USER_WITH_GALLERY          = "NumberOfUsersWithGallery";
+    public static final String NUMBER_OF_USER_WITH_LIKE             = "NumberOfUsersWithLike";
+    public static final String NUMBER_OF_USER_WITH_LIKE_OR_GALLERY  = "NumberOfUsersWithLikeOrGallery";
 
     // entity constants
     public static final String ENTITIES_PER_LANG = "perLanguage";

@@ -18,6 +18,15 @@ public class SetMetric extends Metric {
     @JsonProperty(UsageStatsFields.SETS_PER_USER)
     private long averageSetsPerUser;
 
+    @JsonProperty(UsageStatsFields.NUMBER_OF_USER_WITH_GALLERY)
+    private long numberOfUsersWithGallery;
+
+    @JsonProperty(UsageStatsFields.NUMBER_OF_USER_WITH_LIKE)
+    private long numberOfUsersWithLike;
+
+    @JsonProperty(UsageStatsFields.NUMBER_OF_USER_WITH_LIKE_OR_GALLERY)
+    private long numberOfUsersWithLikeOrGallery;
+
     public long getNoOfPrivateSets() {
         return noOfPrivateSets;
     }
@@ -48,5 +57,29 @@ public class SetMetric extends Metric {
 
     public void setAverageSetsPerUser(long averageSetsPerUser) {
         this.averageSetsPerUser = averageSetsPerUser;
+    }
+
+    public long getNumberOfUsersWithGallery() {
+        return numberOfUsersWithGallery;
+    }
+
+    public void setNumberOfUsersWithGallery(long numberOfUsersWithGallery) {
+        this.numberOfUsersWithGallery = numberOfUsersWithGallery;
+    }
+
+    public long getNumberOfUsersWithLike() {
+        return numberOfUsersWithLike;
+    }
+
+    public void setNumberOfUsersWithLike(long numberOfUsersWithLike) {
+        this.numberOfUsersWithLike = numberOfUsersWithLike;
+    }
+
+    public long getNumberOfUsersWithLikeOrGallery() {
+        return numberOfUsersWithLikeOrGallery;
+    }
+
+    public void setNumberOfUsersWithLikeOrGallery(long numberOfUsersWithLikeOrGallery) {
+        this.numberOfUsersWithLikeOrGallery = numberOfUsersWithLikeOrGallery;
     }
 }
