@@ -107,7 +107,7 @@ public class OAuthUtils {
 	return extractAuthenticationList(authorization, signatureVerifier, api);
     }
 
-    public static List<? extends Authentication> extractAuthenticationList(String authorization,
+    static List<? extends Authentication> extractAuthenticationList(String authorization,
 	    RsaVerifier signatureVerifier, String api)
 	    throws ApiKeyExtractionException, AuthorizationExtractionException {
 	List<Authentication> authenticationList = new ArrayList<Authentication>();
@@ -152,7 +152,8 @@ public class OAuthUtils {
 	Map<String, Object> resourceAccessMap = (Map<String, Object>) data.get(RESOURCE_ACCESS);
 	String principal = (String) data.get(USER_ID);
 	String userName = (String) data.get(PREFERRED_USERNAME);
-
+	String apiKey = extractApiKey(data); 
+	    
 	// each API in resource_access should be processed and
 	// EuropeanaAuthenticationToken will be created for the current API
 	EuropeanaAuthenticationToken authenticationToken;
@@ -173,11 +174,11 @@ public class OAuthUtils {
 	    rolesMap = (Map<String, Object>) entry.getValue();
 	    roles = (List<String>) rolesMap.get(ROLES);
 	    for (String role : roles) {
-		authorities.add(new SimpleGrantedAuthority(role));
+	      authorities.add(new SimpleGrantedAuthority(role));
 	    }
 
 	    authenticationToken = new EuropeanaAuthenticationToken(authorities, details, principal,
-		    new EuropeanaApiCredentials(userName));
+		    new EuropeanaApiCredentials(userName, apiKey));
 	    authenticationList.add(authenticationToken);
 	}
     }
@@ -243,7 +244,7 @@ public class OAuthUtils {
 	return extractCustomData(encodedToken, signatureVerifier, api);
     }
 
-    public static String extractApiKeyFromJwtToken(HttpServletRequest request, RsaVerifier signatureVerifier,
+    static String extractApiKeyFromJwtToken(HttpServletRequest request, RsaVerifier signatureVerifier,
 	    String api) throws ApiKeyExtractionException, AuthorizationExtractionException {
 	Map<String, Object> data = extractCustomData(request, signatureVerifier, api);
 	if (data == null)
@@ -368,5 +369,37 @@ public class OAuthUtils {
 	    throw new AuthorizationExtractionException("Preffered User Name not available in provided JWT token");
 	}
     }
+    
+    /**
+     * create readonly authentication token bazed on JWT Token (known user)
+     * @param apiName
+     * @param data
+     * @return
+     * @throws ApiKeyExtractionException
+     */
+    public static Authentication buildReadOnlyAuthenticationToken(String apiName, Map<String, Object> data)
+        throws ApiKeyExtractionException {
+      Authentication authentication;
+      ////return Authentication object for read only user
+      String userName = (String) data.get(OAuthUtils.PREFERRED_USERNAME);
+      if(userName == null) {
+        userName = EuropeanaApiCredentials.USER_ANONYMOUS;
+      }
+      String principal = (String) data.get(OAuthUtils.USER_ID);
+      String apiKey = OAuthUtils.extractApiKey(data);
+          authentication = new EuropeanaAuthenticationToken(null, apiName,
+      principal,    new EuropeanaApiCredentials(userName, apiKey));
+      return authentication;
+    }
 
+    /**
+     * create readonly authentication token based on API Key only (anonymous user of known/verified client)
+     * @param apiName
+     * @param wsKey
+     * @return
+     */
+    public static EuropeanaAuthenticationToken buildReadOnlyAuthenticationToken(String apiName, String wsKey) {
+      return new EuropeanaAuthenticationToken(null, apiName, EuropeanaApiCredentials.USER_ANONYMOUS, 
+        new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS, wsKey));
+    }
 }

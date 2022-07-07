@@ -90,8 +90,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 	    getLog().info("Invocation of API Key Service failed. Silently approve apikey: " + wsKey, e);
 	}
 	
-	return new EuropeanaAuthenticationToken(null, getApiName(), wsKey, 
-		new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS));
+	//anonymous user, only the client application is verified by API key 
+	return OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), wsKey);
     }
 
     private Authentication authorizeReadByJwtToken(HttpServletRequest request)
@@ -108,20 +108,15 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 			null, HttpStatus.UNAUTHORIZED, null);
 
 	    if (data.containsKey(OAuthUtils.USER_ID)) {
+	    //read access is provided to any authenticated user  
 		List<Authentication> authList = new ArrayList<Authentication>(); 
 		OAuthUtils.processResourceAccessClaims(getApiName(), data, authList);
 		if(!authList.isEmpty()) {
 		    authentication = authList.get(0);
 		}else {
-		    ////return Authentication object for read only user
-		    String userName = (String) data.get(OAuthUtils.PREFERRED_USERNAME);
-		    if(userName == null) {
-			userName = EuropeanaApiCredentials.USER_ANONYMOUS;
-		    }
-		    authentication = new EuropeanaAuthenticationToken(null, getApiName(),
-				(String) data.get(OAuthUtils.USER_ID),
-				new EuropeanaApiCredentials(userName));
-		    
+		    //for backward compatibility, we allow read access to users that don't have a token created specifically for current  API
+		    //TODO: in the future we might still want to verify the scope of the JWT token.  
+		    authentication = OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), data);    
 		}
 	    }
 	} catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
@@ -131,6 +126,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
 	return authentication;
     }
+
 
     /*
      * (non-Javadoc)
