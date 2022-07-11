@@ -107,7 +107,17 @@ public class OAuthUtils {
 	return extractAuthenticationList(authorization, signatureVerifier, api);
     }
 
-    static List<? extends Authentication> extractAuthenticationList(String authorization,
+    /**
+     * @deprecated the visibility of this method should be reduced in the future and the processJwtToken should be used instead. The services should overwrite the verifyRead/WriteAccess where needed
+     * @param authorization
+     * @param signatureVerifier
+     * @param api
+     * @return
+     * @throws ApiKeyExtractionException
+     * @throws AuthorizationExtractionException
+     */
+    @Deprecated
+    public static List<? extends Authentication> extractAuthenticationList(String authorization,
 	    RsaVerifier signatureVerifier, String api)
 	    throws ApiKeyExtractionException, AuthorizationExtractionException {
 	List<Authentication> authenticationList = new ArrayList<Authentication>();
