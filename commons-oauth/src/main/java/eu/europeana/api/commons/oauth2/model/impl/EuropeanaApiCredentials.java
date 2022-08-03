@@ -5,9 +5,10 @@ import eu.europeana.api.commons.oauth2.model.ApiCredentials;
 public class EuropeanaApiCredentials implements ApiCredentials {
 
   public static final String USER_ANONYMOUS = "annonymous";
+  public static final String CLIENT_UNKNOWN = "unknown";
 
   private String userName;
-  private String apiKey;
+  private String clientId;
 
   /**
    * @deprecated use the constructor {@link #EuropeanaApiCredentials(String, String)} instead
@@ -18,9 +19,9 @@ public class EuropeanaApiCredentials implements ApiCredentials {
     this(userName, null);
   }
 
-  public EuropeanaApiCredentials(String userName, String apiKey) {
+  public EuropeanaApiCredentials(String userName, String clientId) {
     this.userName = userName;
-    this.apiKey = apiKey;
+    this.clientId = clientId;
   }
 
   @Override
@@ -32,11 +33,11 @@ public class EuropeanaApiCredentials implements ApiCredentials {
     this.userName = userName;
   }
 
-  public String getApiKey() {
-    return apiKey;
+  public String getClientId() {
+    return clientId;
   }
 
-  public void setApiKey(String apiKey) {
-    this.apiKey = apiKey;
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 }

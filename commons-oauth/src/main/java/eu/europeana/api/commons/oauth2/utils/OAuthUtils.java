@@ -50,7 +50,9 @@ public class OAuthUtils {
     public static final String PREFERRED_USERNAME = "preferred_username";
     // user id
     public static final String USER_ID = "sub";
-
+    //client ID
+    public static final String CLIENT_ID = "client_public_id";
+    
     static JsonParser objectMapper = JsonParserFactory.create();
 
     /**
@@ -162,7 +164,8 @@ public class OAuthUtils {
 	Map<String, Object> resourceAccessMap = (Map<String, Object>) data.get(RESOURCE_ACCESS);
 	String principal = (String) data.get(USER_ID);
 	String userName = (String) data.get(PREFERRED_USERNAME);
-	String apiKey = extractApiKey(data); 
+//	String apiKey = extractApiKey(data); 
+	String clientId = (String) data.get(CLIENT_ID);
 	    
 	// each API in resource_access should be processed and
 	// EuropeanaAuthenticationToken will be created for the current API
@@ -188,7 +191,7 @@ public class OAuthUtils {
 	    }
 
 	    authenticationToken = new EuropeanaAuthenticationToken(authorities, details, principal,
-		    new EuropeanaApiCredentials(userName, apiKey));
+		    new EuropeanaApiCredentials(userName, clientId));
 	    authenticationList.add(authenticationToken);
 	}
     }
@@ -395,10 +398,15 @@ public class OAuthUtils {
       if(userName == null) {
         userName = EuropeanaApiCredentials.USER_ANONYMOUS;
       }
+      
       String principal = (String) data.get(OAuthUtils.USER_ID);
-      String apiKey = OAuthUtils.extractApiKey(data);
+      String clientId = (String) data.get(OAuthUtils.CLIENT_ID);
+      if(clientId == null) {
+        clientId = EuropeanaApiCredentials.CLIENT_UNKNOWN;
+      }
+//      String apiKey = OAuthUtils.extractApiKey(data);
           authentication = new EuropeanaAuthenticationToken(null, apiName,
-      principal,    new EuropeanaApiCredentials(userName, apiKey));
+      principal,    new EuropeanaApiCredentials(userName, clientId));
       return authentication;
     }
 
@@ -410,6 +418,6 @@ public class OAuthUtils {
      */
     public static EuropeanaAuthenticationToken buildReadOnlyAuthenticationToken(String apiName, String wsKey) {
       return new EuropeanaAuthenticationToken(null, apiName, EuropeanaApiCredentials.USER_ANONYMOUS, 
-        new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS, wsKey));
+        new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS, EuropeanaApiCredentials.CLIENT_UNKNOWN));
     }
 }
