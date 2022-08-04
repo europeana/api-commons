@@ -19,7 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
-
+import org.mongodb.morphia.mapping.Mapper;
+import org.mongodb.morphia.mapping.MapperOptions;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientException;
 import com.mongodb.MongoClientOptions;
@@ -60,8 +61,12 @@ public class ApiMongoConnector {
 	}
 
 	public Datastore createDatastore(String connectionUri, String truststore, String truststorePass, int maxConnectionIdleTime) {
+	  return createDatastore(connectionUri, truststore, truststorePass, maxConnectionIdleTime, null); 
+	}
+	
+	public Datastore createDatastore(String connectionUri, String truststore, String truststorePass, int maxConnectionIdleTime, String mongoModelPackage) {
 		Datastore datastore = null;
-		Morphia connection = new Morphia();
+		Morphia connection;
 		try {
 			log.debug("Connecting to mongo server:" + connectionUri);
 			
@@ -75,8 +80,23 @@ public class ApiMongoConnector {
 			MongoClientURI mongoUri = new MongoClientURI(connectionUri, mco);
 			mongoClient = new MongoClient(mongoUri);
 			
-			datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
-			datastore.ensureIndexes();
+			if (StringUtils.isNotBlank(mongoModelPackage)) {
+              
+              MapperOptions options = new MapperOptions();
+              options.setMapSubPackages(true);
+              Mapper packageMapper = new Mapper(options);
+              connection = new Morphia(packageMapper);
+              //map classes
+              connection.mapPackage(mongoModelPackage, false);
+              datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
+              
+              //to create indexes
+              datastore.ensureIndexes();
+              
+            } else {
+              connection = new Morphia();
+              datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());  
+            }
 			log.info(String.format("Connection to db '%s' mongo server was successful", mongoUri.getDatabase()));
 		} catch (MongoException e) {
 			//runtime exceptions will be logged by the system 
