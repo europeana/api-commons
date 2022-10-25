@@ -1,4 +1,4 @@
-package eu.europeana.api.commons.utils;
+package eu.europeana.api.commons.definitions.utils;
 
 import java.util.*;
 
