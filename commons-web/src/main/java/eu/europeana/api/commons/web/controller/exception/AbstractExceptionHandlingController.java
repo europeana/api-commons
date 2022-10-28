@@ -8,8 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.core.NestedRuntimeException;
@@ -44,8 +42,6 @@ import eu.europeana.api.commons.web.model.ApiResponse;
  */
 public abstract class AbstractExceptionHandlingController extends ApiResponseBuilder {
 
-	Logger logger = LogManager.getLogger(getClass());
-	
 	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>(); 
 	//see DefaultHandlerExceptionResolver.doResolveException
 	static {
@@ -66,34 +62,27 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	
 	@ExceptionHandler(HttpException.class)
 	public ResponseEntity<String> handleHttpException(HttpException ex, HttpServletRequest req,
-			HttpServletResponse response) throws IOException {
+			HttpServletResponse response) {
 
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-
-		logger.error("respond with http exception:", ex);
 		return buildErrorResponse(res, ex.getStatus());
 
 	}
 
 	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response)
-			throws IOException {
+	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
 
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-
-		logger.error("respond with internal server error for runtime exception:", ex);
 		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler({ServletException.class, NestedRuntimeException.class, MethodArgumentNotValidException.class, BindException.class})
 	public ResponseEntity<String> handleMissingRequestParamException(Exception ex, HttpServletRequest req,
-			HttpServletResponse response) throws IOException {
-
-		
+			HttpServletResponse response) {
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		
 		HttpStatus statusCode = statusCodeMap.get(ex.getClass());
@@ -102,7 +91,6 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-		logger.error("respond with internal server error for spring exception:", ex);
 		return buildErrorResponse(res, statusCode);
 	}
 	
