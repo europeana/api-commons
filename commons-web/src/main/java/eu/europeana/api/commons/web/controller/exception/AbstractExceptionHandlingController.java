@@ -71,8 +71,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-
-		logger.error("respond with http exception:", ex);
+		logTraceOrErrorMessage(ex.getStatus(), ex, "respond with http exception:");
 		return buildErrorResponse(res, ex.getStatus());
 
 	}
@@ -84,7 +83,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-
+		// for runtime exception, log the stacktrace
 		logger.error("respond with internal server error for runtime exception:", ex);
 		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -102,7 +101,8 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-		logger.error("respond with internal server error for spring exception:", ex);
+
+		logTraceOrErrorMessage(statusCode, ex, "respond with internal server error for spring exception:");
 		return buildErrorResponse(res, statusCode);
 	}
 	
@@ -123,4 +123,10 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		return headers;
 	}
 
+	private void logTraceOrErrorMessage(HttpStatus status, Exception ex, String message) {
+		if (status.value() >= 500) {
+			logger.error(message, ex);
+		}
+		logger.error(message, ex.getMessage());
+	}
 }
