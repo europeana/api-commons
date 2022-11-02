@@ -44,7 +44,7 @@ import eu.europeana.api.commons.web.model.ApiResponse;
  */
 public abstract class AbstractExceptionHandlingController extends ApiResponseBuilder {
 
-	Logger logger = LogManager.getLogger(getClass());
+	Logger LOG = LogManager.getLogger(getClass());
 	
 	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>(); 
 	//see DefaultHandlerExceptionResolver.doResolveException
@@ -77,20 +77,19 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	}
 
 	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response)
-			throws IOException {
+	public ResponseEntity<String> handleException(Exception ex, HttpServletRequest req, HttpServletResponse response) {
 
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 		// for runtime exception, log the stacktrace
-		logger.error("respond with internal server error for runtime exception:", ex);
+		LOG.error("respond with internal server error for runtime exception:", ex);
 		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler({ServletException.class, NestedRuntimeException.class, MethodArgumentNotValidException.class, BindException.class})
 	public ResponseEntity<String> handleMissingRequestParamException(Exception ex, HttpServletRequest req,
-			HttpServletResponse response) throws IOException {
+			HttpServletResponse response) {
 
 		
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
@@ -112,8 +111,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		
 		MultiValueMap<String, String> headers = buildHeadersMap();
 
-		ResponseEntity<String> responseEntity = new ResponseEntity<String>(body, headers, status);
-		return responseEntity;
+		return new ResponseEntity<String>(body, headers, status);
 	}
 	
 	protected MultiValueMap<String, String> buildHeadersMap() {
@@ -125,8 +123,8 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 
 	private void logTraceOrErrorMessage(HttpStatus status, Exception ex, String message) {
 		if (status.value() >= 500) {
-			logger.error(message, ex);
+			LOG.error(message, ex);
 		}
-		logger.error(message, ex.getMessage());
+		LOG.error(message, ex.getMessage());
 	}
 }
