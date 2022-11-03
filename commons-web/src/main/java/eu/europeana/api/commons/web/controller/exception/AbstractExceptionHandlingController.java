@@ -87,7 +87,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler({ServletException.class, NestedRuntimeException.class, MethodArgumentNotValidException.class, BindException.class})
+	@ExceptionHandler({ServletException.class, NestedRuntimeException.class, BindException.class})
 	public ResponseEntity<String> handleMissingRequestParamException(Exception ex, HttpServletRequest req,
 			HttpServletResponse response) {
 
@@ -101,7 +101,8 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 
-		logTraceOrErrorMessage(statusCode, ex, "respond with internal server error for spring exception:");
+		// for NestedRuntime exception, and known servlet/spring exceptions log the stacktrace as well
+                LOG.error("respond with internal server error for runtime exception:", ex);
 		return buildErrorResponse(res, statusCode);
 	}
 	
