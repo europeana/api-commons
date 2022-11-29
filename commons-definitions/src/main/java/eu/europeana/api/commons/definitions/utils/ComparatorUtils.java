@@ -9,12 +9,17 @@ public class ComparatorUtils implements Comparator<String> {
     }
 
     public static String stripPunctuation(String value) {
-        return value.replaceAll("[\\p{Punct}]+", "");
+        return value.replaceAll(PUNCTUATION_REGEX, "");
     }
 
+    @SuppressWarnings("unchecked")
     public static List<String> stripPunctuations(List<String> list) {
-        List<String> listWithoutPunctuation = new ArrayList();
-        Iterator var2 = list.iterator();
+      if(list == null) {
+        return Collections.EMPTY_LIST;
+      }
+      
+      List<String> listWithoutPunctuation = new ArrayList<>(list.size());
+      Iterator<String> var2 = list.iterator();
 
         while(var2.hasNext()) {
             String value = (String)var2.next();
@@ -25,7 +30,7 @@ public class ComparatorUtils implements Comparator<String> {
     }
 
     public static List<String> removeDuplicates(List<String> listWithDuplicates) {
-        Set<String> set = new TreeSet(new ComparatorUtils());
+        Set<String> set = new TreeSet<>(new ComparatorUtils());
         set.addAll(listWithDuplicates);
         listWithDuplicates.clear();
         listWithDuplicates.addAll(set);
