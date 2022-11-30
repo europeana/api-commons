@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -16,8 +15,10 @@ import java.util.TreeSet;
  */
 public class ComparatorUtils implements Comparator<String>, Serializable {
     private static final String PUNCTUATION_REGEX = "[\\p{Punct}]+";
+    static final long serialUID = 1L;
 
-    public ComparatorUtils() {
+    private ComparatorUtils() {
+      super();
     }
 
     
@@ -41,35 +42,33 @@ public class ComparatorUtils implements Comparator<String>, Serializable {
       }
       
       List<String> listWithoutPunctuation = new ArrayList<>(list.size());
-      Iterator<String> var2 = list.iterator();
-
-        while(var2.hasNext()) {
-            listWithoutPunctuation.add(stripPunctuation(var2.next()));
-        }
-
-        return listWithoutPunctuation;
+      for (String value : list) {
+        listWithoutPunctuation.add(stripPunctuation(value));
+      }
+      return listWithoutPunctuation;
     }
 
     /**
-     * remove duplicates
-     * @param listWithDuplicates
-     * @return processed list
+     * remove duplicates from the input list
+     * @param listWithDuplicates the input list 
      */
-    public static List<String> removeDuplicates(List<String> listWithDuplicates) {
+    public static void removeDuplicates(List<String> listWithDuplicates) {
         Set<String> set = new TreeSet<>(new ComparatorUtils());
         set.addAll(listWithDuplicates);
         listWithDuplicates.clear();
         listWithDuplicates.addAll(set);
-        return listWithDuplicates;
     }
 
     /**
      * verify if the two values differ only in empty spaces
      * @param value1 - input string 1
      * @param value2 - input string 2
-     * @return
+     * @return true if the two values differ only in empty spaces
      */
     public static boolean sameValueWithoutSpace(String value1, String value2) {
+        if(value1 == null || value2 == null) {
+          return false;
+        }
         return value1.replaceAll("\\s+", "").equalsIgnoreCase(value2.replaceAll("\\s+", ""));
     }
 
