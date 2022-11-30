@@ -13,9 +13,9 @@ import java.util.TreeSet;
  * @author GordeaS
  *
  */
-public class ComparatorUtils implements Comparator<String>, Serializable {
+public final class ComparatorUtils implements Comparator<String>, Serializable {
     private static final String PUNCTUATION_REGEX = "[\\p{Punct}]+";
-    static final long serialUID = 1L;
+    static final long serialVersionUID = 1L;
 
     private ComparatorUtils() {
       super();
