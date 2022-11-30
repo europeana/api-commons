@@ -44,7 +44,7 @@ import eu.europeana.api.commons.web.model.ApiResponse;
  */
 public abstract class AbstractExceptionHandlingController extends ApiResponseBuilder {
 
-	Logger LOG = LogManager.getLogger(getClass());
+	Logger logger = LogManager.getLogger(getClass());
 	
 	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>(); 
 	//see DefaultHandlerExceptionResolver.doResolveException
@@ -83,7 +83,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
 		// for runtime exception, log the stacktrace
-		LOG.error("respond with internal server error for runtime exception:", ex);
+		logger.error("respond with internal server error for runtime exception:", ex);
 		return buildErrorResponse(res, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -102,7 +102,7 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 				ex, includeErrorStack);
 
 		// for NestedRuntime exception, and known servlet/spring exceptions log the stacktrace as well
-                LOG.error("respond with internal server error for runtime exception:", ex);
+                logger.error("respond with internal server error for runtime exception:", ex);
 		return buildErrorResponse(res, statusCode);
 	}
 	
@@ -123,9 +123,10 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 	}
 
 	private void logTraceOrErrorMessage(HttpStatus status, Exception ex, String message) {
-		if (status.value() >= 500) {
-			LOG.error(message, ex);
+		int INTERNAL_SERVER_ERROR = 500;
+        if (status.value() >= INTERNAL_SERVER_ERROR) {
+			logger.error(message, ex);
 		}
-		LOG.error(message, ex.getMessage());
+		logger.error(message, ex.getMessage());
 	}
 }
