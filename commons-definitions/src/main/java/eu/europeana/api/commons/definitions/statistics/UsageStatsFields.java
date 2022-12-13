@@ -24,4 +24,8 @@ public class UsageStatsFields {
     public static final String CONCEPT       = "concept";
     public static final String AGENT         = "agent";
     public static final String TOTAL         = "total";
+
+    public static final String ITEMS_LINKED_TO_ENTITIES = "itemsLinkedToEntities";
+    public static final String OVERALL = "overall";
+
 }
