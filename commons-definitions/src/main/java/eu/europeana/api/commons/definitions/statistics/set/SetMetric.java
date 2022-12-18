@@ -27,6 +27,12 @@ public class SetMetric extends Metric {
     @JsonProperty(UsageStatsFields.NUMBER_OF_USER_WITH_LIKE_OR_GALLERY)
     private long numberOfUsersWithLikeOrGallery;
 
+    @JsonProperty(UsageStatsFields.NUMBER_OF_ENTITY_SETS)
+    private long numberOfEntitySets;
+
+    @JsonProperty(UsageStatsFields.NUMBER_OF_ITEMS_IN_ENTITY_SETS)
+    private long numberOfItemsInEntitySets;
+
     public long getNoOfPrivateSets() {
         return noOfPrivateSets;
     }
@@ -81,5 +87,21 @@ public class SetMetric extends Metric {
 
     public void setNumberOfUsersWithLikeOrGallery(long numberOfUsersWithLikeOrGallery) {
         this.numberOfUsersWithLikeOrGallery = numberOfUsersWithLikeOrGallery;
+    }
+
+    public long getNumberOfEntitySets() {
+      return numberOfEntitySets;
+    }
+
+    public void setNumberOfEntitySets(long numberOfEntitySets) {
+      this.numberOfEntitySets = numberOfEntitySets;
+    }
+
+    public long getNumberOfItemsInEntitySets() {
+      return numberOfItemsInEntitySets;
+    }
+
+    public void setNumberOfItemsInEntitySets(long numberOfItemsInEntitySets) {
+      this.numberOfItemsInEntitySets = numberOfItemsInEntitySets;
     }
 }
