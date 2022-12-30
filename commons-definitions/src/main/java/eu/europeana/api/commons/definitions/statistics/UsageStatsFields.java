@@ -28,4 +28,22 @@ public class UsageStatsFields {
     public static final String ITEMS_LINKED_TO_ENTITIES = "itemsLinkedToEntities";
     public static final String OVERALL = "overall";
 
+    // search api constants
+    public static final String IMAGE = "IMAGE";
+    public static final String TEXT = "TEXT";
+    public static final String AUDIO = "AUDIO";
+    public static final String VIDEO = "VIDEO";
+    public static final String THREE_D = "3D";
+
+    public static final String ALL_RECORDS = "allRecords";
+    public static final String NON_COMPLAINT_RECORDS = "nonCompliantRecord";
+    public static final String ALL_COMPLAINT_RECORDS = "allCompliantRecords";
+    public static final String HIGH_QUALITY_DATA = "highQualityData";
+    public static final String HIGH_QUALITY_CONTENT = "highQualityContent";
+    public static final String HIGH_QUALITY_RESUABLE_CONTENT = "highQualityReusableContent";
+    public static final String HIGH_QUALITY_METADATA = "highQualityMetadata";
+
+
+
+
 }
