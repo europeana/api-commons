@@ -1,12 +1,11 @@
 package eu.europeana.api.commons.definitions.statistics.search;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import eu.europeana.api.commons.definitions.statistics.UsageStatsFields;
 
 @JsonPropertyOrder({UsageStatsFields.AGENT, UsageStatsFields.CONCEPT, UsageStatsFields.ORGANISATION, UsageStatsFields.PLACE,
-        UsageStatsFields.TIMESPAN, UsageStatsFields.OVERALL})
+        UsageStatsFields.TIMESPAN, UsageStatsFields.ALL})
 public class LinkedItemMetric {
 
     @JsonProperty(UsageStatsFields.TIMESPAN)
@@ -24,8 +23,8 @@ public class LinkedItemMetric {
     @JsonProperty(UsageStatsFields.PLACE)
     private long places;
 
-    @JsonProperty(UsageStatsFields.OVERALL)
-    private long total;
+    @JsonProperty(UsageStatsFields.ALL)
+    private long all;
 
     public long getTimespans() {
         return timespans;
@@ -67,16 +66,11 @@ public class LinkedItemMetric {
         this.places = places;
     }
 
-    public long getTotal() {
-        return total;
+    public long getAll() {
+        return all;
     }
 
-    public void setTotal(long total) {
-        this.total = total;
-    }
-
-    @JsonIgnore
-    public long getOverallTotal() {
-        return this.places + this.agents + this.concepts + this.organisations + this.timespans;
+    public void setAll(long all) {
+        this.all = all;
     }
 }

@@ -26,7 +26,7 @@ public class UsageStatsFields {
     public static final String TOTAL         = "total";
 
     public static final String ITEMS_LINKED_TO_ENTITIES = "itemsLinkedToEntities";
-    public static final String OVERALL = "overall";
+    public static final String ALL = "all";
 
     // search api constants
     public static final String IMAGE = "IMAGE";
@@ -42,8 +42,5 @@ public class UsageStatsFields {
     public static final String HIGH_QUALITY_CONTENT = "highQualityContent";
     public static final String HIGH_QUALITY_RESUABLE_CONTENT = "highQualityReusableContent";
     public static final String HIGH_QUALITY_METADATA = "highQualityMetadata";
-
-
-
 
 }
