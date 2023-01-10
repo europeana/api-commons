@@ -13,6 +13,8 @@ public class UsageStatsFields {
     public static final String NUMBER_OF_USER_WITH_GALLERY          = "NumberOfUsersWithGallery";
     public static final String NUMBER_OF_USER_WITH_LIKE             = "NumberOfUsersWithLike";
     public static final String NUMBER_OF_USER_WITH_LIKE_OR_GALLERY  = "NumberOfUsersWithLikeOrGallery";
+    public static final String NUMBER_OF_ENTITY_SETS                = "NumberOfEntitySets";
+    public static final String NUMBER_OF_ITEMS_IN_ENTITY_SETS       = "NumberOfItemsInEntitySets";
 
     // entity constants
     public static final String ENTITIES_PER_LANG = "perLanguage";
