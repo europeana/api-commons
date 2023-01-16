@@ -13,7 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -162,26 +161,6 @@ public class EuropeanaGlobalExceptionHandler {
                 .status(responseStatus)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(response);
-    }
-
-    /**
-     * Handler for AuthenticationException
-     * works for the exceptions thrown by spring security custom filters
-     */
-    @ExceptionHandler
-    public ResponseEntity<EuropeanaApiErrorResponse> handleAuthenticationError(AuthenticationException e,
-        HttpServletRequest httpRequest) {
-        HttpStatus responseStatus = HttpStatus.UNAUTHORIZED;
-        EuropeanaApiErrorResponse errorResponse = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
-            .setStatus(responseStatus.value())
-            .setError(responseStatus.getReasonPhrase())
-            .setMessage("Not authorized")
-            .build();
-
-        return ResponseEntity
-            .status(responseStatus)
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(errorResponse);
     }
 
     /**
