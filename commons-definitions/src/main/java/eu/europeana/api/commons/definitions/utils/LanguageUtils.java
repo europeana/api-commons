@@ -5,6 +5,12 @@ import java.util.Set;
 
 public class LanguageUtils {
 
-  public static final Set<String> ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
+  private static Set<String> ISO_LANGUAGES;
 
+  public static boolean isIsoLanguage(String lang) {
+    if(ISO_LANGUAGES==null) {
+      ISO_LANGUAGES = Set.of(Locale.getISOLanguages());
+    }
+    return ISO_LANGUAGES.contains(lang);
+  }
 }
