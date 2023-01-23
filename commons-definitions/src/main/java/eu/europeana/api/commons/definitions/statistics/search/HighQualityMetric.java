@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import eu.europeana.api.commons.definitions.statistics.UsageStatsFields;
 
 @JsonPropertyOrder({UsageStatsFields.IMAGE, UsageStatsFields.TEXT, UsageStatsFields.AUDIO, UsageStatsFields.VIDEO,
-        UsageStatsFields.THREE_D, UsageStatsFields.TOTAL})
+        UsageStatsFields.THREE_D, UsageStatsFields.ALL})
 public class HighQualityMetric {
 
     @JsonProperty(UsageStatsFields.IMAGE)
@@ -24,8 +24,8 @@ public class HighQualityMetric {
     @JsonProperty(UsageStatsFields.THREE_D)
     private long threeD;
 
-    @JsonProperty(UsageStatsFields.TOTAL)
-    private long total;
+    @JsonProperty(UsageStatsFields.ALL)
+    private long all;
 
     public long getImage() {
         return image;
@@ -67,12 +67,12 @@ public class HighQualityMetric {
         this.threeD = threeD;
     }
 
-    public long getTotal() {
-        return total;
+    public long getAll() {
+        return all;
     }
 
-    public void setTotal(long total) {
-        this.total = total;
+    public void setAll(long all) {
+        this.all = all;
     }
 
     @JsonIgnore
