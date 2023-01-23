@@ -17,7 +17,9 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
 	public static final String ALLOW = "Allow";
 	
     public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
+    public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
     public static final String PREFER = "Prefer";
+    public static final String PREFERENCE_APPLIED = "Preference-Applied";
     
     public static final String ALLOW_GOH = "GET,OPTIONS,HEAD";
 	public static final String ALLOW_POST = "POST";
