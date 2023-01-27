@@ -14,6 +14,10 @@ public class EntitiesPerLanguage extends EntityStats {
     public EntitiesPerLanguage() {
     }
 
+    public EntitiesPerLanguage(String lang) {
+        this.lang = lang;
+    }
+
     public String getLang() {
         return lang;
     }

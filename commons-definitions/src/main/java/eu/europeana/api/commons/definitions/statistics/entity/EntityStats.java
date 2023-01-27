@@ -1,74 +1,84 @@
 package eu.europeana.api.commons.definitions.statistics.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europeana.api.commons.definitions.statistics.UsageStatsFields;
 
 public class EntityStats {
 
     @JsonProperty(UsageStatsFields.TIMESPAN)
-    private float timespans;
+    private long timespans;
 
     @JsonProperty(UsageStatsFields.CONCEPT)
-    private float concepts;
+    private long concepts;
 
     @JsonProperty(UsageStatsFields.ORGANISATION)
-    private float organisations;
+    private long organisations;
 
     @JsonProperty(UsageStatsFields.AGENT)
-    private float agents;
+    private long agents;
 
     @JsonProperty(UsageStatsFields.PLACE)
-    private float places;
+    private long places;
 
-    @JsonProperty(UsageStatsFields.TOTAL)
-    private float total;
+    @JsonProperty(UsageStatsFields.ALL)
+    private long all;
 
-    public float getTimespans() {
+    public long getTimespans() {
         return timespans;
     }
 
-    public void setTimespans(float timespans) {
+    public void setTimespans(long timespans) {
         this.timespans = timespans;
     }
 
-    public float getConcepts() {
+    public long getConcepts() {
         return concepts;
     }
 
-    public void setConcepts(float concepts) {
+    public void setConcepts(long concepts) {
         this.concepts = concepts;
     }
 
-    public float getOrganisations() {
+    public long getOrganisations() {
         return organisations;
     }
 
-    public void setOrganisations(float organisations) {
+    public void setOrganisations(long organisations) {
         this.organisations = organisations;
     }
 
-    public float getAgents() {
+    public long getAgents() {
         return agents;
     }
 
-    public void setAgents(float agents) {
+    public void setAgents(long agents) {
         this.agents = agents;
     }
 
-    public float getPlaces() {
+    public long getPlaces() {
         return places;
     }
 
-    public void setPlaces(float places) {
+    public void setPlaces(long places) {
         this.places = places;
     }
 
-    public float getTotal() {
-        return total;
+    public long getAll() {
+        return all;
     }
 
-    public void setTotal(float total) {
-        this.total = total;
+    public void setAll(long all) {
+        this.all = all;
+    }
+
+    @JsonIgnore
+    public long getOverall() {
+        return (this.agents + this.concepts + this.organisations + this.places + this.timespans);
+    }
+
+    public boolean entitiesAvailable() {
+        return (this.agents != 0 && this.concepts != 0 && this.organisations !=0 && this.places !=0 && this.timespans !=0) ;
     }
 }
 
