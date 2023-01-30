@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import eu.europeana.api.commons.definitions.statistics.Metric;
 import eu.europeana.api.commons.definitions.statistics.UsageStatsFields;
+import eu.europeana.api.commons.definitions.statistics.entity.EntityStats;
 
 @JsonPropertyOrder({UsageStatsFields.TYPE, UsageStatsFields.CREATED, UsageStatsFields.ITEMS_LINKED_TO_ENTITIES, UsageStatsFields.ALL_RECORDS,
         UsageStatsFields.NON_COMPLAINT_RECORDS, UsageStatsFields.ALL_COMPLAINT_RECORDS, UsageStatsFields.HIGH_QUALITY_DATA,
@@ -19,7 +20,7 @@ public class SearchMetric extends Metric {
      * Items linked to entities per type
      */
     @JsonProperty(UsageStatsFields.ITEMS_LINKED_TO_ENTITIES)
-    private LinkedItemMetric itemsLinkedToEntities;
+    private EntityStats itemsLinkedToEntities;
 
     /**
      * Break down of all records per type
@@ -63,12 +64,11 @@ public class SearchMetric extends Metric {
     @JsonProperty(UsageStatsFields.HIGH_QUALITY_METADATA)
     private HighQualityMetric highQualityMetadata;
 
-
-    public LinkedItemMetric getItemsLinkedToEntities() {
+    public EntityStats getItemsLinkedToEntities() {
         return itemsLinkedToEntities;
     }
 
-    public void setItemsLinkedToEntities(LinkedItemMetric itemsLinkedToEntities) {
+    public void setItemsLinkedToEntities(EntityStats itemsLinkedToEntities) {
         this.itemsLinkedToEntities = itemsLinkedToEntities;
     }
 
