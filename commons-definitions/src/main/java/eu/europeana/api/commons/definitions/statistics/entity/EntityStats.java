@@ -2,8 +2,11 @@ package eu.europeana.api.commons.definitions.statistics.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import eu.europeana.api.commons.definitions.statistics.UsageStatsFields;
 
+@JsonPropertyOrder({UsageStatsFields.AGENT, UsageStatsFields.CONCEPT, UsageStatsFields.ORGANISATION, UsageStatsFields.PLACE,
+        UsageStatsFields.TIMESPAN})
 public class EntityStats {
 
     @JsonProperty(UsageStatsFields.TIMESPAN)
