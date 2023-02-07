@@ -1,8 +1,7 @@
 package eu.europeana.corelib.db.wrapper;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -10,10 +9,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
-
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -159,9 +156,9 @@ public class ApiMongoConnector {
 		    throw new MongoClientException("cannot find trustore file in classpath: " + trustStoreLocation);  
 		}
 		
-		try(FileInputStream stream = new FileInputStream(new File(trustStoreUri.getFile()))) {
+		
+		try(InputStream stream = getClass().getResourceAsStream(trustStoreLocation)) {
 			KeyStore jks = KeyStore.getInstance("JKS");
-			
 			jks.load(stream, truststorePass.toCharArray());
 
 			String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
