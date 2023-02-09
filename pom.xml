@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.europeana.api.commons</groupId>
@@ -16,7 +18,7 @@
 		<module>commons-search</module>
 		<module>commons-web</module>
 		<module>commons-error</module>
-    <module>commons-logs</module>
+		<module>commons-logs</module>
 	</modules>
 
 	<distributionManagement>
@@ -36,8 +38,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<sonar.organization>europeana</sonar.organization>
 
 		<version.spring>5.3.13</version.spring>
 		<version.springBoot>2.6.1</version.springBoot>
