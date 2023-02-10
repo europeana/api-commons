@@ -154,7 +154,8 @@ public class ApiMongoConnector {
 		URL trustStoreUri = getClass().getResource(trustStoreLocation);
 		if (trustStoreUri == null) {
 		  //fallback for backward compatibility
-		  //search in config subfolder
+		  log.info("truststore not at location: {}, search in config subfolder.", trustStoreLocation);
+          //search in config subfolder
 		  trustStoreLocation = "/config/" + truststore;
 		  trustStoreUri = getClass().getResource(trustStoreLocation);
 		  if (trustStoreUri == null) {
