@@ -108,7 +108,7 @@ public class ApiMongoConnector {
 		MongoClientOptions.Builder mco = MongoClientOptions.builder();
 		
 		if(isSslEnabled(connectionUri)){
-			//allow invalid host names (required by mongo)
+			//allow invalid host names (required for host aliases)
 			mco.sslEnabled(true).sslInvalidHostNameAllowed(true);
 			
 			//if the trustore is configured will be used for mongo connection
@@ -144,18 +144,23 @@ public class ApiMongoConnector {
 	}
 
 	private boolean isSslEnabled(String connectionUri) {
-		return connectionUri.contains("ssl=true");
+		return connectionUri.contains("tls=true") || connectionUri.contains("ssl=true");
 	}
 
 	private SSLContext initSSLContext(String truststore, String truststorePass) {
 		
 		// TODO - make keystore type and SSL version configurable
-		String trustStoreLocation = "/config/" + truststore;
+		String trustStoreLocation = "/" + truststore;
 		URL trustStoreUri = getClass().getResource(trustStoreLocation);
 		if (trustStoreUri == null) {
-		    throw new MongoClientException("cannot find trustore file in classpath: " + trustStoreLocation);  
+		  //fallback for backward compatibility
+		  //search in config subfolder
+		  trustStoreLocation = "/config/" + truststore;
+		  trustStoreUri = getClass().getResource(trustStoreLocation);
+		  if (trustStoreUri == null) {
+		    throw new MongoClientException("cannot find trustore file in classpath: " + trustStoreLocation);
+		  }
 		}
-		
 		
 		try(InputStream stream = getClass().getResourceAsStream(trustStoreLocation)) {
 			KeyStore jks = KeyStore.getInstance("JKS");
@@ -165,12 +170,12 @@ public class ApiMongoConnector {
 			TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
 			tmf.init(jks);
 
+			//add the TLS protocol version to configurations when needed 
 			sslContext = SSLContext.getInstance("TLSv1.2");
 			sslContext.init(null, tmf.getTrustManagers(), new SecureRandom());
 			return sslContext;
 		} catch (KeyManagementException | IOException | KeyStoreException | NoSuchAlgorithmException
 				| CertificateException ex) {
-
 			throw new MongoClientException("Cannot initialize mongo truststore", ex);
 		}
 	}
