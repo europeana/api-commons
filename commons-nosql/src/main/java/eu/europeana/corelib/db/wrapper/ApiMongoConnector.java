@@ -57,11 +57,11 @@ public class ApiMongoConnector {
 
   public Datastore createDatastore(String connectionUri, String truststore, String truststorePass,
       int maxConnectionIdleTime) {
-    return createDatastore(connectionUri, truststore, truststorePass, maxConnectionIdleTime, null);
+    return createDatastore(connectionUri, truststore, truststorePass, maxConnectionIdleTime, (String[]) null);
   }
 
   public Datastore createDatastore(String connectionUri, String truststore, String truststorePass,
-      int maxConnectionIdleTime, String mongoModelPackage) {
+      int maxConnectionIdleTime, String... mongoModelPackage) {
     Datastore datastore = null;
     Morphia connection;
     try {
@@ -78,19 +78,8 @@ public class ApiMongoConnector {
       MongoClientURI mongoUri = new MongoClientURI(connectionUri, mco);
       mongoClient = new MongoClient(mongoUri);
 
-      if (StringUtils.isNotBlank(mongoModelPackage)) {
-
-        MapperOptions options = new MapperOptions();
-        options.setMapSubPackages(true);
-        Mapper packageMapper = new Mapper(options);
-        connection = new Morphia(packageMapper);
-        // map classes
-        connection.mapPackage(mongoModelPackage, false);
-        datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
-
-        // to create indexes
-        datastore.ensureIndexes();
-
+      if (mongoModelPackage != null && mongoModelPackage.length > 0) {
+        datastore = createConnectionAndIndices(mongoUri, mongoModelPackage);
       } else {
         connection = new Morphia();
         datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
@@ -101,6 +90,25 @@ public class ApiMongoConnector {
       // runtime exceptions will be logged by the system
       throw e;
     }
+    return datastore;
+  }
+
+
+  private Datastore createConnectionAndIndices(MongoClientURI mongoUri,
+      String... mongoModelPackage) {
+   
+    MapperOptions options = new MapperOptions();
+    options.setMapSubPackages(true);
+    Mapper packageMapper = new Mapper(options);
+    Morphia connection = new Morphia(packageMapper);
+    // map classes
+    for (String modelPackage : mongoModelPackage) {
+      connection.mapPackage(modelPackage, false);
+    }
+    Datastore datastore = connection.createDatastore(mongoClient, mongoUri.getDatabase());
+
+    // to create indexes
+    datastore.ensureIndexes();
     return datastore;
   }
 

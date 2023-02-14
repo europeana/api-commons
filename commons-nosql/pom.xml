@@ -32,7 +32,18 @@
 			<artifactId>morphia</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-definitions</artifactId>
+			<version>0.3.19-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${version.spring}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

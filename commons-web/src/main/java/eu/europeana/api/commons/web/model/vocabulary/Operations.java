@@ -12,5 +12,6 @@ public interface Operations {
 	//admin
 	public static final String ADMIN_ALL = "admin_all";
 	public static final String PERMANENT_DELETE = "perm_delete";
-    
+	public static final String WRITE_LOCK = "write_lock";
+	
 }
