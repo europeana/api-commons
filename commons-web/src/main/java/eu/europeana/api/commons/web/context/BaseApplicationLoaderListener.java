@@ -34,7 +34,7 @@ public abstract class BaseApplicationLoaderListener {
 	
 	protected void registerSocksProxy(){
 		String socksProxyUrl = getProps().getProperty(SOCKS_PROXY_URL);
-		if(StringUtils.isEmpty(socksProxyUrl))
+		if(StringUtils.hasLength(socksProxyUrl))
 			return;
 		try {
 			SocksProxyConfig socksProxy;
