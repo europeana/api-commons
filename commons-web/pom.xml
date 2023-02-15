@@ -32,6 +32,12 @@
 		
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-nosql</artifactId>
+			<version>0.3.19-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-oauth</artifactId>
 			<version>0.3.19-SNAPSHOT</version>
 		</dependency>

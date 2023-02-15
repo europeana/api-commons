@@ -17,6 +17,9 @@ public interface I18nConstants {
 	//404
 	static final String RESOURCE_NOT_FOUND = "error.not_found";
 	
+	//423
+	public static final String LOCKED_MAINTENANCE = "error.userset_lock_maintenance";
+	
 	//500
 	static final String SERVER_ERROR_UNEXPECTED = "error.server_unexpected_error";
 	
@@ -25,5 +28,6 @@ public interface I18nConstants {
 	static final String BASE64_DECODING_FAIL = "error.entity_base64_encoding_fail";
 	static final String EXPIRATION_TIMESTAMP_NOT_VALID = "error.expiration_timestamp_not_valid";
 	static final String JWT_TOKEN_ERROR = "error.jwt_token_error";	
+	
 	
 }

@@ -17,11 +17,15 @@ import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
+import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
+import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
+import eu.europeana.api.commons.nosql.service.ApiWriteLockService;
 import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
+import eu.europeana.api.commons.web.model.vocabulary.Operations;
 
 public abstract class BaseAuthorizationService implements AuthorizationService {
 
@@ -193,6 +197,13 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 		new String[] { "Operation not permitted or not GrantedAuthority found for operation:" + operation },
 		HttpStatus.FORBIDDEN);
     }
+    
+    
+    public Authentication checkPermissions(Authentication authentication,
+        String operation) throws ApplicationAuthenticationException{
+      return checkPermissions(List.of(authentication), getApiName(), operation);
+    }
+    
 
     /**
      * This method performs checking, whether an operation is supported for provided
@@ -221,6 +232,39 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
 	return false;
     }
+    
+    /**
+     * Check if a write lock is in effect. Returns HttpStatus.LOCKED in case the write lock is active.
+     * To be used for preventing access to the write operations when the application is locked
+     * Needs to be called explicitly in the verifyWriteAccess methods of individual apis
+     * 
+     * @param userToken
+     * @param operationName
+     * @throws UserAuthorizationException
+     */
+    public void checkWriteLockInEffect(String operationName) throws ApplicationAuthenticationException {
+      ApiWriteLock activeWriteLock;
+      try {
+          activeWriteLock = getApiWriteLockService().getLastActiveLock(ApiWriteLock.LOCK_WRITE_TYPE);
+          // refuse operation if a write lock is effective (allow only unlock and retrieve
+          // operations)
+          if (activeWriteLock == null){
+            //the application is not locked
+            return;
+          }
+          
+          if(!Operations.WRITE_UNLOCK.equals(operationName)) {
+            // unlock operation should be permitted when the application is locked
+            //activeWriteLock.getEnded()==null
+            throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE, I18nConstants.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED, null);
+          }
+      } catch (ApiWriteLockException e) {
+          throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE, I18nConstants.LOCKED_MAINTENANCE, null,
+              HttpStatus.LOCKED, e);
+      }
+    }
+
+    protected abstract ApiWriteLockService getApiWriteLockService();
 
     /**
      * This method returns the api specific Role for the given role name
