@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europeana.api.commons</groupId>
 		<artifactId>commons-api-services</artifactId>
-		<version>0.3.19</version>
+		<version>0.3.20-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -62,13 +62,13 @@
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>0.3.19</version>
+			<version>0.3.20-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-definitions</artifactId>
-			<version>0.3.19</version>
+			<version>0.3.20-SNAPSHOT</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
