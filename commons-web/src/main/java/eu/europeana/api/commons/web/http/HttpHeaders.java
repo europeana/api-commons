@@ -24,6 +24,7 @@ public interface HttpHeaders extends javax.ws.rs.core.HttpHeaders{
     public static final String ALLOW_GOH = "GET,OPTIONS,HEAD";
 	public static final String ALLOW_POST = "POST";
 	public static final String ALLOW_GET = "GET";
+	public static final String ALLOW_DELETE = "DELETE";
 	public static final String ALLOW_GPuD = "GET,PUT,DELETE";
 	
 	public static final String CONTENT_TYPE_JSON_UTF8 = MediaType.APPLICATION_JSON_VALUE+";charset=utf-8";
