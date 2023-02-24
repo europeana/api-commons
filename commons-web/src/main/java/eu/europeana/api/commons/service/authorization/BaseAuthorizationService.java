@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -253,7 +254,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
             return;
           }
           
-          if(!Operations.WRITE_UNLOCK.equals(operationName)) {
+          if(!isMaintenanceOperation(operationName)) {
             // unlock operation should be permitted when the application is locked
             //activeWriteLock.getEnded()==null
             throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE, I18nConstants.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED, null);
@@ -262,6 +263,24 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
           throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE, I18nConstants.LOCKED_MAINTENANCE, null,
               HttpStatus.LOCKED, e);
       }
+    }
+    
+    /**
+     * Indicates if the given operation is allowed when locked for maintenance.
+     * Basically 
+     * @param operationName
+     * @return
+     */
+    protected boolean isMaintenanceOperation(String operationName) {
+      return getMaintenanceOperations().contains(operationName);
+    }
+
+    /**
+     * Returns the list of 
+     * @return
+     */
+    protected Set<String> getMaintenanceOperations(){
+      return Set.of(Operations.WRITE_UNLOCK);
     }
 
     protected abstract ApiWriteLockService getApiWriteLockService();
