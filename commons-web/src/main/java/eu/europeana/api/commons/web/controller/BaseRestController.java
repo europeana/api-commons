@@ -1,13 +1,9 @@
 package eu.europeana.api.commons.web.controller;
 
-import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
 import java.util.Date;
-
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.security.core.Authentication;
-
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
@@ -16,6 +12,7 @@ import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException
 import eu.europeana.api.commons.web.exception.HeaderValidationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
+import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
 
 public abstract class BaseRestController {
 
@@ -75,8 +72,9 @@ public abstract class BaseRestController {
      */
     public String generateETag(Date timestamp, String format, String version) {
 	// add timestamp, format and version to an etag
-	Integer hashCode = (timestamp + format + version).hashCode();
-	return hashCode.toString();
+    Integer hcInt = Long.valueOf(timestamp.getTime()).hashCode() + format.hashCode() + version.hashCode();
+    // according to the specs the eTag should be placed between double quotes: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
+	return "\"" + hcInt + "\"";
     }
 
   /**
