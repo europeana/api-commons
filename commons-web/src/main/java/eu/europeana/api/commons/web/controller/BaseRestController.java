@@ -71,10 +71,10 @@ public abstract class BaseRestController {
      * @return etag value
      */
     public String generateETag(Date timestamp, String format, String version) {
-	// add timestamp, format and version to an etag
-    Integer hcInt = Long.valueOf(timestamp.getTime()).hashCode() + format.hashCode() + version.hashCode();
-    // according to the specs the eTag should be placed between double quotes: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
-	return "\"" + hcInt + "\"";
+      // add timestamp, format and version to an etag
+      long serialCode = timestamp.getTime() + format.hashCode() + version.hashCode();
+      // see also https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
+      return "W/\"" + Long.toHexString(serialCode)  + "\"";
     }
 
   /**
