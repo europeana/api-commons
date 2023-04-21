@@ -72,7 +72,13 @@ public abstract class BaseRestController {
      */
     public String generateETag(Date timestamp, String format, String version) {
       // add timestamp, format and version to an etag
-      long serialCode = timestamp.getTime() + format.hashCode() + version.hashCode();
+      long serialCode = timestamp.getTime() + format.hashCode();
+      if(version != null) {
+        serialCode += version.hashCode(); 
+      } else {
+        serialCode += "0.0.1-SNAPSHOT".hashCode();
+      }
+        
       // see also https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
       return "W/\"" + Long.toHexString(serialCode)  + "\"";
     }
