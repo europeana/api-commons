@@ -79,8 +79,7 @@ public abstract class BaseRestController {
         serialCode += "0.0.1-SNAPSHOT".hashCode();
       }
         
-      // see also https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
-      return "W/\"" + Long.toHexString(serialCode)  + "\"";
+      return "\"" + Long.toHexString(serialCode)  + "\"";
     }
 
   /**
