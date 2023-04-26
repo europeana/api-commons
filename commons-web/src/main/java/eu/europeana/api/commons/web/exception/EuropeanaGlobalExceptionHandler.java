@@ -1,4 +1,4 @@
-package eu.europeana.api.commons.error;
+package eu.europeana.api.commons.web.exception;
 
 import java.util.List;
 import java.util.Set;
@@ -21,6 +21,9 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import eu.europeana.api.commons.error.EuropeanaApiErrorResponse;
+import eu.europeana.api.commons.error.EuropeanaApiException;
+import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
 
 /**
  * Global exception handler that catches all errors and logs the interesting ones
@@ -35,6 +38,8 @@ public class EuropeanaGlobalExceptionHandler {
 
     private static final Logger LOG = LogManager.getLogger(EuropeanaGlobalExceptionHandler.class);
 
+    protected AbstractRequestPathMethodService requestPathMethodService;
+    
     /**
      * Checks if {@link EuropeanaApiException} instances should be logged or not
      *
@@ -76,7 +81,7 @@ public class EuropeanaGlobalExceptionHandler {
 
         return ResponseEntity
                 .status(e.getResponseStatus())
-                .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHttpHeaders(httpRequest))
                 .body(response);
     }
 
@@ -96,7 +101,7 @@ public class EuropeanaGlobalExceptionHandler {
 
         return ResponseEntity
                 .status(responseStatus)
-                .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHttpHeaders(httpRequest))
                 .body(response);
     }
 
@@ -141,7 +146,7 @@ public class EuropeanaGlobalExceptionHandler {
 
         return ResponseEntity
                 .status(responseStatus)
-                .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHttpHeaders(httpRequest))
                 .body(response);
     }
 
@@ -159,7 +164,7 @@ public class EuropeanaGlobalExceptionHandler {
 
         return ResponseEntity
                 .status(responseStatus)
-                .contentType(MediaType.APPLICATION_JSON)
+                .headers(createHttpHeaders(httpRequest))
                 .body(response);
     }
 
@@ -179,7 +184,7 @@ public class EuropeanaGlobalExceptionHandler {
 
         return ResponseEntity
             .status(responseStatus)
-            .contentType(MediaType.APPLICATION_JSON)
+            .headers(createHttpHeaders(httpRequest))
             .body(response);
     }
 
@@ -205,7 +210,17 @@ public class EuropeanaGlobalExceptionHandler {
 
         return ResponseEntity
             .status(responseStatus)
-            .contentType(MediaType.APPLICATION_JSON)
+            .headers(createHttpHeaders(httpRequest))
             .body(response);
+    }
+    
+    protected HttpHeaders createHttpHeaders(HttpServletRequest httpRequest) {
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      if(requestPathMethodService!=null) {
+        String allowHeaderValue = requestPathMethodService.getMethodsForRequestPattern(httpRequest).orElse(httpRequest.getMethod());
+        headers.add(HttpHeaders.ALLOW, allowHeaderValue);
+      }
+      return headers;
     }
 }

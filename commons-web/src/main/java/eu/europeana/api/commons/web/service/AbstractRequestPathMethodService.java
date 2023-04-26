@@ -32,7 +32,7 @@ public abstract class AbstractRequestPathMethodService implements InitializingBe
    */
   private final Map<String, Set<String>> requestPathMethodMap = new HashMap<>();
 
-  private final WebApplicationContext applicationContext;
+  protected final WebApplicationContext applicationContext;
 
   protected AbstractRequestPathMethodService(
       WebApplicationContext applicationContext) {
