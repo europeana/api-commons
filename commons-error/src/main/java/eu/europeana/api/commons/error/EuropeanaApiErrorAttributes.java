@@ -54,7 +54,7 @@ public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
             String paramName = it.next();
             s.append(paramName);
             String paramValue = webRequest.getParameter(paramName);
-            if (!StringUtils.isEmpty(paramValue)) {
+            if (StringUtils.hasText(paramValue)) {
                 s.append("=").append(paramValue);
             }
         }

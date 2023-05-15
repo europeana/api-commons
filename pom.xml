@@ -40,7 +40,7 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<sonar.organization>europeana</sonar.organization>
 
-		<version.spring>5.3.13</version.spring>
+		<version.spring>5.3.18</version.spring>
 		<version.springBoot>2.6.1</version.springBoot>
 		<version.springSecurityJwt>1.1.1.RELEASE</version.springSecurityJwt>
 		<version.springSecurityOauth>2.5.1.RELEASE</version.springSecurityOauth>

@@ -89,10 +89,13 @@ public abstract class BaseRestController {
    */
   protected String getMethodsForRequestPattern(HttpServletRequest request,
       AbstractRequestPathMethodService requestMethodService) {
-    Optional<String> methodsForRequestPattern =
+    if(requestMethodService != null) {
+      Optional<String> methodsForRequestPattern =
         requestMethodService.getMethodsForRequestPattern(request);
-
-    return methodsForRequestPattern.orElse(request.getMethod());
+      return methodsForRequestPattern.orElse(request.getMethod());
+    }else {
+      return request.getMethod();
+    }
   }
 
 }
