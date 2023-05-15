@@ -216,11 +216,23 @@ public class EuropeanaGlobalExceptionHandler {
     
     protected HttpHeaders createHttpHeaders(HttpServletRequest httpRequest) {
       HttpHeaders headers = new HttpHeaders();
+      //enforce application/json as content type, it is the only serialization supported for exceptions
       headers.setContentType(MediaType.APPLICATION_JSON);
-      if(requestPathMethodService!=null) {
-        String allowHeaderValue = requestPathMethodService.getMethodsForRequestPattern(httpRequest).orElse(httpRequest.getMethod());
+      
+      //autogenerate allow header if the service is configured
+      if(getRequestPathMethodService()!=null) {
+        String allowHeaderValue = getRequestPathMethodService().getMethodsForRequestPattern(httpRequest).orElse(httpRequest.getMethod());
         headers.add(HttpHeaders.ALLOW, allowHeaderValue);
       }
       return headers;
+    }
+
+    /**
+     * The bean needs to be defined in the individual APIs
+     * 
+     * @return
+     */
+    AbstractRequestPathMethodService getRequestPathMethodService() {
+      return requestPathMethodService;
     }
 }

@@ -79,8 +79,7 @@ public abstract class BaseRestController {
         serialCode += "0.0.1-SNAPSHOT".hashCode();
       }
         
-      // see also https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
-      return "W/\"" + Long.toHexString(serialCode)  + "\"";
+      return "\"" + Long.toHexString(serialCode)  + "\"";
     }
 
   /**
@@ -90,10 +89,13 @@ public abstract class BaseRestController {
    */
   protected String getMethodsForRequestPattern(HttpServletRequest request,
       AbstractRequestPathMethodService requestMethodService) {
-    Optional<String> methodsForRequestPattern =
+    if(requestMethodService != null) {
+      Optional<String> methodsForRequestPattern =
         requestMethodService.getMethodsForRequestPattern(request);
-
-    return methodsForRequestPattern.orElse(request.getMethod());
+      return methodsForRequestPattern.orElse(request.getMethod());
+    }else {
+      return request.getMethod();
+    }
   }
 
 }
