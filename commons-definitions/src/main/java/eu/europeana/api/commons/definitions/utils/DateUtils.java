@@ -69,4 +69,15 @@ public class DateUtils {
     }
   }
   
+  /**
+   * Convert a java date to an OffsetDateTime using the UTC time zone 
+   * @param date java util date, possible created as local date time
+   * @return the OffsetDateTime using the UTC time zone
+   */
+  public static OffsetDateTime toOffsetDateTime(Date date){
+    return OffsetDateTime.ofInstant(date.toInstant(), ZoneOffset.UTC);
+  }
+  
+  
+  
 }
