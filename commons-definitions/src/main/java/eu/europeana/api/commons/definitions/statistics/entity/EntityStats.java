@@ -81,7 +81,7 @@ public class EntityStats {
     }
 
     public boolean entitiesAvailable() {
-        return (this.agents != 0 && this.concepts != 0 && this.organisations !=0 && this.places !=0 && this.timespans !=0) ;
+        return (this.agents != 0 || this.concepts != 0 || this.organisations !=0 || this.places !=0 || this.timespans !=0) ;
     }
 }
 
