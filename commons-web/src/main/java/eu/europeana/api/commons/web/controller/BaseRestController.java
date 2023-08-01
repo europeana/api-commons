@@ -3,6 +3,8 @@ package eu.europeana.api.commons.web.controller;
 import java.util.Date;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
@@ -17,6 +19,15 @@ import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
 public abstract class BaseRestController {
 
     protected abstract AuthorizationService getAuthorizationService();
+
+
+    /**
+     * If apikey service url is empty, disable the authentication
+     * @return
+     */
+    public boolean isAuthEnabled(String apikyServiceUrl) {
+        return StringUtils.isNotEmpty(apikyServiceUrl);
+    }
 
     /**
      * This method adopts KeyCloack token from HTTP request and verifies write
