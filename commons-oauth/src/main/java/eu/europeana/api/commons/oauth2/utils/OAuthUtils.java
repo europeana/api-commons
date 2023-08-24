@@ -165,7 +165,8 @@ public class OAuthUtils {
 	String principal = (String) data.get(USER_ID);
 	String userName = (String) data.get(PREFERRED_USERNAME);
 //	String apiKey = extractApiKey(data); 
-	String clientId = (String) data.get(CLIENT_ID);
+	//avoid NPE
+	String clientId = (String) data.getOrDefault(CLIENT_ID, null);
 	    
 	// each API in resource_access should be processed and
 	// EuropeanaAuthenticationToken will be created for the current API
