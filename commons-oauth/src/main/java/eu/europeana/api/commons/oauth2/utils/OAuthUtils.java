@@ -179,16 +179,13 @@ public class OAuthUtils {
       List<Authentication> authenticationList, boolean verifyResouceAccess)
       throws ApiKeyExtractionException {
     
-    //flag to indicate if resource access (permissions) needs to be verified, or if only the client and user needs to be verified 
-    boolean clientAuthorizationOnly = !verifyResouceAccess;
-    
     // verify scope, aud and resource access
     if (!verifyScope(api, data)) {
       // token not intended to have write access to current api
       return;
     }
 
-    if (!verifyAudience(api, data)) {
+    if (verifyResouceAccess && !verifyAudience(api, data)) {
       // token not intended to have write access to current api
       return;
     }
@@ -204,17 +201,10 @@ public class OAuthUtils {
     // avoid NPE
     String clientId = (String) data.getOrDefault(CLIENT_ID, null);
     
-    if (clientAuthorizationOnly && clientId == null) {
-      // client authorization only, client id is mandatory
-      throw new ApiKeyExtractionException(
-          "Invalid JWT token. Mandatory field for client authentication is missing: " + CLIENT_ID);
-    }
-    
     // extract user name or use anonymous
     String userName =
         (String) data.getOrDefault(PREFERRED_USERNAME, EuropeanaApiCredentials.USER_ANONYMOUS);
     
-
     //create AuthenticationTokens
     if (verifyResouceAccess) {
       // process permissions
@@ -222,11 +212,9 @@ public class OAuthUtils {
         Map<String, Object> resourceAccessMap = (Map<String, Object>) data.get(RESOURCE_ACCESS);
         processResourceAccessMap(api, authenticationList, resourceAccessMap, principal, userName,
             clientId);
-        return;
       }
     } else {
-
-      // grant access with default user role
+      // grant access with default user role (client authorization based only on the scope)
       List<GrantedAuthority> authorities =
           List.of(new SimpleGrantedAuthority(EuropeanaAuthenticationToken.DEFAULT_ROLE_USER));
       EuropeanaAuthenticationToken authenticationToken = new EuropeanaAuthenticationToken(
@@ -476,10 +464,8 @@ public class OAuthUtils {
     }
 
     String principal = (String) data.get(OAuthUtils.USER_ID);
-    String clientId = (String) data.get(OAuthUtils.CLIENT_ID);
-    if (clientId == null) {
-      clientId = EuropeanaApiCredentials.CLIENT_UNKNOWN;
-    }
+    String clientId = (String) data.getOrDefault(OAuthUtils.CLIENT_ID, EuropeanaApiCredentials.CLIENT_UNKNOWN);
+    
     // String apiKey = OAuthUtils.extractApiKey(data);
     authentication = new EuropeanaAuthenticationToken(null, apiName, principal,
         new EuropeanaApiCredentials(userName, clientId));
