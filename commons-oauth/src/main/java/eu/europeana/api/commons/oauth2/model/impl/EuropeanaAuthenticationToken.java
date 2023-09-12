@@ -25,6 +25,7 @@ public class EuropeanaAuthenticationToken extends AbstractAuthenticationToken {
     String principal = null;
     ApiCredentials credentials;
     
+    public static final String DEFAULT_ROLE_USER = "user";
     
 //    public EuropeanaAuthenticationToken(Collection<? extends GrantedAuthority> grantedAuthorities) {
 //	super(grantedAuthorities);
