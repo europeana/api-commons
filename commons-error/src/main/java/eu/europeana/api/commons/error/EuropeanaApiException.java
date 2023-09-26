@@ -13,6 +13,7 @@ public class EuropeanaApiException extends Exception {
      */
     private static final long serialVersionUID = -1354471712894853562L;
     private final String errorCode;
+    private HttpStatus responseStatus;
 
     /**
      * Initialise a new exception
@@ -89,11 +90,19 @@ public class EuropeanaApiException extends Exception {
 
     /**
      * Gets the HTTP status for this exception.
-     * By default this returns HttpStatus.INTERNAL_SERVER_ERROR
+     * By default (if now explicit responseStatus was set) HttpStatus.INTERNAL_SERVER_ERROR is returned
      *
      * @return HTTP status for exception
      */
     public HttpStatus getResponseStatus() {
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+        return responseStatus!=null ? responseStatus :HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    /**
+     * Sets the status to be used in the api response
+     * @param statusCode
+     */
+    public void setResponseStatus(HttpStatus statusCode) {
+      this.responseStatus = statusCode;
     }
 }

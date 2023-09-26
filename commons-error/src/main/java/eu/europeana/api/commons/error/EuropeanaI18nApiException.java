@@ -1,5 +1,7 @@
 package eu.europeana.api.commons.error;
 
+import org.springframework.http.HttpStatus;
+
 public class EuropeanaI18nApiException extends EuropeanaApiException {
   
   private static final long serialVersionUID = 97524780344752123L;
@@ -13,9 +15,17 @@ public class EuropeanaI18nApiException extends EuropeanaApiException {
 	this.i18nKey = i18nKey;
 	this.i18nParams = i18nParams;
   }
+  
+  public EuropeanaI18nApiException(String message, String errorCode, HttpStatus responseStatus, String i18nKey, String[] i18nParams){
+    super(message, errorCode);
+    super.setResponseStatus(responseStatus);
+    this.i18nKey = i18nKey;
+    this.i18nParams = i18nParams;
+  }
 	
-  public EuropeanaI18nApiException(String message, String errorCode, String i18nKey, String[] i18nParams, Throwable th){
+  public EuropeanaI18nApiException(String message, String errorCode, HttpStatus responseStatus, String i18nKey, String[] i18nParams, Throwable th){
 	super(message, errorCode, th);
+	super.setResponseStatus(responseStatus);
 	this.i18nKey = i18nKey;
 	this.i18nParams = i18nParams;
   }
