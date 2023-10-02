@@ -172,7 +172,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     if(authenticationList == null || authenticationList.isEmpty()) {
       throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
           I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"Invalid token or ApiKey, resource access not granted!"},
-          HttpStatus.UNAUTHORIZED);
+          HttpStatus.FORBIDDEN);
     }
     
     if(verifyResourceAccess) {

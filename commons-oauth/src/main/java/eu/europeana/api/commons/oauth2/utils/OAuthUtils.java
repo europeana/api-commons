@@ -6,9 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -19,7 +17,6 @@ import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.common.util.JsonParser;
 import org.springframework.security.oauth2.common.util.JsonParserFactory;
-
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
@@ -32,6 +29,7 @@ import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
  * @author GrafR
  * 
  */
+@SuppressWarnings("deprecation")
 public class OAuthUtils {
 
   public static final String HEADER_XAPIKEY = "X-Api-Key";
@@ -99,7 +97,6 @@ public class OAuthUtils {
    * @throws AuthorizationExtractionException if the Authorization header cannot be successfully
    *         extracted from request
    */
-  @SuppressWarnings("deprecation")
   public static List<? extends Authentication> processJwtToken(HttpServletRequest request,
       RsaVerifier signatureVerifier, String api, boolean verifyResourceAcess)
       throws ApiKeyExtractionException, AuthorizationExtractionException {
@@ -400,10 +397,8 @@ public class OAuthUtils {
    * @param api the name of the api to which read access is requested
    * @param data custom data in the JWT token
    * @return
-   * @throws ApiKeyExtractionException if the scope field is not present in the token
    */
-  private static boolean verifyScope(String api, Map<String, Object> data)
-      throws ApiKeyExtractionException {
+  private static boolean verifyScope(String api, Map<String, Object> data){
 
     if (!data.containsKey(SCOPE)) {
       // read only token
