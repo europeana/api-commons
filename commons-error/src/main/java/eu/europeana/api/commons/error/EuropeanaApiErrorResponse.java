@@ -4,7 +4,9 @@ package eu.europeana.api.commons.error;
 import static eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants.QUERY_PARAM_PROFILE_SEPARATOR;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
@@ -17,15 +19,24 @@ import org.springframework.util.StringUtils;
  * This class contains fields to be returned by APIs when an error occurs within the application.
  *
  */
-@JsonPropertyOrder({"success", "status", "error", "message", "timestamp", "path"})
+@JsonPropertyOrder({"@context", "type", "success", "status", "code", "error", "message", "seeAlso", "timestamp", "path", "trace"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class EuropeanaApiErrorResponse {
+  
+   @JsonIgnore
+   public static final String CONTEXT = "http://www.europeana.eu/schemas/context/api.jsonld";
+  
+  
+    @JsonProperty("@context")
+    private final String context = CONTEXT;
+    private final String type = "ErrorResponse";
     private final boolean success = false;
 
     private final int status;
     private final String error;
 
     private final String message;
+    private final String seeAlso;
 
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss'Z'")
     private final OffsetDateTime timestamp = OffsetDateTime.now();
@@ -36,13 +47,14 @@ public class EuropeanaApiErrorResponse {
 
     private final String code;
 
-    private EuropeanaApiErrorResponse(int status, String error, String message, String trace, String path, String code) {
+    private EuropeanaApiErrorResponse(int status, String code, String error, String message, String seeAlso, String path, String trace) {
         this.status = status;
+        this.code = code;
         this.error = error;
         this.message = message;
-        this.trace = trace;
+        this.seeAlso = seeAlso;
         this.path = path;
-        this.code = code;
+        this.trace = trace;
     }
 
     public String getError() {
@@ -85,7 +97,8 @@ public class EuropeanaApiErrorResponse {
         private String trace;
         private final String path;
         private String code;
-
+        private String seeAlso;
+        
         public Builder(HttpServletRequest httpRequest, Exception e, boolean stacktraceEnabled) {
             this.path = ResponseUtils.getRequestPath(httpRequest);
             boolean includeErrorStack = false;
@@ -104,24 +117,38 @@ public class EuropeanaApiErrorResponse {
             this.status = status;
             return this;
         }
-
-        public Builder setMessage(String message) {
-            this.message = message;
-            return this;
+        
+        public Builder setCode(String code) {
+          this.code = code;
+          return this;
         }
 
         public Builder setError(String error) {
             this.error = error;
             return this;
         }
-
-        public Builder setCode(String code) {
-            this.code = code;
-            return this;
+        
+        public Builder setMessage(String message) {
+          this.message = message;
+          return this;
         }
+
+        public Builder setSeeAlso(String seeAlso) {
+          this.seeAlso = seeAlso;
+          return this;
+        }
+       
 
         public EuropeanaApiErrorResponse build() {
-            return new EuropeanaApiErrorResponse(status, error, message, trace, path, code);
+            return new EuropeanaApiErrorResponse(status, code, error, message, seeAlso, path, trace);
         }
+    }
+   
+    public String getType() {
+      return type;
+    }
+
+    public String getSeeAlso() {
+      return seeAlso;
     }
 }

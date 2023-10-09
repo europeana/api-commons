@@ -35,6 +35,9 @@ public class EuropeanaGlobalExceptionHandler {
 
     @Value("${server.error.include-stacktrace:ON_PARAM}")
     private ErrorProperties.IncludeStacktrace includeStacktraceConfig;
+    
+    @Value("${server.error.see-also:}")    
+    private String seeAlso;
 
     private static final Logger LOG = LogManager.getLogger(EuropeanaGlobalExceptionHandler.class);
 
@@ -73,10 +76,11 @@ public class EuropeanaGlobalExceptionHandler {
         logException(e);
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(e.getResponseStatus().value())
-                .setError(e.getResponseStatus().getReasonPhrase())
-                .setMessage(e.doExposeMessage() ? e.getMessage() : null)
                 // code only included in JSON if a value is set in exception
                 .setCode(e.getErrorCode())
+                .setError(e.getResponseStatus().getReasonPhrase())
+                .setMessage(e.doExposeMessage() ? e.getMessage() : null)
+                .setSeeAlso(seeAlso)
                 .build();
 
         return ResponseEntity
@@ -97,6 +101,7 @@ public class EuropeanaGlobalExceptionHandler {
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(responseStatus.value())
                 .setError(responseStatus.getReasonPhrase())
+                .setSeeAlso(seeAlso)
                 .build();
 
         return ResponseEntity
@@ -116,6 +121,7 @@ public class EuropeanaGlobalExceptionHandler {
                 .setStatus(responseStatus.value())
                 .setError(responseStatus.getReasonPhrase())
                 .setMessage(e.getMessage())
+                .setSeeAlso(seeAlso)
                 .build();
 
         Set<HttpMethod> supportedMethods = e.getSupportedHttpMethods();
@@ -160,6 +166,7 @@ public class EuropeanaGlobalExceptionHandler {
                 .setStatus(responseStatus.value())
                 .setError(responseStatus.getReasonPhrase())
                 .setMessage(e.getMessage())
+                .setSeeAlso(seeAlso)
                 .build();
 
         return ResponseEntity
@@ -180,6 +187,7 @@ public class EuropeanaGlobalExceptionHandler {
             .setStatus(responseStatus.value())
             .setError(responseStatus.getReasonPhrase())
             .setMessage("Server could not generate a response that is acceptable by the client")
+            .setSeeAlso(seeAlso)
             .build();
 
         return ResponseEntity
@@ -206,6 +214,7 @@ public class EuropeanaGlobalExceptionHandler {
             .setStatus(responseStatus.value())
             .setMessage("Invalid request body")
             .setError(error)
+            .setSeeAlso(seeAlso)
             .build();
 
         return ResponseEntity
@@ -234,5 +243,9 @@ public class EuropeanaGlobalExceptionHandler {
      */
     AbstractRequestPathMethodService getRequestPathMethodService() {
       return requestPathMethodService;
+    }
+
+    public String getSeeAlso() {
+      return seeAlso;
     }
 }

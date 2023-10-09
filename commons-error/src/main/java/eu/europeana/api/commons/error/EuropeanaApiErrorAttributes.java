@@ -1,15 +1,16 @@
 package eu.europeana.api.commons.error;
 
+import static eu.europeana.api.commons.error.EuropeanaApiErrorResponse.CONTEXT;
+import java.time.OffsetDateTime;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.WebRequest;
-
-import java.time.OffsetDateTime;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Modifications we make to the default Spring-Boot error response. Make sure this class is loaded by Spring.
@@ -17,6 +18,9 @@ import java.util.Map;
 @Component
 public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
 
+    @Value("${server.error.see-also:}")    
+    private String seeAlso;
+  
     /**
      * Used by Spring to display errors with no custom handler.
      * Since we explicitly return {@link EuropeanaApiErrorResponse} on errors within controllers, this method is only invoked when
@@ -28,9 +32,17 @@ public class EuropeanaApiErrorAttributes extends DefaultErrorAttributes {
 
         // use LinkedHashMap to guarantee display order
         LinkedHashMap<String, Object> europeanaErrorAttributes = new LinkedHashMap<>();
+        europeanaErrorAttributes.put("@context", CONTEXT);
+        europeanaErrorAttributes.put("type", "ErrorResponse");
         europeanaErrorAttributes.put("success", false);
         europeanaErrorAttributes.put("status", defaultErrorAttributes.get("status"));
+        //code only available for internal API errors 
         europeanaErrorAttributes.put("error", defaultErrorAttributes.get("error"));
+        europeanaErrorAttributes.put("message", defaultErrorAttributes.get("message"));
+        //to be enabled when the URLs are available, eventually through appllication configuration
+        if(StringUtils.hasLength(seeAlso)) {
+          europeanaErrorAttributes.put("seeAlso", seeAlso);   
+        }
         // message not shown
         europeanaErrorAttributes.put("timestamp", OffsetDateTime.now());
         addPathRequestParameters(europeanaErrorAttributes, webRequest);
