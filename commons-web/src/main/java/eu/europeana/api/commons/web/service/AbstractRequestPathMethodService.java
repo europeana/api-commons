@@ -78,6 +78,10 @@ public abstract class AbstractRequestPathMethodService implements InitializingBe
     }
 
     Set<String> requestMethods = requestPathMethodMap.get(patternAttribute.toString());
+    if(requestMethods==null) {
+      return Optional.empty();
+    }
+    
     String methods = String.join(",", requestMethods);
     return Optional.of(methods);
   }
