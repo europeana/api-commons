@@ -86,15 +86,27 @@ public class EuropeanaGlobalExceptionHandler {
               .setError(e.getStatus().getReasonPhrase())
               .setMessage( buildResponseMessage(e, e.getI18nKey(), e.getI18nParams()))
               // code only included in JSON if a value is set in exception
-              .setCode(e.getI18nKey())
+              .setCode(getNormalizedErrorCode(e.getI18nKey()))
               .setSeeAlso(getSeeAlso())
               .build();
       return ResponseEntity.status(e.getStatus()).headers(createHttpHeaders(httpRequest))
           .body(response);
     }
 
-    
-    
+    protected String getNormalizedErrorCode(String i18nKey) {
+      if(i18nKey == null) {
+        return null;  
+      }
+      
+      //EA-3567 extract the part after last point if it exists in the key 
+      final String separator = ".";
+      if(i18nKey.contains(separator)) {
+        return StringUtils.substringAfterLast(i18nKey, separator);
+      }
+      
+      return i18nKey;       
+    }
+
     /**
      * Default handler for EuropeanaApiException types
      *
@@ -128,7 +140,7 @@ public class EuropeanaGlobalExceptionHandler {
               .setError(e.getResponseStatus().getReasonPhrase())
               .setMessage(e.doExposeMessage() ? buildResponseMessage(e, i18nKey, i18NParams) : null)
               // code only included in JSON if a value is set in exception
-              .setCode(e.getErrorCode())
+              .setCode(getNormalizedErrorCode(e.getErrorCode()))
               .setSeeAlso(getSeeAlso())
               .build();
       return ResponseEntity.status(e.getResponseStatus()).headers(createHttpHeaders(httpRequest))

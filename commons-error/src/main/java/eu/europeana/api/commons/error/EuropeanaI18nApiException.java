@@ -45,4 +45,10 @@ public class EuropeanaI18nApiException extends EuropeanaApiException {
   void setI18nParams(String[] i18nParams) {
 	this.i18nParams = i18nParams;
   }
+  
+  @Override
+  public String getErrorCode() {
+    //fallback error code on internationalization key if not set explicitly 
+    return super.getErrorCode() != null ? super.getErrorCode() : getI18nKey() ;
+  }
 }
