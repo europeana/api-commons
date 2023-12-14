@@ -46,7 +46,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   @Override
   /**
-   * Method for authorizing the read access based on ApiKey or JwtToken
+   *
    */
   public Authentication authorizeReadAccess(HttpServletRequest request)
       throws ApplicationAuthenticationException {
@@ -213,7 +213,10 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       
       
     }
-    
+
+
+
+
     if (authenticationList == null || authenticationList.isEmpty()) {
       
     }
@@ -291,6 +294,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
    * Check if a write lock is in effect. Returns HttpStatus.LOCKED in case the write lock is active.
    * To be used for preventing access to the write operations when the application is locked Needs
    * to be called explicitly in the verifyWriteAccess methods of individual apis
+   *
    *
    * @param operationName
    * @throws ApplicationAuthenticationException
