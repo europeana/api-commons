@@ -121,7 +121,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
           // for backward compatibility, we allow read access to users that don't have a token
           // created specifically for current API
           // TODO: in the future we might still want to verify the scope of the JWT token.
-          authentication = OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), data);
+          authentication = OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), data,wsKey);
         }
       }
     } catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
@@ -214,9 +214,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       
     }
     
-    
-    
-    
     if (authenticationList == null || authenticationList.isEmpty()) {
       
     }
@@ -253,7 +250,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
    * This method performs checking, whether an operation is supported for provided authorities
    * 
    * @param operation the called api operation
-   * @param authorityList the list of granted authorities (as provided through the JWT token)
+   * @param authorities the list of granted authorities (as provided through the JWT token)
    * @return true if operation authorized
    */
   private boolean isOperationAuthorized(String operation, List<GrantedAuthority> authorities) {
@@ -294,10 +291,9 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
    * Check if a write lock is in effect. Returns HttpStatus.LOCKED in case the write lock is active.
    * To be used for preventing access to the write operations when the application is locked Needs
    * to be called explicitly in the verifyWriteAccess methods of individual apis
-   * 
-   * @param userToken
+   *
    * @param operationName
-   * @throws UserAuthorizationException
+   * @throws ApplicationAuthenticationException
    */
   public void checkWriteLockInEffect(String operationName)
       throws ApplicationAuthenticationException {
