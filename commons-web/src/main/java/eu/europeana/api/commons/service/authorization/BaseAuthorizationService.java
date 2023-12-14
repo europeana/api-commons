@@ -46,7 +46,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   @Override
   /**
-   * 
+   *
    */
   public Authentication authorizeReadAccess(HttpServletRequest request)
       throws ApplicationAuthenticationException {
@@ -113,7 +113,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       if (data.containsKey(OAuthUtils.USER_ID)) {
         // read access is provided to any authenticated user
         List<Authentication> authList = new ArrayList<Authentication>();
-        //for read acccess the resource access is not mandatory 
+        //for read acccess the resource access is not mandatory
         OAuthUtils.processResourceAccessClaims(getApiName(), data, authList, false);
         if (!authList.isEmpty()) {
           authentication = authList.get(0);
@@ -121,7 +121,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
           // for backward compatibility, we allow read access to users that don't have a token
           // created specifically for current API
           // TODO: in the future we might still want to verify the scope of the JWT token.
-          authentication = OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), data);
+          authentication = OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), data,wsKey);
         }
       }
     } catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
@@ -136,7 +136,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see eu.europeana.api.commons.service.authorization.AuthorizationService#
    * authorizeWriteAccess(javax.servlet.http.HttpServletRequest, java.lang.String)
    */
@@ -148,7 +148,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   private Authentication authorizeOperation(HttpServletRequest request, String operation)
       throws ApplicationAuthenticationException {
-    
+
     //invalid configurations
     if (getSignatureVerifier() == null) {
       throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
@@ -168,26 +168,26 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
           I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"Invalid token or ApiKey"},
           HttpStatus.UNAUTHORIZED, e);
     }
-    
+
     if(authenticationList == null || authenticationList.isEmpty()) {
       throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
           I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"Invalid token or ApiKey, resource access not granted!"},
           HttpStatus.FORBIDDEN);
     }
-    
+
     if(verifyResourceAccess) {
       //verify permissions
-      return checkPermissions(authenticationList, getApiName(), operation);  
+      return checkPermissions(authenticationList, getApiName(), operation);
     } else {
       //return authenticated user and client
       return authenticationList.get(0);
     }
   }
 
-  
+
   /**
    * This method verifies write access rights for particular api and operation
-   * 
+   *
    * @param authenticationList The list of authentications extracted from the JWT token
    * @param api The name of the called api
    * @param operation The name of called api operation
@@ -198,27 +198,27 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       String api, String operation) throws ApplicationAuthenticationException {
 
     final boolean isEmptyAuthenticationList = (authenticationList == null || authenticationList.isEmpty());
-    
+
     if(isEmptyAuthenticationList) {
-      
+
       if(isResourceAccessVerificationRequired(operation)){
-        //access verification required but 
+        //access verification required but
         throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
             I18nConstants.OPERATION_NOT_AUTHORIZED,
             new String[] {"No or invalid authorization provided"}, HttpStatus.FORBIDDEN);
       } else {
-        //TODO: 
+        //TODO:
         return null;
       }
-      
-      
+
+
     }
-    
-    
-    
-    
+
+
+
+
     if (authenticationList == null || authenticationList.isEmpty()) {
-      
+
     }
 
     List<GrantedAuthority> authorityList;
@@ -251,9 +251,9 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   /**
    * This method performs checking, whether an operation is supported for provided authorities
-   * 
+   *
    * @param operation the called api operation
-   * @param authorityList the list of granted authorities (as provided through the JWT token)
+   * @param authorities the list of granted authorities (as provided through the JWT token)
    * @return true if operation authorized
    */
   private boolean isOperationAuthorized(String operation, List<GrantedAuthority> authorities) {
@@ -261,7 +261,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     if(!isResourceAccessVerificationRequired(operation)) {
       return true;
     }
-    
+
     Role userRole;
     List<String> allowedOperations;
 
@@ -283,8 +283,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
    * Method to indicate if the resource access (i.e. user has the role which grants permissions for the operation) is required.
    * Client authentication is mandatory, but apis might grant access to all users if the token is valid
    * Api should overwrite this method in order to disable resource access verification
-   * 
-   * @return true if the resource access needs to be verified 
+   *
+   * @return true if the resource access needs to be verified
    */
   protected boolean isResourceAccessVerificationRequired(String operation) {
     return true;
@@ -294,10 +294,10 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
    * Check if a write lock is in effect. Returns HttpStatus.LOCKED in case the write lock is active.
    * To be used for preventing access to the write operations when the application is locked Needs
    * to be called explicitly in the verifyWriteAccess methods of individual apis
-   * 
-   * @param userToken
+   *
+   *
    * @param operationName
-   * @throws UserAuthorizationException
+   * @throws ApplicationAuthenticationException
    */
   public void checkWriteLockInEffect(String operationName)
       throws ApplicationAuthenticationException {
@@ -325,7 +325,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   /**
    * Indicates if the given operation is allowed when locked for maintenance. Basically
-   * 
+   *
    * @param operationName
    * @return
    */
@@ -335,7 +335,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   /**
    * Returns the list of
-   * 
+   *
    * @return
    */
   protected Set<String> getMaintenanceOperations() {
@@ -346,26 +346,26 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   /**
    * This method returns the api specific Role for the given role name
-   * 
+   *
    * @param name the name of user role
    * @return the user role
    */
   protected abstract Role getRoleByName(String name);
 
   /**
-   * 
+   *
    * @return key used to verify the JWT token signature
    */
   protected abstract String getSignatureKey();
 
   /**
-   * 
+   *
    * @return the service providing the client details
    */
   protected abstract ClientDetailsService getClientDetailsService();
 
   /**
-   * 
+   *
    * @return the name of the API calling the authorization service
    */
   protected abstract String getApiName();

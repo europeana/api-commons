@@ -111,6 +111,7 @@ public class OAuthUtils {
    * 
    * @param request The HTTP request
    * @param signatureVerifier the signature verifier for JWT token
+   * @param api The api name
    * @return a list of Authentication objects
    * @throws ApiKeyExtractionException if the API key cannot be successfully extracted from re quest
    * @throws AuthorizationExtractionException if the Authorization header cannot be successfully
@@ -139,14 +140,13 @@ public class OAuthUtils {
   public static List<? extends Authentication> extractAuthenticationList(String authorization,
       RsaVerifier signatureVerifier, String api, boolean verifyResourceAccess)
       throws ApiKeyExtractionException, AuthorizationExtractionException {
-    List<Authentication> authenticationList = new ArrayList<Authentication>();
 
     String encodedToken = extractPayloadFromHeaderValue(TYPE_BEARER, authorization);
-
     // if authorization header or JWT token not present in request return null
     if (encodedToken == null)
       return null;
 
+    List<Authentication> authenticationList = new ArrayList<>();
     try {
       Map<String, Object> data = extractCustomData(encodedToken, signatureVerifier, api);
       processResourceAccessClaims(api, data, authenticationList, verifyResourceAccess);
@@ -192,40 +192,44 @@ public class OAuthUtils {
       throw new ApiKeyExtractionException("Invalid JWT token. mandatory field missing: " + USER_ID);
     }
 
-    // extract user Id
-    String principal = (String) data.get(USER_ID);
-
     // avoid NPE
     String clientId = (String) data.getOrDefault(CLIENT_ID, null);
     
     // extract user name or use anonymous
     String userName =
         (String) data.getOrDefault(PREFERRED_USERNAME, EuropeanaApiCredentials.USER_ANONYMOUS);
+
+    //extract key
+    String apiKey = OAuthUtils.extractApiKey(data);
     
     //create AuthenticationTokens
+    String principal = (String) data.get(USER_ID);
+
+    EuropeanaApiCredentials apiCredentials = new EuropeanaApiCredentials(userName, clientId, apiKey);
+
     if (verifyResouceAccess) {
       // process permissions
       if (data.containsKey(RESOURCE_ACCESS)) {
         Map<String, Object> resourceAccessMap = (Map<String, Object>) data.get(RESOURCE_ACCESS);
-        processResourceAccessMap(api, authenticationList, resourceAccessMap, principal, userName,
-            clientId);
+        processResourceAccessMap(api, authenticationList, resourceAccessMap, principal, apiCredentials);
       }
     } else {
       // grant access with default user role (client authorization based only on the scope)
       List<GrantedAuthority> authorities =
           List.of(new SimpleGrantedAuthority(EuropeanaAuthenticationToken.DEFAULT_ROLE_USER));
       EuropeanaAuthenticationToken authenticationToken = new EuropeanaAuthenticationToken(
-          authorities, api, principal, new EuropeanaApiCredentials(userName, clientId));
+          authorities, api, principal, apiCredentials);
       authenticationList.add(authenticationToken);
     }
   }
 
   @SuppressWarnings("unchecked")
   private static void processResourceAccessMap(String api, List<Authentication> authenticationList,
-      Map<String, Object> resourceAccessMap, String principal, String userName, String clientId) {
+      Map<String, Object> resourceAccessMap, String principal,
+      EuropeanaApiCredentials credentials) {
     // each API in resource_access should be processed and
     // EuropeanaAuthenticationToken will be created for the current API
-    // Collection<GrantedAuthority> authorities;
+    // Collection < GrantedAuthority >  authorities;
     String details;
     Map<String, Object> rolesMap;
     List<String> roles;
@@ -247,8 +251,9 @@ public class OAuthUtils {
         authorities.add(new SimpleGrantedAuthority(role));
       }
 
+
       EuropeanaAuthenticationToken authenticationToken = new EuropeanaAuthenticationToken(
-          authorities, api, principal, new EuropeanaApiCredentials(userName, clientId));
+          authorities, api, principal, credentials);
       authenticationList.add(authenticationToken);
     }
   }
@@ -442,7 +447,7 @@ public class OAuthUtils {
   }
 
   /**
-   * create readonly authentication token bazed on JWT Token (known user)
+   * create readonly authentication token based on JWT Token (known user)
    * 
    * @param apiName
    * @param data
@@ -450,7 +455,7 @@ public class OAuthUtils {
    * @throws ApiKeyExtractionException
    */
   public static Authentication buildReadOnlyAuthenticationToken(String apiName,
-      Map<String, Object> data) throws ApiKeyExtractionException {
+      Map<String, Object> data,String apiKey) throws ApiKeyExtractionException {
     Authentication authentication;
     //// return Authentication object for read only user
     String userName = (String) data.get(OAuthUtils.PREFERRED_USERNAME);
@@ -460,10 +465,9 @@ public class OAuthUtils {
 
     String principal = (String) data.get(OAuthUtils.USER_ID);
     String clientId = (String) data.getOrDefault(OAuthUtils.CLIENT_ID, EuropeanaApiCredentials.CLIENT_UNKNOWN);
-    
-    // String apiKey = OAuthUtils.extractApiKey(data);
+
     authentication = new EuropeanaAuthenticationToken(null, apiName, principal,
-        new EuropeanaApiCredentials(userName, clientId));
+        new EuropeanaApiCredentials(userName, clientId,apiKey));
     return authentication;
   }
 
@@ -478,7 +482,6 @@ public class OAuthUtils {
   public static EuropeanaAuthenticationToken buildReadOnlyAuthenticationToken(String apiName,
       String wsKey) {
     return new EuropeanaAuthenticationToken(null, apiName, EuropeanaApiCredentials.USER_ANONYMOUS,
-        new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS,
-            EuropeanaApiCredentials.CLIENT_UNKNOWN));
+        new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS,EuropeanaApiCredentials.CLIENT_UNKNOWN,wsKey));
   }
 }
