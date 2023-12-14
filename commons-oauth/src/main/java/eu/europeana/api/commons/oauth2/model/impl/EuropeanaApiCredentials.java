@@ -9,19 +9,26 @@ public class EuropeanaApiCredentials implements ApiCredentials {
 
   private String userName;
   private String clientId;
+  private String apiKey;
 
   /**
-   * @deprecated use the constructor {@link #EuropeanaApiCredentials(String, String)} instead
-   * @param userName
+   * @deprecated use the constructor {@link #EuropeanaApiCredentials(String, String,String)} instead
+   * @param userName User name for credentials
    */
   @Deprecated
   public EuropeanaApiCredentials(String userName) {
     this(userName, null);
   }
-
+  @Deprecated(since = "DEC-2023" )
   public EuropeanaApiCredentials(String userName, String clientId) {
     this.userName = userName;
     this.clientId = clientId;
+
+  }
+  public EuropeanaApiCredentials(String userName, String clientId,String apikey) {
+    this.userName = userName;
+    this.clientId = clientId;
+    this.apiKey = apikey;
   }
 
   @Override
@@ -40,4 +47,8 @@ public class EuropeanaApiCredentials implements ApiCredentials {
   public void setClientId(String clientId) {
     this.clientId = clientId;
   }
+
+  public String getApiKey() { return apiKey; }
+
+  public void setApiKey(String apiKey) { this.apiKey = apiKey;  }
 }

@@ -46,7 +46,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
   @Override
   /**
-   * 
+   * Method for authorizing the read access based on ApiKey or JwtToken
    */
   public Authentication authorizeReadAccess(HttpServletRequest request)
       throws ApplicationAuthenticationException {
