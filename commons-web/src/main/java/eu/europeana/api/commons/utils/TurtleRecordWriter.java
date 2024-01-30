@@ -121,6 +121,12 @@ public class TurtleRecordWriter implements AutoCloseable {
 
     private void writeValue(Resource r) throws IOException {
         String uri = r.getURI();
+        // EA-3701 NPE Fix
+        if (uri == null ) {
+            bufferedWriter.append("_:")
+                    .append(r.getId().getLabelString());
+            return;
+        }
         for (Map.Entry<String, String> entry : map.entrySet()) {
             String value = entry.getValue();
             if (!uri.startsWith(value)) {
