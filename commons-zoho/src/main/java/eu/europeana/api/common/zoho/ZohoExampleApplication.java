@@ -5,6 +5,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Main application
+ *
+ * @author Shweta Nazare, Sergiu Gordea, Luthien Dulk
+ * Created on 12 feb 2024
+ */
 @SpringBootApplication
 public class ZohoExampleApplication implements CommandLineRunner {
 

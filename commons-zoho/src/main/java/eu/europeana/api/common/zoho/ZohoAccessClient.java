@@ -12,7 +12,10 @@ import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+/**
+ * @author Shweta Nazare, Sergiu Gordea, Luthien Dulk
+ * Created on 12 feb 2024
+ */
 public class ZohoAccessClient {
 
     public boolean initialize(
@@ -32,13 +35,18 @@ public class ZohoAccessClient {
 
             UserSignature userSignature = new UserSignature(username);
 
+            // refresh token flow (?)
             Token token = new OAuthToken.Builder()
-                .userSignature(userSignature)
+//                .userSignature(userSignature)
                 .clientID(clientId)
                 .clientSecret(clientSecret)
                 .refreshToken(refreshToken)
-                .redirectURL(redirectUrl)
+//                .redirectURL(redirectUrl)
+                .findUser(false)// by default true
                 .build();
+
+            TokenStore tokenStore = new ZohoInMemoryTokenStore();
+
 
             SDKConfig sdkConfig = new SDKConfig.Builder()
                 .autoRefreshFields(false)

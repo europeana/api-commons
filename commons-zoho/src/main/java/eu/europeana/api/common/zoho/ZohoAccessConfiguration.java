@@ -4,29 +4,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * @author Shweta Nazare, Sergiu Gordea, Luthien Dulk
+ * Created on 12 feb 2024
+ */
 @Configuration
 @PropertySource(value = "classpath:zoho.user.properties", ignoreResourceNotFound = true)
 public class ZohoAccessConfiguration {
-
-  /*For Zoho US*/
-
-
-
-  @Value("${zoho.us.username:#{null}}")
-  private String zohoUSUserName;
-
-  @Value("${zoho.us.client.id:#{null}}")
-  private String zohoUSClientId;
-
-  @Value("${zoho.us.client.secret:#{null}}")
-  private String zohoUSClientSecret;
-
-  @Value("${zoho.us.refresh.token:#{null}}")
-  private String zohoUSRefreshToken;
-
-  @Value("${zoho.us.redirect.url:#{null}}")
-  private String zohoUSRedirectUrl;
-
 
   /*For Zoho EU*/
 
@@ -44,26 +28,6 @@ public class ZohoAccessConfiguration {
 
   @Value("${zoho.eu.redirect.url:#{null}}")
   private String zohoEURedirectUrl;
-
-  public String getZohoUSUserName() {
-    return zohoUSUserName;
-  }
-
-  public String getZohoUSClientId() {
-    return zohoUSClientId;
-  }
-
-  public String getZohoUSClientSecret() {
-    return zohoUSClientSecret;
-  }
-
-  public String getZohoUSRefreshToken() {
-    return zohoUSRefreshToken;
-  }
-
-  public String getZohoUSRedirectUrl() {
-    return zohoUSRedirectUrl;
-  }
 
   public String getZohoEUUserName() {
     return zohoEUUserName;
