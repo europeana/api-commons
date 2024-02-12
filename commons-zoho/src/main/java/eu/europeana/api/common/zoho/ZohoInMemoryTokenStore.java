@@ -4,7 +4,6 @@ import com.zoho.api.authenticator.OAuthToken;
 import com.zoho.api.authenticator.Token;
 import com.zoho.api.authenticator.store.TokenStore;
 import com.zoho.crm.api.exception.SDKException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,7 +39,7 @@ public class ZohoInMemoryTokenStore implements TokenStore {
 
   @Override
   public List<Token> getTokens() throws SDKException {
-    return new ArrayList<>(tokenStore.values());
+    return (List<Token>) tokenStore.values();
   }
 
   @Override

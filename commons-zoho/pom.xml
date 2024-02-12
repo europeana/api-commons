@@ -18,12 +18,17 @@
 
   <properties>
     <java.version>17</java.version>
-<!--    <maven.compiler.source>${java.version}</maven.compiler.source>-->
-<!--    <maven.compiler.target>${java.version}</maven.compiler.target>-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>2.7.11</spring-boot.version>
-    <zohocrmsdk.version>2.0.0</zohocrmsdk.version>
+    <zohocrmsdk.version>1.0.0</zohocrmsdk.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>zohocrmsdk-6-0</id>
+      <url>https://maven.zohodl.com</url>
+    </repository>
+  </repositories>
 
   <dependencies>
 
@@ -52,12 +57,6 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <version>1.10.0</version>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/com.zoho.crm/zohocrmsdk-6-0 -->
     <dependency>
       <groupId>com.zoho.crm</groupId>
@@ -70,13 +69,6 @@
       <artifactId>commons-lang3</artifactId>
       <version>${version.commonsLang3}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.13.0</version>
-      <scope>compile</scope>
-    </dependency>
-
 
   </dependencies>
 
