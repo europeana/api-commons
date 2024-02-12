@@ -35,9 +35,9 @@ public class OrgAttachmentDownloadService {
     List<Long> attachmentIds = new ArrayList<>();
     AttachmentsOperations attachmentsOperations = new AttachmentsOperations();
     ParameterMap paramInstance = new ParameterMap();
-    paramInstance.add(GetAttachmentsParam.PAGE, 1);
-    paramInstance.add(GetAttachmentsParam.PER_PAGE, 10);
-    paramInstance.add(GetAttachmentsParam.FIELDS, "id");
+    paramInstance.add(GetAttachmentsParam.page(), 1);
+    paramInstance.add(GetAttachmentsParam.perPage(), 10);
+    paramInstance.add(GetAttachmentsParam.fields(), "id");
    // paramInstance.add(GetAttachmentsParam.IDS, "347706117069001");
     APIResponse<ResponseHandler> response = attachmentsOperations.getAttachments(recordId, moduleAPIName, paramInstance);
     if (response != null)
