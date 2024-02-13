@@ -19,12 +19,11 @@ import org.apache.logging.log4j.Logger;
 public class ZohoAccessClient {
 
     public boolean initialize(
-        TokenStore tokenStore,
         String username,
         String clientId,
         String clientSecret,
-        String refreshToken,
-        String redirectUrl
+        String refreshToken
+//        String redirectUrl
                              )
         throws RuntimeException {
         try {
