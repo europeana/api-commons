@@ -25,6 +25,13 @@
     <httpclient.version>1.0.0</httpclient.version>
   </properties>
 
+  <repositories>
+    <repository>
+      <id>europeana-libs-release</id>
+      <name>libs-release</name>
+      <url>https://artifactory.eanadev.org/artifactory/libs-release</url>
+    </repository>
+  </repositories>
 
   <dependencies>
 
