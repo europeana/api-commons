@@ -15,19 +15,25 @@ import org.apache.logging.log4j.Logger;
  * Main application
  *
  * @author Luthien Dulk
- * Created on 12 feb 2024
+ * Created on 14 feb 2024
  */
-//@SpringBootApplication
-public class ZohoExampleApplication {
+public class ZohoConnect {
 
 
-	Logger LOG = LogManager.getLogger(ZohoExampleApplication.class);
-	private static ZohoAccessConfiguration config = new ZohoAccessConfiguration();
-	private static ZohoInMemoryTokenStore  tokenStore;
+	Logger LOG = LogManager.getLogger(ZohoConnect.class);
+	private final ZohoAccessConfiguration config;
 
-	public static void main(String[] args) {
-		try
-		{
+	// not clear if this is actually used. Maybe delete if not.
+	private final ZohoInMemoryTokenStore  tokenStore;
+
+	public ZohoConnect(){
+		this.config = new ZohoAccessConfiguration();
+		this.tokenStore  = new ZohoInMemoryTokenStore();
+	}
+
+
+	public boolean ConnectToZoho() {
+		try {
 			Environment environment = EUDataCenter.PRODUCTION;
 			TokenStore  tokenStore  = new ZohoInMemoryTokenStore();
 
@@ -45,12 +51,14 @@ public class ZohoExampleApplication {
 				.store(tokenStore)
 				.initialize();
 
+			// example usage, taken from Zoho's samples 
 			String moduleAPIName = "Leads";
 			getRecords(moduleAPIName);
+			return true;
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
