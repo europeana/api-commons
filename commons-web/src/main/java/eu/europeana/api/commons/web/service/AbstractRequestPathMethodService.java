@@ -39,13 +39,25 @@ public abstract class AbstractRequestPathMethodService implements InitializingBe
     this.applicationContext = applicationContext;
   }
 
-  /** Populate request url pattern - request methods map */
+  /**
+   * For Services or APIs using spring boot version > 2.7.x
+   * Spring Boot 2.7 no longer defines MVC’s main requestMappingHandlerMapping bean as @Primary bean.
+   * In the unlikely event that we are injecting RequestMappingHandlerMapping bean, we need to be specific
+   * about the bean name.
+   * We need the bean of name - "requestMappingHandlerMapping"
+   *
+   * @see <a href="https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes#spring-mvcs-requestmappinghandlermapping-is-no-longer-primary">Dcoumentation</a>
+   *
+   * Otherwise we get -   org.springframework.beans.factory.NoUniqueBeanDefinitionException:
+   * No qualifying bean of type 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping'
+   * available: expected single matching bean but found 2: requestMappingHandlerMapping,controllerEndpointHandlerMapping
+   *
+   * Populate request url pattern - request methods map */
   @Override
   public void afterPropertiesSet() {
     RequestMappingHandlerMapping mapping =
-        applicationContext.getBean(RequestMappingHandlerMapping.class);
+        applicationContext.getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
     Map<RequestMappingInfo, HandlerMethod> handlerMethods = mapping.getHandlerMethods();
-
     for (RequestMappingInfo info : handlerMethods.keySet()) {
       PatternsRequestCondition p = info.getPatternsCondition();
 
