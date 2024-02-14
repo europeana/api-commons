@@ -103,7 +103,7 @@
       </exclusions>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/com.zoho.crm/zohocrmsdk-6-0 -->
+    <!-- https://artifactory.eanadev.org/artifactory/webapp/#/artifacts/browse/tree/General/ext-release-local/com/zoho/crm/zohocrmsdk-6-0/1.0.0/ -->
     <dependency>
       <groupId>com.zoho.crm</groupId>
       <artifactId>zohocrmsdk-6-0</artifactId>

@@ -1,51 +1,57 @@
 package eu.europeana.api.common.zoho;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
- * @author Shweta Nazare, Sergiu Gordea, Luthien Dulk
+ * @author Luthien Dulk
  * Created on 12 feb 2024
  */
-@Configuration
-@PropertySource(value = "classpath:zoho.user.properties", ignoreResourceNotFound = true)
 public class ZohoAccessConfiguration {
 
-  /*For Zoho EU*/
+  // the configuration is set in the build job (Jenkins), eg echo "ZOHO_USER_NAME=Pietje_Puk" >>.env
 
-  @Value("${zoho.eu.username:#{null}}")
-  private String zohoEUUserName;
+  private String zohoUserName;
+  private String zohoClientId;
+  private String zohoClientSecret;
+  private String zohoRefreshToken;
+  private String zohoRedirectUrl;
 
-  @Value("${zoho.eu.client.id:#{null}}")
-  private String zohoEUClientId;
+  public ZohoAccessConfiguration(){
+    if (null != System.getenv("ZOHO_USER_NAME")){
+      this.zohoUserName = System.getenv("ZOHO_USER_NAME");
+    }
+    if (null != System.getenv("ZOHO_CLIENT_ID")){
+      this.zohoUserName = System.getenv("ZOHO_CLIENT_ID");
+    }
+    if (null != System.getenv("ZOHO_CLIENT_SECRET")){
+      this.zohoUserName = System.getenv("ZOHO_CLIENT_SECRET");
+    }
+    if (null != System.getenv("ZOHO_REFRESH_TOKEN")){
+      this.zohoUserName = System.getenv("ZOHO_REFRESH_TOKEN");
+    }
+    if (null != System.getenv("ZOHO_REDIRECT_URL")){
+      this.zohoUserName = System.getenv("ZOHO_REDIRECT_URL");
+    }
 
-  @Value("${zoho.eu.client.secret:#{null}}")
-  private String zohoEUClientSecret;
-
-  @Value("${zoho.eu.refresh.token:#{null}}")
-  private String zohoEURefreshToken;
-
-  @Value("${zoho.eu.redirect.url:#{null}}")
-  private String zohoEURedirectUrl;
-
-  public String getZohoEUUserName() {
-    return zohoEUUserName;
   }
 
-  public String getZohoEUClientId() {
-    return zohoEUClientId;
+  public String getZohoUserName() {
+    return zohoUserName;
   }
 
-  public String getZohoEUClientSecret() {
-    return zohoEUClientSecret;
+  public String getZohoClientId() {
+    return zohoClientId;
   }
 
-  public String getZohoEURefreshToken() {
-    return zohoEURefreshToken;
+  public String getZohoClientSecret() {
+    return zohoClientSecret;
   }
 
-  public String getZohoEURedirectUrl() {
-    return zohoEURedirectUrl;
+  public String getZohoRefreshToken() {
+    return zohoRefreshToken;
   }
+
+  public String getZohoRedirectUrl() {
+    return zohoRedirectUrl;
+  }
+
 }

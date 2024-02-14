@@ -1,35 +1,57 @@
 package eu.europeana.api.common.zoho;
 
-import com.zoho.crm.api.exception.SDKException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import static eu.europeana.api.common.zoho.GetRecords.getRecords;
+
+import com.zoho.api.authenticator.OAuthToken;
+import com.zoho.api.authenticator.Token;
+import com.zoho.api.authenticator.store.TokenStore;
+import com.zoho.crm.api.Initializer;
+import com.zoho.crm.api.dc.DataCenter.Environment;
+import com.zoho.crm.api.dc.EUDataCenter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Main application
  *
- * @author Shweta Nazare, Sergiu Gordea, Luthien Dulk
+ * @author Luthien Dulk
  * Created on 12 feb 2024
  */
-@SpringBootApplication
-public class ZohoExampleApplication implements CommandLineRunner {
+//@SpringBootApplication
+public class ZohoExampleApplication {
 
-	@Autowired
-	eu.europeana.zohomigration.ExampleZohoService service;
+
+	Logger LOG = LogManager.getLogger(ZohoExampleApplication.class);
+	private static ZohoAccessConfiguration config = new ZohoAccessConfiguration();
+	private static ZohoInMemoryTokenStore  tokenStore;
 
 	public static void main(String[] args) {
-		//SpringApplication.run(ZohoExampleApplication.class, args);
-		SpringApplication application  = new SpringApplication(ZohoExampleApplication.class);
-		application.setWebApplicationType(WebApplicationType.NONE);
-		application.run(args);
-	}
+		try
+		{
+			Environment environment = EUDataCenter.PRODUCTION;
+			TokenStore  tokenStore  = new ZohoInMemoryTokenStore();
 
-	@Override
-	public void run(String... args) throws Exception {
-		if (args!=null && args.length > 0){
-			System.out.println("Do not read this message.");
+			Token token = new OAuthToken
+				.Builder()
+				.clientID(config.getZohoClientId())
+				.clientSecret(config.getZohoClientSecret())
+				.refreshToken(config.getZohoRefreshToken())
+				.redirectURL(config.getZohoRedirectUrl())
+				.build();
+
+			new Initializer.Builder()
+				.environment(environment)
+				.token(token)
+				.store(tokenStore)
+				.initialize();
+
+			String moduleAPIName = "Leads";
+			getRecords(moduleAPIName);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
 		}
 	}
+
 }
