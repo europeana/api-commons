@@ -25,12 +25,6 @@
     <httpclient.version>1.0.0</httpclient.version>
   </properties>
 
-  <repositories>
-    <repository>
-      <id>zohocrmsdk-6-0</id>
-      <url>https://maven.zohodl.com</url>
-    </repository>
-  </repositories>
 
   <dependencies>
 

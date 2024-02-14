@@ -51,7 +51,7 @@ public class ZohoConnect {
 				.store(tokenStore)
 				.initialize();
 
-			// example usage, taken from Zoho's samples 
+			// example usage, taken from Zoho's samples
 			String moduleAPIName = "Leads";
 			getRecords(moduleAPIName);
 			return true;
