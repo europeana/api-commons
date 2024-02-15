@@ -27,10 +27,14 @@
 
   <repositories>
     <repository>
-      <id>europeana-libs-release</id>
-      <name>libs-release</name>
-      <url>https://artifactory.eanadev.org/artifactory/libs-release</url>
+      <id>zohocrm-java-sdk-6-0</id>
+      <url>https://maven.zohodl.com</url>
     </repository>
+<!--    <repository>-->
+<!--      <id>europeana-libs-release</id>-->
+<!--      <name>libs-release</name>-->
+<!--      <url>https://artifactory.eanadev.org/artifactory/libs-release</url>-->
+<!--    </repository>-->
   </repositories>
 
   <dependencies>
@@ -107,7 +111,7 @@
     <!-- https://artifactory.eanadev.org/artifactory/webapp/#/artifacts/browse/tree/General/ext-release-local/com/zoho/crm/zohocrmsdk-6-0/1.0.0/ -->
     <dependency>
       <groupId>com.zoho.crm</groupId>
-      <artifactId>zohocrmsdk-6-0</artifactId>
+      <artifactId>zohocrm-java-sdk-6-0</artifactId>
       <version>${zohocrmsdk.version}</version>
     </dependency>
 
