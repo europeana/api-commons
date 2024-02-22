@@ -26,6 +26,13 @@ public class EuropeanaApiCredentials implements ApiCredentials {
     this.clientId = clientId;
 
   }
+  
+  public EuropeanaApiCredentials(String userName, String clientId,String apikey) {
+	this.userName = userName;
+	this.clientId = clientId;
+	this.apiKey = apikey;
+  }
+  
   public EuropeanaApiCredentials(String userName, String clientId,String apikey, String affiliation) {
     this.userName = userName;
     this.clientId = clientId;

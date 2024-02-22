@@ -473,9 +473,10 @@ public class OAuthUtils {
 
     String principal = (String) data.get(OAuthUtils.USER_ID);
     String clientId = (String) data.getOrDefault(OAuthUtils.CLIENT_ID, EuropeanaApiCredentials.CLIENT_UNKNOWN);
+    String affiliation = (String) data.get(AFFILIATION);
     
     authentication = new EuropeanaAuthenticationToken(null, apiName, principal,
-        new EuropeanaApiCredentials(userName, clientId, apiKey, null));
+        new EuropeanaApiCredentials(userName, clientId, apiKey, affiliation));
     return authentication;
   }
 
@@ -490,6 +491,6 @@ public class OAuthUtils {
   public static EuropeanaAuthenticationToken buildReadOnlyAuthenticationToken(String apiName,
       String wsKey) {
     return new EuropeanaAuthenticationToken(null, apiName, EuropeanaApiCredentials.USER_ANONYMOUS,
-        new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS,EuropeanaApiCredentials.CLIENT_UNKNOWN,wsKey,null));
+        new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS,EuropeanaApiCredentials.CLIENT_UNKNOWN,wsKey));
   }
 }
