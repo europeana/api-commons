@@ -6,7 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -17,6 +19,7 @@ import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.common.util.JsonParser;
 import org.springframework.security.oauth2.common.util.JsonParserFactory;
+
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
 import eu.europeana.api.commons.exception.ApiKeyExtractionException;
 import eu.europeana.api.commons.exception.AuthorizationExtractionException;
@@ -48,6 +51,8 @@ public class OAuthUtils {
   public static final String PREFERRED_USERNAME = "preferred_username";
   // user id
   public static final String USER_ID = "sub";
+  // affiliation
+  public static final String AFFILIATION = "affiliation";
   // client ID
   public static final String CLIENT_ID = "client_public_id";
 
@@ -202,10 +207,13 @@ public class OAuthUtils {
     //extract key
     String apiKey = OAuthUtils.extractApiKey(data);
     
+    //extract affiliation
+    String affiliation = (String) data.get(AFFILIATION);
+    
     //create AuthenticationTokens
     String principal = (String) data.get(USER_ID);
 
-    EuropeanaApiCredentials apiCredentials = new EuropeanaApiCredentials(userName, clientId, apiKey);
+    EuropeanaApiCredentials apiCredentials = new EuropeanaApiCredentials(userName, clientId, apiKey, affiliation);
 
     if (verifyResouceAccess) {
       // process permissions
@@ -465,9 +473,10 @@ public class OAuthUtils {
 
     String principal = (String) data.get(OAuthUtils.USER_ID);
     String clientId = (String) data.getOrDefault(OAuthUtils.CLIENT_ID, EuropeanaApiCredentials.CLIENT_UNKNOWN);
-
+    String affiliation = (String) data.get(AFFILIATION);
+    
     authentication = new EuropeanaAuthenticationToken(null, apiName, principal,
-        new EuropeanaApiCredentials(userName, clientId,apiKey));
+        new EuropeanaApiCredentials(userName, clientId, apiKey, affiliation));
     return authentication;
   }
 

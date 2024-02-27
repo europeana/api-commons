@@ -10,6 +10,7 @@ public class EuropeanaApiCredentials implements ApiCredentials {
   private String userName;
   private String clientId;
   private String apiKey;
+  private String affiliation;
 
   /**
    * @deprecated use the constructor {@link #EuropeanaApiCredentials(String, String,String)} instead
@@ -25,15 +26,28 @@ public class EuropeanaApiCredentials implements ApiCredentials {
     this.clientId = clientId;
 
   }
+  
   public EuropeanaApiCredentials(String userName, String clientId,String apikey) {
+	this.userName = userName;
+	this.clientId = clientId;
+	this.apiKey = apikey;
+  }
+  
+  public EuropeanaApiCredentials(String userName, String clientId,String apikey, String affiliation) {
     this.userName = userName;
     this.clientId = clientId;
     this.apiKey = apikey;
+    this.affiliation = affiliation;
   }
 
   @Override
   public String getUserName() {
     return userName;
+  }
+  
+  @Override
+  public String getAffiliation() {
+    return affiliation;
   }
 
   public void setUserName(String userName) {
