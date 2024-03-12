@@ -1,10 +1,8 @@
 package eu.europeana.api.commons.search.util;
 
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
-
 import eu.europeana.api.commons.definitions.search.Query;
 import eu.europeana.api.commons.definitions.search.impl.QueryImpl;
 import eu.europeana.api.commons.definitions.utils.RandomUtils;
@@ -131,6 +129,7 @@ public class QueryBuilder {
 	if (searchQuery.getFacetFields() != null) {
 	    solrQuery.setFacet(true);
 	    solrQuery.addFacetField(searchQuery.getFacetFields());
+	    solrQuery.setFacetMinCount(Query.DEFAULT_FACET_MINCOUNT);
 	    solrQuery.setFacetLimit(Query.DEFAULT_FACET_LIMIT);
 	}
 

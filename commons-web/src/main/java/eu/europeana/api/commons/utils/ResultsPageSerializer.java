@@ -110,10 +110,9 @@ public abstract class ResultsPageSerializer<T> extends JsonLd {
 
 		facetViewEntry.putProperty(new JsonLdProperty(CommonApiConstants.SEARCH_RESP_FACETS_FIELD, view.getName()));
 
+        JsonLdProperty values = new JsonLdProperty(CommonApiConstants.SEARCH_RESP_FACETS_VALUES);
 		// only if values for facet count are available
 		if (view.getValueCountMap() != null && !view.getValueCountMap().isEmpty()) {
-
-			JsonLdProperty values = new JsonLdProperty(CommonApiConstants.SEARCH_RESP_FACETS_VALUES);
 			JsonLdPropertyValue labelCountValue;
 			Map<String, String> valueMap;
 
@@ -126,9 +125,8 @@ public abstract class ResultsPageSerializer<T> extends JsonLd {
 
 				values.addValue(labelCountValue);
 			}
-
-			facetViewEntry.putProperty(values);
 		}
+        facetViewEntry.putProperty(values);
 
 		return facetViewEntry;
 	}

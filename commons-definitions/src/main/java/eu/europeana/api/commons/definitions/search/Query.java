@@ -56,7 +56,11 @@ public interface Query {
 	 * Default for the max number of returned facets
 	 */
 	public static final int DEFAULT_FACET_LIMIT = 50;
-	
+
+   /**
+     * Default for the min count of a value within a facet to be returned
+     */
+    public static final int DEFAULT_FACET_MINCOUNT = 1;
 	
 	/**
 	 * Use these instead of the ones provided in the apache Solr package
