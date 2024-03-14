@@ -47,22 +47,19 @@
 		<version.springBoot>2.6.1</version.springBoot>
 		<version.springSecurityJwt>1.1.1.RELEASE</version.springSecurityJwt>
 		<version.springSecurityOauth>2.5.1.RELEASE</version.springSecurityOauth>
-		<version.log4j2>2.17.1</version.log4j2>
+		<version.log4j2>2.17.2</version.log4j2>
 		<version.commonsLang3>3.9</version.commonsLang3>
+		<version.commonsIO>2.5</version.commonsIO>
+        <mongodb.version.upgrade>4.7.2</mongodb.version.upgrade>
+		<version.morphia>1.6.1</version.morphia>
+		
 		<version.annotationLd>1.1.7</version.annotationLd>
 		<version.jackson>2.13.0</version.jackson>
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.jena>4.5.0</version.jena>
 		<version.apikeyUtils>1.5</version.apikeyUtils>
-		<!--
-		<version.java.mongo.driver>3.4.0</version.java.mongo.driver>
-		-->
-		<mongodb.version.upgrade>4.7.2</mongodb.version.upgrade>
-		<version.morphia>1.6.1</version.morphia>
 		
-
 		<version.javax.annotation>1.3.2</version.javax.annotation>
-		<version.commonsIO>2.5</version.commonsIO>
 		<version.javax.ws.rs>2.0.1</version.javax.ws.rs>
 		<version.org.junit.jupiter>5.6.2</version.org.junit.jupiter>
 	</properties>
@@ -177,7 +174,7 @@
 	</build>
 	<dependencyManagement>
 		<dependencies>
-			<!-- upgrade mongo driver to support mongo V6-->
+			<!-- upgrade mongo driver and morphia to support mongo V6-->
 			<dependency>
 				<groupId>org.mongodb</groupId>
 				<artifactId>mongodb-driver-legacy</artifactId>
@@ -187,6 +184,22 @@
 				<groupId>org.mongodb</groupId>
 				<artifactId>mongodb-driver-sync</artifactId>
 				<version>${mongodb.version.upgrade}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>dev.morphia.morphia</groupId>
+				<artifactId>core</artifactId>
+				<version>${version.morphia}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-sync</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-legacy</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- excude conflicting dependecies for mongo and logging-->
@@ -213,21 +226,7 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<dependency>
-				<groupId>dev.morphia.morphia</groupId>
-				<artifactId>core</artifactId>
-				<version>${version.morphia}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.mongodb</groupId>
-						<artifactId>mongodb-driver-sync</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.mongodb</groupId>
-						<artifactId>mongodb-driver-legacy</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+			
 		</dependencies>
 	</dependencyManagement>
 </project>
