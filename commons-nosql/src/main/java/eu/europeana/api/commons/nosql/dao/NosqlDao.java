@@ -2,9 +2,7 @@ package eu.europeana.api.commons.nosql.dao;
 
 
 import java.io.Serializable;
-
-import org.mongodb.morphia.dao.DAO;
-
+import dev.morphia.dao.DAO;
 import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
 /**

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eu.europeana.api.commons</groupId>
@@ -23,7 +25,8 @@
 		<snapshotRepository>
 			<id>artifactory.eanadev.org</id>
 			<name>libs-snapshot-local</name>
-			<url>https://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
+			<url>
+				https://artifactory.eanadev.org/artifactory/libs-snapshot-local/</url>
 		</snapshotRepository>
 		<repository>
 			<id>artifactory.eanadev.org</id>
@@ -51,7 +54,13 @@
 		<version.jaxb>2.3.1</version.jaxb>
 		<version.jena>4.5.0</version.jena>
 		<version.apikeyUtils>1.5</version.apikeyUtils>
+		<!--
 		<version.java.mongo.driver>3.4.0</version.java.mongo.driver>
+		-->
+		<mongodb.version.upgrade>4.7.2</mongodb.version.upgrade>
+		<version.morphia>1.6.1</version.morphia>
+		
+
 		<version.javax.annotation>1.3.2</version.javax.annotation>
 		<version.commonsIO>2.5</version.commonsIO>
 		<version.javax.ws.rs>2.0.1</version.javax.ws.rs>
@@ -97,69 +106,128 @@
 			</testResource>
 		</testResources>
 
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.10.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        <plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-release-plugin</artifactId>
-			<version>2.5.3</version>
-		</plugin>
-      </plugins>
-    </pluginManagement>
+		<pluginManagement><!-- lock down plugins versions to avoid using Maven
+			defaults (may be moved to parent pom) -->
+			<plugins>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.7.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<!-- see
+				http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.0.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.10.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.0.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
-<!--		<plugins>-->
-<!--			&lt;!&ndash; This will be active when running the verify or install goal-->
-<!--				 To skip (e.g. during debugging) use 'mvn clean package')&ndash;&gt;-->
-<!--			<plugin>-->
-<!--				<groupId>org.owasp</groupId>-->
-<!--				<artifactId>dependency-check-maven</artifactId>-->
-<!--				<version>6.5.0</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<goals>-->
-<!--							<goal>check</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
-<!--		</plugins>-->
+		<!--		<plugins>-->
+		<!--			&lt;!&ndash; This will be active when running the verify or install
+		goal-->
+		<!--				 To skip (e.g. during debugging) use 'mvn clean
+		package')&ndash;&gt;-->
+		<!--			<plugin>-->
+		<!--				<groupId>org.owasp</groupId>-->
+		<!--				<artifactId>dependency-check-maven</artifactId>-->
+		<!--				<version>6.5.0</version>-->
+		<!--				<executions>-->
+		<!--					<execution>-->
+		<!--						<goals>-->
+		<!--							<goal>check</goal>-->
+		<!--						</goals>-->
+		<!--					</execution>-->
+		<!--				</executions>-->
+		<!--			</plugin>-->
+		<!--		</plugins>-->
 
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<!-- upgrade mongo driver to support mongo V6-->
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongodb-driver-legacy</artifactId>
+				<version>${mongodb.version.upgrade}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongodb-driver-sync</artifactId>
+				<version>${mongodb.version.upgrade}</version>
+			</dependency>
+
+			<!-- excude conflicting dependecies for mongo and logging-->
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-mongodb</artifactId>
+				<version>${version.springBoot}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>ch.qos.logback</groupId>
+						<artifactId>logback-classic</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-starter-logging</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-sync</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-core</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>dev.morphia.morphia</groupId>
+				<artifactId>core</artifactId>
+				<version>${version.morphia}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-sync</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongodb-driver-legacy</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
