@@ -19,8 +19,7 @@
 		<!-- Other -->
 		<dependency>
 			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>${version.java.mongo.driver}</version>
+			<artifactId>mongodb-driver-legacy</artifactId>
 		</dependency>	
 		
 		<dependency>

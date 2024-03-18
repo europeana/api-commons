@@ -1,8 +1,6 @@
 package eu.europeana.api.commons.nosql.service.impl;
 import java.io.Serializable;
-
-import org.mongodb.morphia.Key;
-
+import dev.morphia.Key;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
