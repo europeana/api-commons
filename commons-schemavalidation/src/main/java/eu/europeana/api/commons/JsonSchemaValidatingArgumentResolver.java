@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -51,7 +50,7 @@ public class JsonSchemaValidatingArgumentResolver implements
   if (supportsParameter(methodParameter)) {
 
     ValidJson parameterAnnotation = methodParameter.getParameterAnnotation(ValidJson.class);
-    JsonSchema schema = getJsonSchemabasedOnInput( parameterAnnotation.path(), parameterAnnotation.uri());
+    JsonSchema schema = parameterAnnotation!=null ? getJsonSchemaBasedOnInput( parameterAnnotation.path(), parameterAnnotation.uri()) :null;
     if (schema != null) {
       String schemaRef = parameterAnnotation.nested();
       JsonSchema reqSchema = ValidationUtils.getSubSchema(schema, schemaRef);
@@ -72,11 +71,11 @@ public class JsonSchemaValidatingArgumentResolver implements
 
   private JsonNode getParsedJson(NativeWebRequest nativeWebRequest) throws IOException   {
         HttpServletRequest httpServletRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-        String jsonStream = StreamUtils.copyToString(httpServletRequest.getInputStream(),StandardCharsets.UTF_8);
+        String jsonStream = httpServletRequest!=null ? StreamUtils.copyToString(httpServletRequest.getInputStream(),StandardCharsets.UTF_8) :null;
         return objectMapper.readTree(jsonStream);
   }
 
-  private JsonSchema getJsonSchemabasedOnInput(String schemaPath, String schemaUri) throws URISyntaxException {
+  private JsonSchema getJsonSchemaBasedOnInput(String schemaPath, String schemaUri) throws URISyntaxException {
     JsonSchema  schema = null;
     // get JsonSchema from schemaPath the URI path is prioritized if provided.
     if(StringUtils.isNotBlank(schemaPath)) {
