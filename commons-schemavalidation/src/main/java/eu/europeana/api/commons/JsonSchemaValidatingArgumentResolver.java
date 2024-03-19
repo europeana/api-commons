@@ -6,10 +6,13 @@ import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion.VersionFlag;
 import com.networknt.schema.ValidationMessage;
+import eu.europeana.api.commons.exception.JsonSchemaLoadingFailedException;
+import eu.europeana.api.commons.exception.JsonValidationFailedException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +29,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class JsonSchemaValidatingArgumentResolver implements
     HandlerMethodArgumentResolver  {
-
   private final ObjectMapper objectMapper;
   private final ResourcePatternResolver resourcePatternResolver;
   private final Map<String, JsonSchema> schemaCache;
@@ -43,32 +45,35 @@ public class JsonSchemaValidatingArgumentResolver implements
   }
 
   @Override
-  public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+  public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory)
+      throws URISyntaxException, IOException {
     // get schema path from ValidJson annotation
+  if (supportsParameter(methodParameter)) {
 
-    if(supportsParameter(methodParameter)) {
-      ValidJson parameterAnnotation = methodParameter.getParameterAnnotation(ValidJson.class);
-
-      String schemaPath = parameterAnnotation.path();
-      String schemaUri = parameterAnnotation.uri();
+    ValidJson parameterAnnotation = methodParameter.getParameterAnnotation(ValidJson.class);
+    JsonSchema schema = getJsonSchemabasedOnInput( parameterAnnotation.path(), parameterAnnotation.uri());
+    if (schema != null) {
       String schemaRef = parameterAnnotation.nested();
-
-      JsonSchema schema = getJsonSchemabasedOnInput(schemaPath, schemaUri);
-      if (schema != null) {
-        JsonSchema reqSchema = ValidationUtils.getSubSchema(schema, schemaRef);
-        // parse json payload
-        JsonNode json = objectMapper.readTree(getJsonPayload(nativeWebRequest));
-        // Do actual validation
-        Set<ValidationMessage> validationResult = reqSchema.validate(json, json, schemaRef);
-        if (validationResult.isEmpty()) {
-          // No validation errors, convert JsonNode to method parameter type and return it
-          return objectMapper.treeToValue(json, methodParameter.getParameterType());
-        }
+      JsonSchema reqSchema = ValidationUtils.getSubSchema(schema, schemaRef);
+      // parse json payload
+      JsonNode json = getParsedJson(nativeWebRequest);
+      // Do actual validation
+      Set<ValidationMessage> validationResult = reqSchema.validate(json, json, schemaRef);
+      if (!validationResult.isEmpty()) {
         // throw exception if validation failed
         throw new JsonValidationFailedException(validationResult);
       }
+      // No validation errors, convert JsonNode to method parameter type and return it
+      return objectMapper.treeToValue(json, methodParameter.getParameterType());
     }
-    return null;
+  }
+  return null;
+  }
+
+  private JsonNode getParsedJson(NativeWebRequest nativeWebRequest) throws IOException   {
+        HttpServletRequest httpServletRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
+        String jsonStream = StreamUtils.copyToString(httpServletRequest.getInputStream(),StandardCharsets.UTF_8);
+        return objectMapper.readTree(jsonStream);
   }
 
   private JsonSchema getJsonSchemabasedOnInput(String schemaPath, String schemaUri) throws URISyntaxException {
@@ -81,11 +86,6 @@ public class JsonSchemaValidatingArgumentResolver implements
       schema = ValidationUtils.getJsonSchemaFromUrl(schemaUri);
     }
     return schema;
-  }
-
-  private String getJsonPayload(NativeWebRequest nativeWebRequest) throws IOException {
-    HttpServletRequest httpServletRequest = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
-    return StreamUtils.copyToString(httpServletRequest.getInputStream(), StandardCharsets.UTF_8);
   }
 
   private JsonSchema getJsonSchema(String schemaPath) {

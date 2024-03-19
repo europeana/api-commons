@@ -21,7 +21,6 @@ public class ValidationUtils
 {
   public static JsonSchema getSubSchema(JsonSchema schema, String ref) {
     if ( schema.getSchemaPath().equals(ref) ) { return schema; }
-
     return getSchemaFromValidators(schema.getValidators().values(), ref);
   }
 

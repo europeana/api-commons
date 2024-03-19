@@ -1,4 +1,4 @@
-package eu.europeana.api.commons;
+package eu.europeana.api.commons.exception;
 
 import com.networknt.schema.ValidationMessage;
 import java.util.Set;

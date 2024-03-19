@@ -47,7 +47,15 @@
 			<artifactId>commons-oauth</artifactId>
 			<version>0.3.22-SNAPSHOT</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>eu.europeana.api.commons</groupId>
+			<artifactId>commons-schemavalidation</artifactId>
+			<version>0.3.22-SNAPSHOT</version>
+		</dependency>
+
+
+
 		<dependency>
 			<groupId>at.ac.ait.ngcms</groupId>
 			<artifactId>annotation-ld</artifactId>

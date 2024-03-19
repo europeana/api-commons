@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidJson {
   String path() default "";
-
   String uri() default  "";
   String nested() default "$";
 }
