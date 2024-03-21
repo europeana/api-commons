@@ -1,6 +1,7 @@
 package eu.europeana.api.commons.nosql.dao.impl;
 
 import java.io.Serializable;
+import com.mongodb.AggregationOptions;
 import com.mongodb.ReadPreference;
 import dev.morphia.Datastore;
 import dev.morphia.dao.BasicDAO;
@@ -15,6 +16,9 @@ import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 public class NosqlDaoImpl<E extends NoSqlEntity, T extends Serializable> extends BasicDAO<E, T> implements NosqlDao<E, T> {
 
 	private Class<E> clazz;
+	
+	AggregationOptions defaultAggregationOptions =
+        AggregationOptions.builder().allowDiskUse(Boolean.TRUE).build();
 
 	/**
 	 * Default constructor
@@ -38,5 +42,9 @@ public class NosqlDaoImpl<E extends NoSqlEntity, T extends Serializable> extends
 		} catch (Exception e) {
 		}
 	}
+	
+	protected AggregationOptions getDefaultAggregationOptions() {
+	  return defaultAggregationOptions;
+	} 
 
 }

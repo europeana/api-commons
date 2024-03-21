@@ -2,7 +2,8 @@ package eu.europeana.api.commons.nosql.service;
 
 
 import java.io.Serializable;
-
+import java.util.List;
+import dev.morphia.query.QueryResults;
 import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 
 /**
@@ -56,5 +57,11 @@ public interface AbstractNoSqlService<E extends NoSqlEntity, T extends Serializa
 	 * @return true if the object with the given id is found in database
 	 */
 	boolean exists(final T id);
+	
+	/**
+	 * Extract the List of elements from query results 
+	 * @return list of entities of type T
+	 */
+	public List<T> asList(QueryResults<T> queryResults);
 
 }
