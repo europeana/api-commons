@@ -16,7 +16,7 @@
 	</organization>
 
 	<properties>
-		<version.apacheSolr>8.11.0</version.apacheSolr>
+		<version.apacheSolr>8.11.3</version.apacheSolr>
 	</properties>
 
 	<dependencies>

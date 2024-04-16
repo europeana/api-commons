@@ -1,8 +1,10 @@
 package eu.europeana.api.commons.nosql.service.impl;
 import java.io.Serializable;
-
-import org.mongodb.morphia.Key;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import dev.morphia.Key;
+import dev.morphia.query.QueryResults;
 import eu.europeana.api.commons.nosql.dao.NosqlDao;
 import eu.europeana.api.commons.nosql.entity.NoSqlEntity;
 import eu.europeana.api.commons.nosql.service.AbstractNoSqlService;
@@ -90,5 +92,13 @@ public abstract class AbstractNoSqlServiceImpl<E extends NoSqlEntity, T extends 
 	 */
 	protected NosqlDao<E,T> getDao() {
 		return dao;
+	}
+	
+	@Override
+	public List asList(QueryResults queryResults) {
+	  ArrayList result = new ArrayList<>();
+	  Iterator iter = queryResults.iterator();
+	  iter.forEachRemaining(result::add);
+	  return result;
 	}
 }

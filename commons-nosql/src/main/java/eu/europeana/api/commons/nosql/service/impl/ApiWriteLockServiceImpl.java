@@ -2,8 +2,8 @@ package eu.europeana.api.commons.nosql.service.impl;
 
 import java.util.Date;
 import org.bson.types.ObjectId;
-import org.mongodb.morphia.query.Query;
 import org.springframework.cache.annotation.EnableCaching;
+import dev.morphia.query.Query;
 import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
 import eu.europeana.api.commons.nosql.entity.ApiWriteLock;
 import eu.europeana.api.commons.nosql.entity.ApiWriteLockImpl;

@@ -16,15 +16,15 @@ import javax.net.ssl.TrustManagerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.Morphia;
-import org.mongodb.morphia.mapping.Mapper;
-import org.mongodb.morphia.mapping.MapperOptions;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientException;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.MongoException;
+import dev.morphia.Datastore;
+import dev.morphia.Morphia;
+import dev.morphia.mapping.Mapper;
+import dev.morphia.mapping.MapperOptions;
 
 /**
  * Api Mongo connector
@@ -126,7 +126,7 @@ public class ApiMongoConnector {
         validateTrustStoreConfig(truststore, truststorePass);
         log.debug("Enabling ssl connection using truststore: " + truststore + ":" + truststorePass);
         SSLContext sc = getSslContext(truststore, truststorePass);
-        mco.socketFactory(sc.getSocketFactory());
+        mco.sslContext(sc);
       }
     }
     return mco;
