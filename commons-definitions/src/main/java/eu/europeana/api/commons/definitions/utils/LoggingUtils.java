@@ -16,6 +16,6 @@ public class LoggingUtils {
    * @return input in which newlines are replaces by underscore
    */
   public static String sanitizeUserInput(String input) {
-    return input.replaceAll("[\n\r]", "_");
+    return input.replaceAll("[\n\r]", " ");
   }
 }
