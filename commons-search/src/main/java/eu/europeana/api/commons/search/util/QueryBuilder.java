@@ -121,7 +121,7 @@ public class QueryBuilder {
 	solrQuery.setQuery(searchQuery.getQuery());
 
 	solrQuery.setRows(searchQuery.getPageSize());
-	solrQuery.setStart(searchQuery.getPageNr() * searchQuery.getPageSize());
+	solrQuery.setStart(computeSolrQueryStart(searchQuery));
 
 	if (searchQuery.getFilters() != null)
 	    solrQuery.addFilterQuery(searchQuery.getFilters());
@@ -141,6 +141,10 @@ public class QueryBuilder {
 	}
 
 	return solrQuery;
+    }
+
+    protected int computeSolrQueryStart(Query searchQuery) {
+      return searchQuery.getPageNr() * searchQuery.getPageSize();
     }
 
     /**
