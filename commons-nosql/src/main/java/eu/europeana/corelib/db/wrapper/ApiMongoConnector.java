@@ -21,6 +21,8 @@ import com.mongodb.MongoClientException;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.MongoException;
+import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
 import dev.morphia.Datastore;
 import dev.morphia.Morphia;
 import dev.morphia.mapping.Mapper;
@@ -94,7 +96,7 @@ public class ApiMongoConnector {
   }
 
 
-  private Datastore createConnectionAndIndices(MongoClientURI mongoUri,
+  protected Datastore createConnectionAndIndices(MongoClientURI mongoUri,
       String... mongoModelPackage) {
    
     MapperOptions options = new MapperOptions();
@@ -112,7 +114,7 @@ public class ApiMongoConnector {
     return datastore;
   }
 
-  private MongoClientOptions.Builder buildMongoConnectionOptions(String connectionUri,
+  protected MongoClientOptions.Builder buildMongoConnectionOptions(String connectionUri,
       String truststore, String truststorePass) {
 
     MongoClientOptions.Builder mco = MongoClientOptions.builder();
@@ -129,7 +131,21 @@ public class ApiMongoConnector {
         mco.sslContext(sc);
       }
     }
+    
+    //set read and write concerns
+    mco.readPreference(getReadPreference());
+    mco.writeConcern(getWriteConcern());
     return mco;
+  }
+
+
+  protected WriteConcern getWriteConcern() {
+    return WriteConcern.MAJORITY;
+  }
+
+
+  protected ReadPreference getReadPreference() {
+    return ReadPreference.primaryPreferred();
   }
 
   public SSLContext getSslContext(String truststore, String truststorePass) {
