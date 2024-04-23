@@ -80,6 +80,7 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleCommonHttpException(
         HttpException e, HttpServletRequest httpRequest) {
+      LOG.error("Error response: ", e);
       EuropeanaApiErrorResponse response =
           new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
               .setStatus(e.getStatus().value())
@@ -163,7 +164,7 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleOtherExceptionTypes(Exception e, HttpServletRequest httpRequest) {
-        LOG.error("Error: ", e);
+        LOG.error("Unexpected Internal Server Error:", e);
         HttpStatus responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(responseStatus.value())
@@ -183,6 +184,7 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleHttpMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest httpRequest) {
+        LOG.error("Method not allowed Error (405):", e);
         HttpStatus responseStatus = HttpStatus.METHOD_NOT_ALLOWED;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(responseStatus.value())
@@ -210,6 +212,7 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleInputValidationError(ConstraintViolationException e, HttpServletRequest httpRequest) {
+        LOG.error("Bad Request Error (400):", e);
         HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(responseStatus.value())
@@ -228,6 +231,7 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleInputValidationError(MissingServletRequestParameterException e, HttpServletRequest httpRequest) {
+        LOG.error("Bad Request Error (400):", e);
         HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         EuropeanaApiErrorResponse response = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled()))
                 .setStatus(responseStatus.value())
@@ -248,7 +252,7 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleMediaTypeNotAcceptableException(
         HttpMediaTypeNotAcceptableException e, HttpServletRequest httpRequest) {
-
+        LOG.error("Media Format not Acceptable  Error (406):", e);
         HttpStatus responseStatus = HttpStatus.NOT_ACCEPTABLE;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
             .setStatus(responseStatus.value())
@@ -271,6 +275,7 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleNoHandlerFoundException(
         NoHandlerFoundException e, HttpServletRequest httpRequest) {
+      LOG.error("Not found (404):", e);
       EuropeanaApiErrorResponse response =
           new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
               .setStatus(HttpStatus.NOT_FOUND.value())
@@ -287,7 +292,8 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleMethodArgNotValidException(MethodArgumentNotValidException e, HttpServletRequest httpRequest) {
-        BindingResult result = e.getBindingResult();
+      LOG.error("Bad Request Error (400):", e);
+      BindingResult result = e.getBindingResult();
         String error ="";
         List<FieldError> fieldErrors = result.getFieldErrors();
         if(!fieldErrors.isEmpty()) {
