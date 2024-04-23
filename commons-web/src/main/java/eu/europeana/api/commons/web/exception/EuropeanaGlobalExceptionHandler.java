@@ -80,16 +80,19 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleCommonHttpException(
         HttpException e, HttpServletRequest httpRequest) {
-      LOG.error("Error response: ", e);
+      final String errorMessage = buildResponseMessage(e, e.getI18nKey(), e.getI18nParams());
       EuropeanaApiErrorResponse response =
           new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
               .setStatus(e.getStatus().value())
               .setError(e.getStatus().getReasonPhrase())
-              .setMessage( buildResponseMessage(e, e.getI18nKey(), e.getI18nParams()))
+              .setMessage( errorMessage)
               // code only included in JSON if a value is set in exception
               .setCode(getNormalizedErrorCode(e.getI18nKey()))
               .setSeeAlso(getSeeAlso())
               .build();
+      
+      LOG.error("Error response ({}): {}", e.getStatus().value(), errorMessage, e);
+      
       return ResponseEntity.status(e.getStatus()).headers(createHttpHeaders(httpRequest))
           .body(response);
     }
@@ -129,8 +132,9 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(EuropeanaI18nApiException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleEuropeanaApiException(
         EuropeanaI18nApiException e, HttpServletRequest httpRequest) {
-      logException(e);
-      return buildApiErrorResponse(e, httpRequest, e.getI18nKey(), e.getI18nParams());
+      ResponseEntity<EuropeanaApiErrorResponse> response = buildApiErrorResponse(e, httpRequest, e.getI18nKey(), e.getI18nParams());
+      LOG.error("Application Error ({}): {}", response.getStatusCode(), response.getBody().getMessage(), e);
+      return response;
     }
    
     protected ResponseEntity<EuropeanaApiErrorResponse> buildApiErrorResponse(EuropeanaApiException e,
@@ -164,7 +168,6 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleOtherExceptionTypes(Exception e, HttpServletRequest httpRequest) {
-        LOG.error("Unexpected Internal Server Error:", e);
         HttpStatus responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(responseStatus.value())
@@ -172,6 +175,8 @@ public class EuropeanaGlobalExceptionHandler {
                 .setSeeAlso(seeAlso)
                 .build();
 
+        LOG.error("Unexpected Internal Server Error (500): {}", response.getMessage(), e);
+        
         return ResponseEntity
                 .status(responseStatus)
                 .headers(createHttpHeaders(httpRequest))
@@ -212,14 +217,14 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleInputValidationError(ConstraintViolationException e, HttpServletRequest httpRequest) {
-        LOG.error("Bad Request Error (400):", e);
         HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(responseStatus.value())
                 .setError(responseStatus.getReasonPhrase())
                 .setMessage(e.getMessage())
                 .build();
-
+        
+        LOG.error("Bad Request error (400): {}", response.getMessage(), e);
         return ResponseEntity
                 .status(responseStatus)
                 .headers(createHttpHeaders(httpRequest))
@@ -231,7 +236,6 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler
     public ResponseEntity<EuropeanaApiErrorResponse> handleInputValidationError(MissingServletRequestParameterException e, HttpServletRequest httpRequest) {
-        LOG.error("Bad Request Error (400):", e);
         HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
         EuropeanaApiErrorResponse response = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled()))
                 .setStatus(responseStatus.value())
@@ -239,7 +243,8 @@ public class EuropeanaGlobalExceptionHandler {
                 .setMessage(e.getMessage())
                 .setSeeAlso(seeAlso)
                 .build();
-
+        
+        LOG.error("Bad Request error (400): {}", response.getMessage(), e);
         return ResponseEntity
                 .status(responseStatus)
                 .headers(createHttpHeaders(httpRequest))
@@ -252,12 +257,13 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleMediaTypeNotAcceptableException(
         HttpMediaTypeNotAcceptableException e, HttpServletRequest httpRequest) {
-        LOG.error("Media Format not Acceptable  Error (406):", e);
+        final String message = "Server could not generate a response that is acceptable by the client";
+        LOG.error("Media Format not Acceptable  Error (406): {}", message, e);
         HttpStatus responseStatus = HttpStatus.NOT_ACCEPTABLE;
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
             .setStatus(responseStatus.value())
             .setError(responseStatus.getReasonPhrase())
-            .setMessage("Server could not generate a response that is acceptable by the client")
+            .setMessage(message)
             .setSeeAlso(seeAlso)
             .build();
 
@@ -292,7 +298,6 @@ public class EuropeanaGlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> handleMethodArgNotValidException(MethodArgumentNotValidException e, HttpServletRequest httpRequest) {
-      LOG.error("Bad Request Error (400):", e);
       BindingResult result = e.getBindingResult();
         String error ="";
         List<FieldError> fieldErrors = result.getFieldErrors();
@@ -301,13 +306,16 @@ public class EuropeanaGlobalExceptionHandler {
             error = fieldErrors.get(0).getField() + " " + fieldErrors.get(0).getDefaultMessage();
         }
         HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
+        final String message = "Invalid request body";
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
             .setStatus(responseStatus.value())
-            .setMessage("Invalid request body")
+            .setMessage(message)
             .setError(error)
             .setSeeAlso(seeAlso)
             .build();
-
+        
+        LOG.error("Bad Request Error (400): {}", message, e);
+        
         return ResponseEntity
             .status(responseStatus)
             .headers(createHttpHeaders(httpRequest))
