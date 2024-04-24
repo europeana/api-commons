@@ -21,6 +21,7 @@ import com.mongodb.MongoClientException;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
 import com.mongodb.MongoException;
+import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import dev.morphia.Datastore;
@@ -133,18 +134,24 @@ public class ApiMongoConnector {
     }
     
     //set read and write concerns
-    mco.readPreference(getReadPreference());
-    mco.writeConcern(getWriteConcern());
+    mco.readPreference(defaultReadPreference());
+    mco.writeConcern(defaultWriteConcern());
+    mco.readConcern(defultReadConcern());
     return mco;
   }
 
 
-  protected WriteConcern getWriteConcern() {
+  private ReadConcern defultReadConcern() {
+    return ReadConcern.AVAILABLE;
+  }
+
+
+  protected WriteConcern defaultWriteConcern() {
     return WriteConcern.MAJORITY;
   }
 
 
-  protected ReadPreference getReadPreference() {
+  protected ReadPreference defaultReadPreference() {
     return ReadPreference.primaryPreferred();
   }
 
