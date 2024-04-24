@@ -27,7 +27,6 @@ public class NosqlDaoImpl<E extends NoSqlEntity, T extends Serializable> extends
 	 */
 	public NosqlDaoImpl(Datastore datastore, Class<E> clazz) {
 		super(clazz, datastore);
-		datastore.getDB().setReadPreference(ReadPreference.secondaryPreferred());
 		this.clazz = clazz;
 	}
 
