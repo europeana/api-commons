@@ -142,7 +142,7 @@ public class ApiMongoConnector {
 
 
   private ReadConcern defultReadConcern() {
-    return ReadConcern.AVAILABLE;
+    return ReadConcern.MAJORITY;
   }
 
 
