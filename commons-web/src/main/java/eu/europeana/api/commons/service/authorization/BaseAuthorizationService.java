@@ -114,7 +114,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
         // read access is provided to any authenticated user
         List<Authentication> authList = new ArrayList<Authentication>();
         //for read acccess the resource access is not mandatory
-        OAuthUtils.processResourceAccessClaims(getApiName(), data, authList, false);
+        OAuthUtils.processResourceAccessClaims(getApiName(), data, authList, mustVerifyResourceAccessForRead());
         if (!authList.isEmpty()) {
           authentication = authList.get(0);
         } else {
@@ -131,6 +131,14 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     }
 
     return authentication;
+  }
+  
+  /**
+   * Indicate if the resource access needs to be verified for read operations (e.g. private user sets)
+   * @return true if the resourceAceess field needs to be processed for read access
+   */
+  protected  boolean mustVerifyResourceAccessForRead() {
+    return false;
   }
 
 
