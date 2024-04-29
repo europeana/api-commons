@@ -133,15 +133,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     return authentication;
   }
   
-  /**
-   * Indicate if the resource access needs to be verified for read operations (e.g. private user sets)
-   * @return true if the resourceAceess field needs to be processed for read access
-   */
-  protected  boolean mustVerifyResourceAccessForRead() {
-    return false;
-  }
-
-
   /*
    * (non-Javadoc)
    *
@@ -288,17 +279,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
   }
 
   /**
-   * Method to indicate if the resource access (i.e. user has the role which grants permissions for the operation) is required.
-   * Client authentication is mandatory, but apis might grant access to all users if the token is valid
-   * Api should overwrite this method in order to disable resource access verification
-   *
-   * @return true if the resource access needs to be verified
-   */
-  protected boolean isResourceAccessVerificationRequired(String operation) {
-    return true;
-  }
-
-  /**
    * Check if a write lock is in effect. Returns HttpStatus.LOCKED in case the write lock is active.
    * To be used for preventing access to the write operations when the application is locked Needs
    * to be called explicitly in the verifyWriteAccess methods of individual apis
@@ -341,6 +321,26 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     return getMaintenanceOperations().contains(operationName);
   }
 
+  /**
+   * Indicate if the resource access needs to be verified for read operations. This indicates if the resourceAccess is available in jwt tokens used for the current API
+   * Default is true.
+   * @return true if the resourceAceess field needs to be processed for read access
+   */
+  protected  boolean mustVerifyResourceAccessForRead() {
+    return true;
+  }
+
+  /**
+   * Method to indicate if the resource access (i.e. user has the role which grants permissions for the operation) is required.
+   * Client authentication is mandatory, but apis might grant access to all users if the token is valid
+   * Api should overwrite this method in order to disable resource access verification
+   *
+   * @return true if the resource access needs to be verified
+   */
+  protected boolean isResourceAccessVerificationRequired(String operation) {
+    return true;
+  }
+  
   /**
    * Returns the list of
    *
