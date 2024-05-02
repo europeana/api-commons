@@ -27,6 +27,8 @@ public abstract class ResultsPageSerializer<T> extends JsonLd {
 		this.resultsPage = resPage;
 		this.context = context;
 		this.type = type;
+		registerContainerProperty(CommonApiConstants.SEARCH_RESP_FACETS);
+		registerContainerProperty(CommonApiConstants.SEARCH_RESP_FACETS_VALUES);
 	}
 
 	public ResultsPage<T> getResultsPage() {
