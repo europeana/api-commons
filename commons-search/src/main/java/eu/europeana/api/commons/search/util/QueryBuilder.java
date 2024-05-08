@@ -39,7 +39,7 @@ public class QueryBuilder {
 	Query searchQuery = new QueryImpl();
 	searchQuery.setQuery(queryString);
 	if (pageNr < 0)
-	    searchQuery.setPageNr(Query.DEFAULT_PAGE);
+	    searchQuery.setPageNr(getSearchQueryStart());
 	else
 	    searchQuery.setPageNr(pageNr);
 
@@ -143,8 +143,12 @@ public class QueryBuilder {
 	return solrQuery;
     }
 
+    public int getSearchQueryStart() {
+      return Query.DEFAULT_PAGE;
+    }
+    
     protected int computeSolrQueryStart(Query searchQuery) {
-      return searchQuery.getPageNr() * searchQuery.getPageSize();
+      return (searchQuery.getPageNr() - getSearchQueryStart()) * searchQuery.getPageSize();
     }
 
     /**
