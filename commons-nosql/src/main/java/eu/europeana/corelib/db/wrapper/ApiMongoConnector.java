@@ -136,12 +136,12 @@ public class ApiMongoConnector {
     //set read and write concerns
     mco.readPreference(defaultReadPreference());
     mco.writeConcern(defaultWriteConcern());
-    mco.readConcern(defultReadConcern());
+    mco.readConcern(defaultReadConcern());
     return mco;
   }
 
 
-  private ReadConcern defultReadConcern() {
+  private ReadConcern defaultReadConcern() {
     return ReadConcern.MAJORITY;
   }
 
