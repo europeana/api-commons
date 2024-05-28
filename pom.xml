@@ -17,6 +17,7 @@
 		<module>commons-web</module>
 		<module>commons-error</module>
 		<module>commons-logs</module>
+		<module>commons-schemavalidation</module>
 	</modules>
 
 	<distributionManagement>
