@@ -71,7 +71,8 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		boolean includeErrorStack = Boolean.valueOf(req.getParameter(CommonApiConstants.PARAM_INCLUDE_ERROR_STACK));
 		ApiResponse res = getErrorReport(req.getParameter(CommonApiConstants.PARAM_WSKEY), req.getServletPath(),
 				ex, includeErrorStack);
-		logTraceOrErrorMessage(ex.getStatus(), ex, "respond with http exception:");
+
+		logger.error("Error response sent for http exception:", ex);
 		return buildErrorResponse(res, ex.getStatus());
 
 	}
@@ -120,13 +121,5 @@ public abstract class AbstractExceptionHandlingController extends ApiResponseBui
 		headers.add(HttpHeaders.VARY, HttpHeaders.ACCEPT);
 		headers.add(HttpHeaders.CONTENT_TYPE, HttpHeaders.CONTENT_TYPE_JSON_UTF8);
 		return headers;
-	}
-
-	private void logTraceOrErrorMessage(HttpStatus status, Exception ex, String message) {
-		int INTERNAL_SERVER_ERROR = 500;
-        if (status.value() >= INTERNAL_SERVER_ERROR) {
-			logger.error(message, ex);
-		}
-		logger.error(message, ex.getMessage());
 	}
 }
