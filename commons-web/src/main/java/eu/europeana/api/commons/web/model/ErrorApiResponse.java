@@ -8,6 +8,6 @@ public class ErrorApiResponse extends ApiResponse {
 		//mark as error
 		this.success = false;
 		//set error message
-		this.error = errorMessage;
+		this.setError(errorMessage);
 	}
 }

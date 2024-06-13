@@ -18,67 +18,68 @@ import eu.europeana.api.commons.web.model.ErrorApiResponse;
 
 public abstract class ApiResponseBuilder {
 
-	Logger logger = LogManager.getLogger(getClass());
-	private static ObjectMapper objectMapper = new ObjectMapper();
+  Logger logger = LogManager.getLogger(getClass());
+  private static ObjectMapper objectMapper = new ObjectMapper();
 
-	protected abstract I18nService getI18nService();
-	
-	public Logger getLogger() {
-		return logger;
-	}
+  protected abstract I18nService getI18nService();
 
-	public ApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
-		return new ErrorApiResponse(apiKey, action, errorMessage);		
-	}
+  public Logger getLogger() {
+    return logger;
+  }
 
-	protected ApiResponse getErrorReport(String apiKey, String action, Throwable th, boolean includeErrorStack) {
+  public ErrorApiResponse buildErrorResponse(String errorMessage, String action, String apiKey) {
+    return new ErrorApiResponse(apiKey, action, errorMessage);
+  }
 
-		ApiResponse response;
+  protected ErrorApiResponse getErrorReport(String apiKey, String action, Throwable th,
+      boolean includeErrorStack) {
 
-		final String blank = " ";
-		StringBuilder messageBuilder = new StringBuilder();
+    ErrorApiResponse response;
 
-		if (!(th instanceof HttpException)) {
-			messageBuilder.append(blank).append(th.getMessage()).append(". ");
-		} else {
-			HttpException ex = (HttpException) th;
-			String message = getI18nService().getMessage(ex.getI18nKey(), ex.getI18nParams());
-			messageBuilder.append(message);
-		}
-			
+    final String blank = " ";
+    StringBuilder messageBuilder = new StringBuilder();
 
-		if (th != null && th.getCause() != null && th != th.getCause())
-			messageBuilder.append(blank).append(th.getCause().getMessage());
+    if (!(th instanceof HttpException)) {
+      messageBuilder.append(blank).append(th.getMessage()).append(". ");
+    } else {
+      HttpException ex = (HttpException) th;
+      String message = getI18nService().getMessage(ex.getI18nKey(), ex.getI18nParams());
+      messageBuilder.append(message);
+    }
 
-		response = buildErrorResponse(messageBuilder.toString(), action, apiKey);
 
-		if (includeErrorStack && th != null)
-			response.setStackTrace(getStackTraceAsString(th));
+    if (th != null && th.getCause() != null && th != th.getCause())
+      messageBuilder.append(blank).append(th.getCause().getMessage());
 
-		return response;
-	}
+    response = buildErrorResponse(messageBuilder.toString(), action, apiKey);
 
-	String getStackTraceAsString(Throwable th) {
-		StringWriter out = new StringWriter();
-		th.printStackTrace(new PrintWriter(out));
-		return out.toString();
-	}
+    if (includeErrorStack && th != null)
+      response.setStackTrace(getStackTraceAsString(th));
 
-	protected String serializeResponse(ApiResponse res) {
-		String errorMessage;
-		try {
-			// correct serialization
-			return objectMapper.writeValueAsString(res);
-		} catch (JsonGenerationException e) {
-			getLogger().error("Json Generation Exception: " + e.getMessage(), e);
-			errorMessage = "Json Generation Exception: " + e.getMessage() + " See error logs!";
-		} catch (JsonMappingException e) {
-			getLogger().error("Json Mapping Exception: " + e.getMessage(), e);
-			errorMessage = "Json Generation Exception: " + e.getMessage() + " See error logs!";
-		} catch (IOException e) {
-			getLogger().error("I/O Exception: " + e.getMessage(), e);
-			errorMessage = "I/O Exception: " + e.getMessage() + " See error logs!";
-		}
-		return errorMessage;
-	}
+    return response;
+  }
+
+  String getStackTraceAsString(Throwable th) {
+    StringWriter out = new StringWriter();
+    th.printStackTrace(new PrintWriter(out));
+    return out.toString();
+  }
+
+  protected String serializeResponse(ApiResponse res) {
+    String errorMessage;
+    try {
+      // correct serialization
+      return objectMapper.writeValueAsString(res);
+    } catch (JsonGenerationException e) {
+      getLogger().error("Json Generation Exception: " + e.getMessage(), e);
+      errorMessage = "Json Generation Exception: " + e.getMessage() + " See error logs!";
+    } catch (JsonMappingException e) {
+      getLogger().error("Json Mapping Exception: " + e.getMessage(), e);
+      errorMessage = "Json Generation Exception: " + e.getMessage() + " See error logs!";
+    } catch (IOException e) {
+      getLogger().error("I/O Exception: " + e.getMessage(), e);
+      errorMessage = "I/O Exception: " + e.getMessage() + " See error logs!";
+    }
+    return errorMessage;
+  }
 }
