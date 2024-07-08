@@ -1,7 +1,11 @@
 package eu.europeana.api.commons.web.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.networknt.schema.ValidationMessage;
+import eu.europeana.api.commons.exception.JsonValidationFailedException;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import org.apache.commons.lang3.StringUtils;
@@ -351,4 +355,22 @@ public class EuropeanaGlobalExceptionHandler {
     protected I18nService getI18nService() {
       return null;
     }
+
+  @ExceptionHandler(JsonValidationFailedException.class)
+  public ResponseEntity<EuropeanaApiErrorResponse> onJsonValidationFailedException(JsonValidationFailedException e,HttpServletRequest httpRequest) {
+    List<String> messages = e.getValidationMessages().stream()
+        .map(ValidationMessage::getMessage)
+        .collect(Collectors.toList());
+
+    HttpStatus responseStatus = HttpStatus.BAD_REQUEST;
+    EuropeanaApiErrorResponse response = (new EuropeanaApiErrorResponse.Builder(httpRequest, e, this.stackTraceEnabled())).
+        setStatus(responseStatus.value()).
+        setMessage(String.join(",", messages)).
+        setError(responseStatus.getReasonPhrase()).
+        setSeeAlso(getSeeAlso()).build();
+
+    return (ResponseEntity.status(responseStatus).headers(this.createHttpHeaders(httpRequest))).body(response);
+  }
+
+
 }
