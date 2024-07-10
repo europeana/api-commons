@@ -1,28 +1,43 @@
 package eu.europeana.api.commons.web.exception;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.ConversionNotSupportedException;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
+
 import eu.europeana.api.commons.config.i18n.I18nService;
 import eu.europeana.api.commons.error.EuropeanaApiErrorResponse;
 import eu.europeana.api.commons.error.EuropeanaApiException;
@@ -36,6 +51,24 @@ import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
  */
 @Component
 public class EuropeanaGlobalExceptionHandler {
+	
+	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>(); 
+	//see DefaultHandlerExceptionResolver.doResolveException
+	static {
+		statusCodeMap.put(HttpRequestMethodNotSupportedException.class, HttpStatus.METHOD_NOT_ALLOWED);
+		statusCodeMap.put(HttpMediaTypeNotSupportedException.class, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+		statusCodeMap.put(HttpMediaTypeNotAcceptableException.class, HttpStatus.NOT_ACCEPTABLE);
+		statusCodeMap.put(MissingServletRequestParameterException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(ServletRequestBindingException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(ConversionNotSupportedException.class, HttpStatus.INTERNAL_SERVER_ERROR);
+		statusCodeMap.put(TypeMismatchException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(HttpMessageNotReadableException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(HttpMessageNotWritableException.class, HttpStatus.INTERNAL_SERVER_ERROR);
+		statusCodeMap.put(MethodArgumentNotValidException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(MissingServletRequestPartException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(BindException.class, HttpStatus.BAD_REQUEST);
+		statusCodeMap.put(NoHandlerFoundException.class, HttpStatus.NOT_FOUND);
+	}
 
     @Value("${server.error.include-stacktrace:ON_PARAM}")
     private ErrorProperties.IncludeStacktrace includeStacktraceConfig;
@@ -321,6 +354,29 @@ public class EuropeanaGlobalExceptionHandler {
             .headers(createHttpHeaders(httpRequest))
             .body(response);
     }
+    
+	@ExceptionHandler({ServletException.class, NestedRuntimeException.class, BindException.class})
+	public ResponseEntity<EuropeanaApiErrorResponse> handleMissingRequestParamException(Exception ex, HttpServletRequest httpRequest) {
+		HttpStatus statusCode = statusCodeMap.get(ex.getClass());
+		if(statusCode == null)
+			statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+		
+        final String message = "Missing request parameter.";
+        LOG.error("Missing Request Parameter Error: {}", message, ex);
+        EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, ex, stackTraceEnabled())
+            .setStatus(statusCode.value())
+            .setError(statusCode.getReasonPhrase())
+            .setMessage(message)
+            .setSeeAlso(seeAlso)
+            .build();
+
+        return ResponseEntity
+            .status(statusCode)
+            .headers(createHttpHeaders(httpRequest))
+            .body(response);
+		
+	}
+
     
     protected HttpHeaders createHttpHeaders(HttpServletRequest httpRequest) {
       HttpHeaders headers = new HttpHeaders();
