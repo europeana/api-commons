@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
 public class EuropeanaApiErrorResponse {
   
    @JsonIgnore
-   public static final String CONTEXT = "http://www.europeana.eu/schemas/context/api.jsonld";
+   public static final String CONTEXT = "https://api.europeana.eu/schema/context/api.jsonld";
   
   
     @JsonProperty("@context")
