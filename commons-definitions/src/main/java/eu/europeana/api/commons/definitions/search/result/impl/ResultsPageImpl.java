@@ -2,11 +2,9 @@ package eu.europeana.api.commons.definitions.search.result.impl;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import eu.europeana.api.commons.definitions.search.FacetFieldView;
 import eu.europeana.api.commons.definitions.search.result.ResultsPage;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ResultsPageImpl<T> implements ResultsPage<T>{
 
 		private long totalInPage;
