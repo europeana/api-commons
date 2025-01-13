@@ -71,6 +71,22 @@
             <version>${version.jackson}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
+        <!-- Java 8 date/time type `java.time.OffsetDateTime` not supported by default:
+           add Module "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" to enable handling -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${version.jackson}</version>
+        </dependency>
+
+
         <!-- For testing error response contents (not possible with MockMvc)-->
         <!-- This issue https://github.com/rest-assured/rest-assured/issues/1175 prevent us from upgrading to 4.3.1 -->
         <dependency>
