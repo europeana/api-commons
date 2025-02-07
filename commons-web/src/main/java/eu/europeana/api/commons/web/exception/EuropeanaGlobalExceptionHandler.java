@@ -51,8 +51,9 @@ import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
  */
 @Component
 public class EuropeanaGlobalExceptionHandler {
-	
-	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>(); 
+	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>();
+	final static String errorLabelSuffix="label";
+	final static String errorCodeSuffix="code";
 	//see DefaultHandlerExceptionResolver.doResolveException
 	static {
 		statusCodeMap.put(HttpRequestMethodNotSupportedException.class, HttpStatus.METHOD_NOT_ALLOWED);
@@ -114,13 +115,15 @@ public class EuropeanaGlobalExceptionHandler {
     public ResponseEntity<EuropeanaApiErrorResponse> handleCommonHttpException(
         HttpException e, HttpServletRequest httpRequest) {
       final String errorMessage = buildResponseMessage(e, e.getI18nKey(), e.getI18nParams());
+      final String errorLabel = buildErrorField(e, e.getI18nKey(), errorLabelSuffix, e.getStatus().getReasonPhrase());
+      final String errorCode = buildErrorField(e, e.getI18nKey(), errorCodeSuffix, getNormalizedErrorCode(e.getI18nKey()));
       EuropeanaApiErrorResponse response =
           new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
               .setStatus(e.getStatus().value())
-              .setError(e.getStatus().getReasonPhrase())
-              .setMessage( errorMessage)
+              .setError(errorLabel)
+              .setMessage(errorMessage)
               // code only included in JSON if a value is set in exception
-              .setCode(getNormalizedErrorCode(e.getI18nKey()))
+              .setCode(errorCode)
               .setSeeAlso(getSeeAlso())
               .build();
       
@@ -172,13 +175,15 @@ public class EuropeanaGlobalExceptionHandler {
    
     protected ResponseEntity<EuropeanaApiErrorResponse> buildApiErrorResponse(EuropeanaApiException e,
         HttpServletRequest httpRequest, String i18nKey, String[] i18NParams) {
+      final String errorLabel = buildErrorField(e, i18nKey, errorLabelSuffix, e.getResponseStatus().getReasonPhrase());
+      final String errorCode = buildErrorField(e, i18nKey, errorCodeSuffix, getNormalizedErrorCode(e.getErrorCode())); 
       EuropeanaApiErrorResponse response =
           new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
               .setStatus(e.getResponseStatus().value())
-              .setError(e.getResponseStatus().getReasonPhrase())
+              .setError(errorLabel)
               .setMessage(e.doExposeMessage() ? buildResponseMessage(e, i18nKey, i18NParams) : null)
               // code only included in JSON if a value is set in exception
-              .setCode(getNormalizedErrorCode(e.getErrorCode()))
+              .setCode(errorCode)
               .setSeeAlso(getSeeAlso())
               .build();
       return ResponseEntity.status(e.getResponseStatus()).headers(createHttpHeaders(httpRequest))
@@ -191,6 +196,17 @@ public class EuropeanaGlobalExceptionHandler {
       } else {
         return e.getMessage(); 
       }
+    }
+    
+    protected String buildErrorField(Exception e, String i18nKey, String suffix, String defaultVal) {
+      if (getI18nService() != null && StringUtils.isNotBlank(i18nKey)) {
+        String errFieldKey=i18nKey + "." + suffix;
+        String errFieldVal=getI18nService().getMessage(errFieldKey);
+        if(StringUtils.isNotBlank(errFieldVal) && !errFieldVal.equals(errFieldKey)) {
+            return errFieldVal;
+        }
+      }
+      return defaultVal;
     }
     
     
