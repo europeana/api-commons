@@ -51,9 +51,10 @@ import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
  */
 @Component
 public class EuropeanaGlobalExceptionHandler {
-	final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>();
-	final static String errorLabelSuffix="label";
-	final static String errorCodeSuffix="code";
+	
+    final static String errorLabelSuffix="label";
+    final static String errorCodeSuffix="code";
+    final static Map<Class<? extends Exception>, HttpStatus> statusCodeMap = new HashMap<Class<? extends Exception>, HttpStatus>();
 	//see DefaultHandlerExceptionResolver.doResolveException
 	static {
 		statusCodeMap.put(HttpRequestMethodNotSupportedException.class, HttpStatus.METHOD_NOT_ALLOWED);
@@ -175,8 +176,8 @@ public class EuropeanaGlobalExceptionHandler {
    
     protected ResponseEntity<EuropeanaApiErrorResponse> buildApiErrorResponse(EuropeanaApiException e,
         HttpServletRequest httpRequest, String i18nKey, String[] i18NParams) {
-      final String errorLabel = buildErrorField(e, i18nKey, errorLabelSuffix, e.getResponseStatus().getReasonPhrase());
-      final String errorCode = buildErrorField(e, i18nKey, errorCodeSuffix, getNormalizedErrorCode(e.getErrorCode())); 
+      final String errorLabel = buildErrorLabel(e, i18nKey, e.getResponseStatus().getReasonPhrase());
+      final String errorCode = buildErrorCode(e, i18nKey, getNormalizedErrorCode(e.getErrorCode())); 
       EuropeanaApiErrorResponse response =
           new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
               .setStatus(e.getResponseStatus().value())
@@ -198,7 +199,15 @@ public class EuropeanaGlobalExceptionHandler {
       }
     }
     
-    protected String buildErrorField(Exception e, String i18nKey, String suffix, String defaultVal) {
+    protected String buildErrorLabel(Exception e, String i18nKey, String defaultVal) {
+      return buildErrorField(e, i18nKey, errorLabelSuffix, defaultVal);
+    }
+    
+    protected String buildErrorCode(Exception e, String i18nKey, String defaultVal) {
+      return buildErrorField(e, i18nKey, errorCodeSuffix, defaultVal);
+    }
+    
+    String buildErrorField(Exception e, String i18nKey, String suffix, String defaultVal) {
       if (getI18nService() != null && StringUtils.isNotBlank(i18nKey)) {
         String errFieldKey=i18nKey + "." + suffix;
         String errFieldVal=getI18nService().getMessage(errFieldKey);
