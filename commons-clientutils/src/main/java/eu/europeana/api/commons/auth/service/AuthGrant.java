@@ -1,6 +1,3 @@
-/**
- * 
- */
 package eu.europeana.api.commons.auth.service;
 
 import java.util.Properties;

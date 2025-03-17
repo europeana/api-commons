@@ -20,6 +20,7 @@ import org.apache.hc.core5.http.io.entity.StringEntity;
 
 /**
  * The class encapsulating simple HTTP access.
+ * Handles the authentication for the clients as well via AuthenticationHandler
  *
  * @author Srishti Singh
  * @since 26 November 2024

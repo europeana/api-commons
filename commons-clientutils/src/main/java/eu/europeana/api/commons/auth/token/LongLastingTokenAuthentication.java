@@ -37,9 +37,6 @@ public class LongLastingTokenAuthentication extends TokenBasedAuthentication {
      * if token is NOT valid - issue the new/refresh token and attach that to the request
      *
      * Also update the client credentials if new/refresh token is generated
-     *
-     * @param httpRequest htt request of the client
-     * @throws CommonAuthenticationException
      */
     @Override
     protected String getAccessToken() {
