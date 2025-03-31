@@ -29,9 +29,25 @@ public class HttpConnection {
 
     private final CloseableHttpClient httpClient;
 
-    public HttpConnection() {
-        httpClient = HttpClientBuilder.create().build();
-    }
+	/**
+	 * Creates a HttpConnection without redirect strategy
+	 */
+	public HttpConnection() {
+		this(false);
+	}
+
+	/**
+	 * By default - DefaultRedirectStrategy is initialised if nothing is set.
+	 * To create a connection without following redirects set 'redirectHandlingDisabled' to false
+	 * @param withRedirect
+	 */
+	public HttpConnection(boolean withRedirect) {
+		HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+		if (!withRedirect) {
+			clientBuilder.disableRedirectHandling();
+		}
+		this.httpClient = clientBuilder.build();
+	}
 
 	/**
 	 *This method makes GET request for given URL.
