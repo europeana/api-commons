@@ -1,7 +1,3 @@
-/*
- * HttpConnector.java - europeana4j
- * (C) 2011 Digibis S.L.
- */
 package eu.europeana.api.commons.http;
 
 import java.io.IOException;
@@ -70,13 +66,28 @@ public class HttpConnection {
 	 * @throws IOException
 	 */
 
-	public HttpResponseHandler get(String url, String acceptHeaderValue
-	                             , AuthenticationHandler auth) throws IOException {
+	public HttpGet getHttpRequest(String url, String acceptHeaderValue
+			, AuthenticationHandler auth) throws IOException {
 		HttpGet get = new HttpGet(url);
 		if(StringUtils.isNotBlank(acceptHeaderValue)) {
-		  addHeaders(get, HttpHeaders.ACCEPT, acceptHeaderValue);
+			addHeaders(get, HttpHeaders.ACCEPT, acceptHeaderValue);
 		}
 		auth.setAuthorization(get);
+		return get;
+	}
+
+	/**
+	 *This method makes GET request for given URL.
+	 * @param url
+	 * @param acceptHeaderValue
+	 * @param auth Authentication handler for the request
+	 * @return HttpResponseHandler that comprises response body as String and status code.
+	 * @throws IOException
+	 */
+
+	public HttpResponseHandler get(String url, String acceptHeaderValue
+	                             , AuthenticationHandler auth) throws IOException {
+		HttpGet get = getHttpRequest(url, acceptHeaderValue, auth);
 		return executeHttpClient(get);
 	}
 
@@ -139,7 +150,7 @@ public class HttpConnection {
 	}
 
 
-    private <T extends HttpUriRequestBase> HttpResponseHandler executeHttpClient(T url) throws IOException {
+    public <T extends HttpUriRequestBase> HttpResponseHandler executeHttpClient(T url) throws IOException {
       HttpResponseHandler responseHandler = new HttpResponseHandler();
       httpClient.execute(url, responseHandler); 
       return responseHandler;
