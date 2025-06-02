@@ -90,7 +90,7 @@ public class HttpConnection {
 			, AuthenticationHandler auth) throws IOException {
 		HttpGet get = new HttpGet(url);
 		if (StringUtils.isNotEmpty(acceptHeaderValue)) {
-			headers.put(HttpHeaders.ACCEPT, acceptHeaderValue);
+			get.addHeader(HttpHeaders.ACCEPT, acceptHeaderValue);
 		}
 		addHeaders(get, headers);
 		if (auth != null) auth.setAuthorization(get);
