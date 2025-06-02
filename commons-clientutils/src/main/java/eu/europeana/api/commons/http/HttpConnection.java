@@ -1,6 +1,7 @@
 package eu.europeana.api.commons.http;
 
 import java.io.IOException;
+import java.util.Map;
 
 import eu.europeana.api.commons.auth.AuthenticationHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +61,6 @@ public class HttpConnection {
 	/**
 	 *This method makes GET request for given URL.
 	 * @param url
-	 * @param acceptHeaderValue
 	 * @param auth Authentication handler for the request
 	 * @return HttpResponseHandler that comprises response body as String and status code.
 	 * @throws IOException
@@ -69,25 +69,31 @@ public class HttpConnection {
 	public HttpGet getHttpRequest(String url, String acceptHeaderValue
 			, AuthenticationHandler auth) throws IOException {
 		HttpGet get = new HttpGet(url);
-		if(StringUtils.isNotBlank(acceptHeaderValue)) {
-			addHeaders(get, HttpHeaders.ACCEPT, acceptHeaderValue);
+		if (acceptHeaderValue != null) {
+			get.addHeader(HttpHeaders.ACCEPT, acceptHeaderValue);
 		}
-		auth.setAuthorization(get);
+		if (auth != null) auth.setAuthorization(get);
 		return get;
 	}
 
 	/**
 	 *This method makes GET request for given URL.
 	 * @param url
-	 * @param acceptHeaderValue
+	 *
+	 * @param headers map of header name and value that needs to be added in the Url
 	 * @param auth Authentication handler for the request
 	 * @return HttpResponseHandler that comprises response body as String and status code.
 	 * @throws IOException
 	 */
 
-	public HttpResponseHandler get(String url, String acceptHeaderValue
-	                             , AuthenticationHandler auth) throws IOException {
-		HttpGet get = getHttpRequest(url, acceptHeaderValue, auth);
+	public HttpResponseHandler get(String url, String acceptHeaderValue, Map<String, String> headers
+			, AuthenticationHandler auth) throws IOException {
+		HttpGet get = new HttpGet(url);
+		if (StringUtils.isNotEmpty(acceptHeaderValue)) {
+			headers.put(HttpHeaders.ACCEPT, acceptHeaderValue);
+		}
+		addHeaders(get, headers);
+		if (auth != null) auth.setAuthorization(get);
 		return executeHttpClient(get);
 	}
 
@@ -104,11 +110,12 @@ public class HttpConnection {
     public HttpResponseHandler post(String url, String requestBody, String contentType
                                   , AuthenticationHandler auth) throws IOException {
         HttpPost post = new HttpPost(url);
-        if(StringUtils.isNotBlank(contentType)) {
-            addHeaders(post, HttpHeaders.CONTENT_TYPE, contentType);
+
+        if (StringUtils.isNotBlank(contentType)) {
+            post.addHeader(HttpHeaders.CONTENT_TYPE, contentType);
         }
-        auth.setAuthorization(post);
-        if(requestBody != null) {
+		if (auth != null) auth.setAuthorization(post);
+        if (requestBody != null) {
             post.setEntity(new StringEntity(requestBody));
         }
 		return executeHttpClient(post);
@@ -128,7 +135,7 @@ public class HttpConnection {
     public HttpResponseHandler put(String url, String jsonParamValue
                                  , AuthenticationHandler auth) throws IOException {
 		HttpPut put = new HttpPut(url);
-        auth.setAuthorization(put);
+		if (auth != null) auth.setAuthorization(put);
 		put.setEntity(new StringEntity(jsonParamValue));
 
 		return executeHttpClient(put);
@@ -156,9 +163,10 @@ public class HttpConnection {
       return responseHandler;
 	}
 
-	private <T extends HttpUriRequestBase> void addHeaders(T url, String headerName, String headerValue) {
-		if (StringUtils.isNotBlank(headerValue)) {
-			url.setHeader(headerName, headerValue);
+	private <T extends HttpUriRequestBase> void addHeaders(T url, Map<String, String> headers) {
+		if ( headers == null ) { return; }
+		for (Map.Entry<String, String> entry : headers.entrySet()) {
+			url.setHeader(entry.getKey(), entry.getValue());
 		}
 	}
 }
