@@ -15,6 +15,7 @@ import org.apache.hc.client5.http.impl.DefaultRedirectStrategy;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
@@ -56,6 +57,23 @@ public class HttpConnection {
 			clientBuilder.disableRedirectHandling();
 			this.httpClient = clientBuilder.build();
 		}
+	}
+
+	/**
+	 * Creates the client with the desired connection pool settings
+	 * This client will follow the redirects by default
+	 * @param cm connectionPool param
+	 */
+	public HttpConnection(PoolingHttpClientConnectionManager cm) {
+		RequestConfig requestConfig = RequestConfig.custom()
+				.setCircularRedirectsAllowed(true)
+				.build();
+
+		this.httpClient =  HttpClients.custom()
+				.setDefaultRequestConfig(requestConfig)
+				.setConnectionManager(cm)
+				.setRedirectStrategy(new DefaultRedirectStrategy())
+				.build();
 	}
 
 	/**
