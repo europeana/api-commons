@@ -42,7 +42,6 @@ public class AsyncHttpConnection {
         PoolingAsyncClientConnectionManager connPool = new PoolingAsyncClientConnectionManager();
         if (withRedirect) {
             RequestConfig requestConfig = RequestConfig.custom()
-                    .setCircularRedirectsAllowed(true)
                     .build();
 
             this.httpClient = HttpAsyncClients.custom()
@@ -65,7 +64,6 @@ public class AsyncHttpConnection {
      */
     public AsyncHttpConnection(PoolingAsyncClientConnectionManager connectionPool) {
         RequestConfig requestConfig = RequestConfig.custom()
-                .setCircularRedirectsAllowed(true)
                 .build();
 
         this.httpClient = HttpAsyncClients.custom()

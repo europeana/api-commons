@@ -45,7 +45,6 @@ public class HttpConnection {
 	public HttpConnection(boolean withRedirect) {
 		if (withRedirect) {
 			RequestConfig requestConfig = RequestConfig.custom()
-					.setCircularRedirectsAllowed(true)
 					.build();
 
 			this.httpClient =  HttpClients.custom()
@@ -66,7 +65,6 @@ public class HttpConnection {
 	 */
 	public HttpConnection(PoolingHttpClientConnectionManager cm) {
 		RequestConfig requestConfig = RequestConfig.custom()
-				.setCircularRedirectsAllowed(true)
 				.build();
 
 		this.httpClient =  HttpClients.custom()
