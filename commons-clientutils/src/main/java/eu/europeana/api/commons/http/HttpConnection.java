@@ -180,7 +180,7 @@ public class HttpConnection {
 	}
 
 	private <T extends HttpUriRequestBase> void addHeaders(T url, Map<String, String> headers) {
-		if ( headers == null ) { return; }
+		if ( headers == null || headers.isEmpty() ) { return; }
 		for (Map.Entry<String, String> entry : headers.entrySet()) {
 			url.setHeader(entry.getKey(), entry.getValue());
 		}
