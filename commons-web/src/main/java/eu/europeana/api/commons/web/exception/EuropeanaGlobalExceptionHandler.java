@@ -230,6 +230,7 @@ public class EuropeanaGlobalExceptionHandler {
         EuropeanaApiErrorResponse response = new EuropeanaApiErrorResponse.Builder(httpRequest, e, stackTraceEnabled())
                 .setStatus(responseStatus.value())
                 .setError(responseStatus.getReasonPhrase())
+                .setMessage(e.getMessage())
                 .setSeeAlso(seeAlso)
                 .build();
 

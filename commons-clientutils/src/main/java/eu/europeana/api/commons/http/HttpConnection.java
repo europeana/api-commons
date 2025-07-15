@@ -1,6 +1,7 @@
 package eu.europeana.api.commons.http;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import eu.europeana.api.commons.auth.AuthenticationHandler;
@@ -95,23 +96,44 @@ public class HttpConnection {
 	/**
 	 *This method makes GET request for given URL.
 	 * @param url
-	 *
 	 * @param headers map of header name and value that needs to be added in the Url
 	 * @param auth Authentication handler for the request
 	 * @return HttpResponseHandler that comprises response body as String and status code.
 	 * @throws IOException
 	 */
-
-	public HttpResponseHandler get(String url, String acceptHeaderValue, Map<String, String> headers
+	public HttpResponseHandler get(String url, Map<String, String> headers
 			, AuthenticationHandler auth) throws IOException {
 		HttpGet get = new HttpGet(url);
-		if (StringUtils.isNotEmpty(acceptHeaderValue)) {
-			get.addHeader(HttpHeaders.ACCEPT, acceptHeaderValue);
-		}
 		addHeaders(get, headers);
 		if (auth != null) auth.setAuthorization(get);
 		return executeHttpClient(get);
 	}
+	
+	   /**
+     *This method makes GET request for given URL.
+     * @param url
+     *
+     * @param headers map of header name and value that needs to be added in the Url
+     * @param auth Authentication handler for the request
+     * @return HttpResponseHandler that comprises response body as String and status code.
+     * @throws IOException
+     */
+
+    public HttpResponseHandler get(String url, String acceptHeaderValue, Map<String, String> headers
+            , AuthenticationHandler auth) throws IOException {
+        Map<String, String> allHeaders = null;
+        if(StringUtils.isNotEmpty(acceptHeaderValue)) {
+          if(headers != null) {
+            allHeaders = new HashMap<String, String>();
+            allHeaders.put(HttpHeaders.ACCEPT, acceptHeaderValue);
+            allHeaders.putAll(headers);
+          }else {
+            allHeaders = Map.of(HttpHeaders.ACCEPT, acceptHeaderValue);
+          }
+        }
+          
+        return get(url, allHeaders, auth);
+    }
 
     /**
      * This method makes POST request for given URL and JSON body parameter.
@@ -173,16 +195,18 @@ public class HttpConnection {
 	}
 
 
-    public <T extends HttpUriRequestBase> HttpResponseHandler executeHttpClient(T url) throws IOException {
+    public <T extends HttpUriRequestBase> HttpResponseHandler executeHttpClient(T request) throws IOException {
       HttpResponseHandler responseHandler = new HttpResponseHandler();
-      httpClient.execute(url, responseHandler); 
+      httpClient.execute(request, responseHandler); 
       return responseHandler;
 	}
 
-	private <T extends HttpUriRequestBase> void addHeaders(T url, Map<String, String> headers) {
+	private <T extends HttpUriRequestBase> void addHeaders(T request, Map<String, String> headers) {
 		if ( headers == null || headers.isEmpty() ) { return; }
 		for (Map.Entry<String, String> entry : headers.entrySet()) {
-			url.setHeader(entry.getKey(), entry.getValue());
+			request.setHeader(entry.getKey(), entry.getValue());
 		}
 	}
+
+
 }
