@@ -28,18 +28,7 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
 
   public static final String VALIDATION_PARAMS = "%s?client_id=%s&ip=%s";
     private String apiKeyServiceUrl;
-    // private Client apiKeyClient;
-
-    private String  clientIP="123.123.123.123";
     private AuthenticationHandler authHandler;
-
-//    public Client getApiKeyClient() {
-//        if(apiKeyClient == null) {
-//            apiKeyClient = new Client(getApiKeyServiceUrl());
-//        }
-//	      return apiKeyClient;
-//    }
-
     public String getApiKeyServiceUrl() {
         return apiKeyServiceUrl;
     }
@@ -56,17 +45,8 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
       this.authHandler = authHandler;
     }
 
-  public String getClientIP() {
-    return clientIP;
-  }
-
-  public void setClientIP(String clientIP) {
-    this.clientIP = clientIP;
-  }
-
   @Override
-  /**
-   * Loads ClientDetails object belongs to an apiKey
+  /* Loads ClientDetails object belongs to an apiKey
    */
   public ClientDetails loadClientByClientId(String key) throws OAuth2Exception, ClientRegistrationException {
     //allow disabling apikey validation for read access
@@ -75,7 +55,7 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
     }
     KeyValidationResult result;
     try {
-       result = validateApiKeyKeycloakClient(key,clientIP);
+       result = validateApiKeyKeycloakClient(key);
     } catch (ApiKeyValidationException | RuntimeException e) {
       //service not accessible (e.g. IO Exception wrapped by the client, or other runtime exception )
       throw new OAuth2Exception(
@@ -83,8 +63,6 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
     }
     //If the key validation result contains the error message return the error
     if (result != null && result.getValidationError() !=null) {
-      //   throw new ClientRegistrationException("Invalid API key: " + key + " Reason: " + validation.getHttpStatus()
-      //     + " : " + validation.getErrorMessage());
       throw new EuropeanaClientRegistrationException(null, result);
     }
     // valid api key
@@ -96,14 +74,14 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
    * Method calls the validation endpoint of keycloak to validate the input apikey returns
    * no-content on success and  error response object upon failure.
    *
-   * @return
+   * @return either null or result containing keycloak error messages
    */
-    public KeyValidationResult validateApiKeyKeycloakClient(String apikey,String ip)
+    public KeyValidationResult validateApiKeyKeycloakClient(String apikey)
         throws ApiKeyValidationException {
 
       HttpConnection httpConnection = new HttpConnection();
       try {
-        HttpResponseHandler response = httpConnection.post(VALIDATION_PARAMS.formatted(apiKeyServiceUrl,apikey,ip),null,
+        HttpResponseHandler response = httpConnection.post(VALIDATION_PARAMS.formatted(apiKeyServiceUrl,apikey),null,
             MediaType.APPLICATION_JSON_VALUE, authHandler);
 
         if(response==null || response.getStatus() == HttpStatus.SC_INTERNAL_SERVER_ERROR){
