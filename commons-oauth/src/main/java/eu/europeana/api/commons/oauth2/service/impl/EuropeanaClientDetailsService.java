@@ -26,7 +26,7 @@ import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 @Service("commons_oauth2_europeanaClientDetailsService")
 public class EuropeanaClientDetailsService implements ClientDetailsService {
 
-  public static final String VALIDATION_PARAMS = "%s?client_id=%s&ip=%s";
+  public static final String VALIDATION_PARAMS = "%s?client_id=%s";
     private String apiKeyServiceUrl;
     private AuthenticationHandler authHandler;
     public String getApiKeyServiceUrl() {
