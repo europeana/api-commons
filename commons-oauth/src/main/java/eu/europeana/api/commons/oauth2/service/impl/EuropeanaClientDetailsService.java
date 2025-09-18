@@ -84,7 +84,7 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
         HttpResponseHandler response = httpConnection.post(VALIDATION_PARAMS.formatted(apiKeyServiceUrl,apikey),null,
             MediaType.APPLICATION_JSON_VALUE, authHandler);
 
-        if(response==null || response.getStatus() == HttpStatus.SC_INTERNAL_SERVER_ERROR){
+        if (response == null || response.getStatus() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
           throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + apikey);
           // with previous implementation it looks like validation object was always null for
           // internal server error, hence skipping the part to print the reason for now.
