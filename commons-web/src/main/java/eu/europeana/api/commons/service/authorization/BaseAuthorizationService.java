@@ -1,7 +1,6 @@
 package eu.europeana.api.commons.service.authorization;
 
 import eu.europeana.api.commons.exception.EuropeanaClientRegistrationException;
-import eu.europeana.api.commons.web.exception.CustomApplicationAuthenticationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +86,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       getClientDetailsService().loadClientByClientId(wsKey);
     } catch (EuropeanaClientRegistrationException e) {
       // invalid api key
-      throw new CustomApplicationAuthenticationException(null,null,null,HttpStatus.valueOf(e.getResult().getHttpStatusCode()) , null, e.getResult());
+      throw new ApplicationAuthenticationException(null,null,null,HttpStatus.valueOf(e.getResult().getHttpStatusCode()) , null, e.getResult());
     } catch (OAuth2Exception e) {
       // validation failed through API Key service issues
       // silently approve request
