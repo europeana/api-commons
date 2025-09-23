@@ -80,12 +80,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>eu.europeana.api.commons</groupId>
-			<artifactId>commons-clientutils</artifactId>
-			<version>0.4.7-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
 			<scope>test</scope>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
