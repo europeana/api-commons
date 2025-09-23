@@ -1,6 +1,5 @@
 package eu.europeana.api.commons.service.authorization;
 
-import eu.europeana.api.commons.exception.EuropeanaClientRegistrationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
 import eu.europeana.api.commons.definitions.vocabulary.Role;
@@ -31,7 +31,6 @@ import eu.europeana.api.commons.web.model.vocabulary.Operations;
 public abstract class BaseAuthorizationService implements AuthorizationService {
 
   RsaVerifier signatureVerifier;
-
   private Logger log = LogManager.getLogger(getClass());
 
   public Logger getLog() {
@@ -44,7 +43,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     }
     return signatureVerifier;
   }
-
 
   @Override
   /**
@@ -84,9 +82,10 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     // validate api key
     try {
       getClientDetailsService().loadClientByClientId(wsKey);
-    } catch (EuropeanaClientRegistrationException e) {
+    } catch (ClientRegistrationException e) {
       // invalid api key
-      throw new ApplicationAuthenticationException(null,null,null,HttpStatus.valueOf(e.getResult().getHttpStatusCode()) , null, e.getResult());
+      throw new ApplicationAuthenticationException(I18nConstants.INVALID_APIKEY,
+          I18nConstants.INVALID_APIKEY, new String[] {wsKey}, HttpStatus.UNAUTHORIZED, e);
     } catch (OAuth2Exception e) {
       // validation failed through API Key service issues
       // silently approve request
