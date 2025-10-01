@@ -113,26 +113,17 @@ public class HttpConnection {
      *This method makes GET request for given URL.
      * @param url
      *
-     * @param headers map of header name and value that needs to be added in the Url
      * @param auth Authentication handler for the request
      * @return HttpResponseHandler that comprises response body as String and status code.
      * @throws IOException
      */
 
-    public HttpResponseHandler get(String url, String acceptHeaderValue, Map<String, String> headers
-            , AuthenticationHandler auth) throws IOException {
-        Map<String, String> allHeaders = null;
-        if(StringUtils.isNotEmpty(acceptHeaderValue)) {
-          if(headers != null) {
-            allHeaders = new HashMap<String, String>();
-            allHeaders.put(HttpHeaders.ACCEPT, acceptHeaderValue);
-            allHeaders.putAll(headers);
-          }else {
-            allHeaders = Map.of(HttpHeaders.ACCEPT, acceptHeaderValue);
-          }
-        }
-          
-        return get(url, allHeaders, auth);
+    public HttpResponseHandler get(String url, String acceptHeaderValue, AuthenticationHandler auth) throws IOException {
+        Map<String, String> headers = new HashMap<>();
+        if (StringUtils.isNotEmpty(acceptHeaderValue)) {
+            headers.put(HttpHeaders.ACCEPT, acceptHeaderValue);
+		}
+        return get(url, headers, auth);
     }
 
     /**
