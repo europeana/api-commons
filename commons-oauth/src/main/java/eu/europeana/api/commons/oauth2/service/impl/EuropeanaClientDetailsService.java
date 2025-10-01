@@ -8,7 +8,9 @@ import eu.europeana.api.commons.http.HttpResponseHandler;
 import eu.europeana.api.commons.oauth2.model.KeyValidationError;
 import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
 import java.io.IOException;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
@@ -27,7 +29,9 @@ import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 public class EuropeanaClientDetailsService implements ClientDetailsService {
 
   public static final String VALIDATION_PARAMS = "%s?client_id=%s";
-    private String apiKeyServiceUrl;
+  public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+  public static final String HTTPS = "https";
+  private String apiKeyServiceUrl;
     private AuthenticationHandler authHandler;
     public String getApiKeyServiceUrl() {
         return apiKeyServiceUrl;
@@ -82,7 +86,8 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
       HttpConnection httpConnection = new HttpConnection();
       try {
         HttpResponseHandler response = httpConnection.post(VALIDATION_PARAMS.formatted(apiKeyServiceUrl,apikey),null,
-            MediaType.APPLICATION_JSON_VALUE, authHandler);
+            Map.of(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE,
+                X_FORWARDED_PROTO, HTTPS ), authHandler);
 
         if (response == null || response.getStatus() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
           throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + apikey);

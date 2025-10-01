@@ -148,17 +148,36 @@ public class HttpConnection {
     public HttpResponseHandler post(String url, String requestBody, String contentType
                                   , AuthenticationHandler auth) throws IOException {
         HttpPost post = new HttpPost(url);
-
         if (StringUtils.isNotBlank(contentType)) {
             post.addHeader(HttpHeaders.CONTENT_TYPE, contentType);
         }
-		if (auth != null) auth.setAuthorization(post);
+		    if (auth != null) auth.setAuthorization(post);
         if (requestBody != null) {
             post.setEntity(new StringEntity(requestBody));
         }
 		return executeHttpClient(post);
 	}
 
+	/**
+	 * Makes POST request with given url,request, headers and authHandler
+	 * @param url request URL
+	 * @param requestBody body
+	 * @param headers Request headers
+	 * @param auth Authentication handler for the request
+	 * @return HttpResponseHandler that comprises response body as String and status code.
+	 * @throws IOException
+	 */
+	public HttpResponseHandler post(String url, String requestBody,Map<String, String> headers
+			, AuthenticationHandler auth) throws IOException {
+
+		HttpPost post = new HttpPost(url);
+    addHeaders(post,headers);
+		if (auth != null) auth.setAuthorization(post);
+		if (requestBody != null) {
+			post.setEntity(new StringEntity(requestBody));
+		}
+		return executeHttpClient(post);
+ 	}
 
 
     /**
