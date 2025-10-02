@@ -52,4 +52,9 @@ public class UsageStatsFields {
     public static final String NumberOfProjectClients              = "NumberOfProjectClients";
     public static final String NumberOfPersonalClients             = "NumberOfPersonalClients";
 
+
+    // ELk metric constants
+    public static final String ActiveApiUsers                       = "ActiveApiUsers";
+    public static final String TotalApiUsers                        = "TotalApiUsers";
+    public static final String TotalExternalTraffic                 = "TotalExternalTraffic";
 }
