@@ -18,34 +18,26 @@ public class ELKMetric extends Metric {
      *
      * Pick the highest from Active Users 1 and 2 instead of reporting both
      */
-    private long activeApiUsers;
+    private long activeExternalClients;
+
+    private long allExternalClients;
 
     /**
-     *
+     * Total nr of requests reflecting external clients
      */
-    private long totalExternalTraffic;
+    private long externalClientUsage;
 
     /**
-     * Total number of distinct users (external)
+     * Total nr of requests reflecting internal clients
      */
-    private long totalApiUsers;
+    private long internalClientUsage;
 
-    public ELKMetric(long totalApiUsers, long activeApiUsers, long totalExternalTraffic) {
-        this.activeApiUsers = activeApiUsers;
-        this.totalExternalTraffic = totalExternalTraffic;
-        this.totalApiUsers = totalApiUsers;
-    }
 
-    public long getActiveApiUsers() {
-        return activeApiUsers;
-    }
-
-    public long getTotalExternalTraffic() {
-        return totalExternalTraffic;
-    }
-
-    public long getTotalApiUsers() {
-        return totalApiUsers;
+    public ELKMetric(long activeExternalClients, long allExternalClients, long externalClientUsage, long internalClientUsage) {
+        this.activeExternalClients = activeExternalClients;
+        this.allExternalClients = allExternalClients;
+        this.externalClientUsage = externalClientUsage;
+        this.internalClientUsage = internalClientUsage;
     }
 
     @Override
@@ -58,4 +50,19 @@ public class ELKMetric extends Metric {
         return this.timestamp;
     }
 
+    public long getActiveExternalClients() {
+        return activeExternalClients;
+    }
+
+    public long getAllExternalClients() {
+        return allExternalClients;
+    }
+
+    public long getExternalClientUsage() {
+        return externalClientUsage;
+    }
+
+    public long getInternalClientUsage() {
+        return internalClientUsage;
+    }
 }
