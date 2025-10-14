@@ -167,11 +167,6 @@ public class HttpConnection {
 		if (requestBody != null) {
 			post.setEntity(new StringEntity(requestBody));
 		}
-		try {
-			System.out.println(post.getHeader("X_FORWARDED_PROTO"));
-		} catch (ProtocolException e) {
-			e.printStackTrace();
-		}
 		return executeHttpClient(post);
  	}
 

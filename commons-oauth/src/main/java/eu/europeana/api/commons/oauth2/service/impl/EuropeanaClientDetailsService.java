@@ -92,7 +92,6 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
             if (apiKeyServiceUrl != null && !StringUtils.startsWith(apiKeyServiceUrl, HTTPS)
                     && apiKeyServiceUrl.contains(K8S_FQDN_SUFFIX)) {
                 headers.put(X_FORWARDED_PROTO, HTTPS);
-                System.out.println("here adding https in X_FORWARDED_PROTO");
             }
             HttpResponseHandler response = httpConnection.post(VALIDATION_PARAMS.formatted(apiKeyServiceUrl, apikey), null,
                     headers, authHandler);
