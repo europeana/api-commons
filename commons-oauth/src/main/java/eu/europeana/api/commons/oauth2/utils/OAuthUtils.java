@@ -56,6 +56,12 @@ public class OAuthUtils {
   // client ID
   public static final String CLIENT_ID = "client_public_id";
 
+  // Client validation constants
+  public static final String VALIDATION_PARAMS = "%s?client_id=%s";
+  public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+  public static final String HTTPS = "https";
+  public static final CharSequence K8S_FQDN_SUFFIX = "svc.cluster.local";
+
   static JsonParser objectMapper = JsonParserFactory.create();
 
   /**
