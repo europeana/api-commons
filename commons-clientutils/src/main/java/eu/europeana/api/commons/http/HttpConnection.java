@@ -160,9 +160,8 @@ public class HttpConnection {
 	 */
 	public HttpResponseHandler post(String url, String requestBody,Map<String, String> headers
 			, AuthenticationHandler auth) throws IOException {
-
 		HttpPost post = new HttpPost(url);
-    addHeaders(post,headers);
+		addHeaders(post,headers);
 		if (auth != null) auth.setAuthorization(post);
 		if (requestBody != null) {
 			post.setEntity(new StringEntity(requestBody));
