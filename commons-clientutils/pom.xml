@@ -3,7 +3,7 @@
     <parent>
         <artifactId>commons-api-services</artifactId>
         <groupId>eu.europeana.api.commons</groupId>
-        <version>0.4.8</version>
+        <version>0.4.9-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
