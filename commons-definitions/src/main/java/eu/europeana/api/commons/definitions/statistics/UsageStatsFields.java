@@ -54,15 +54,15 @@ public class UsageStatsFields {
     public static final String Personal                            = "Personal";
     public static final String Project                             = "Project";
     public static final String Internal                            = "Internal";
-    // TODO should be removed once keycloak implements new metric
-    public static final String NumberOfProjectClients              = "NumberOfProjectClients";
-    public static final String NumberOfPersonalClients             = "NumberOfPersonalClients";
 
     // ELk metric constants
     public static final String ClientUsage                          = "ClientUsage";
     public static final String ActiveExternalClients                = "ActiveExternalClients";
     public static final String External                             = "External";
-    public static final String Regular                              = "Regular";
+    public static final String RegularCustomer                      = "RegularCustomer";
+    public static final String AllCustomer                          = "AllCustomer";
+    public static final String RegularUser                          = "RegularUser";
+    public static final String AllUser                              = "AllUser";
     public static final String All                                  = "All";
 
 }
