@@ -218,5 +218,7 @@ public class HttpConnection {
 		}
 	}
 
-
+   public void close() throws IOException {
+		httpClient.close();
+    }
 }
