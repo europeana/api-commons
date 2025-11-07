@@ -10,10 +10,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import eu.europeana.api.commons.definitions.vocabulary.CommonApiConstants;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
-import org.springframework.util.StringUtils;
 
 /**
  * This class contains fields to be returned by APIs when an error occurs within the application.
@@ -98,13 +99,17 @@ public class EuropeanaApiErrorResponse {
         private final String path;
         private String code;
         private String seeAlso;
-        
+
         public Builder(HttpServletRequest httpRequest, Exception e, boolean stacktraceEnabled) {
-            this.path = ResponseUtils.getRequestPath(httpRequest);
+            this(httpRequest, false , e, stacktraceEnabled);
+        }
+
+        public Builder(HttpServletRequest httpRequest, boolean attributeErrorPath, Exception e, boolean stacktraceEnabled) {
+            this.path = ResponseUtils.getRequestPath(httpRequest, attributeErrorPath);
             boolean includeErrorStack = false;
             String profileParamString = httpRequest.getParameter(CommonApiConstants.QUERY_PARAM_PROFILE);
             // check if profile contains debug
-            if (StringUtils.hasLength(profileParamString)) {
+            if (StringUtils.isNotEmpty(profileParamString)) {
                 includeErrorStack = List.of(profileParamString.split(QUERY_PARAM_PROFILE_SEPARATOR))
                     .contains(CommonApiConstants.PROFILE_DEBUG);
             }
@@ -137,7 +142,6 @@ public class EuropeanaApiErrorResponse {
           this.seeAlso = seeAlso;
           return this;
         }
-       
 
         public EuropeanaApiErrorResponse build() {
             return new EuropeanaApiErrorResponse(status, code, error, message, seeAlso, path, trace);
