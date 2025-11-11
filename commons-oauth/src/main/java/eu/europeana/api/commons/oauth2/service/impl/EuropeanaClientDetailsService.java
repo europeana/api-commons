@@ -3,16 +3,16 @@ package eu.europeana.api.commons.oauth2.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europeana.api.commons.auth.AuthenticationHandler;
+import eu.europeana.api.commons.exception.ApiKeyValidationException;
 import eu.europeana.api.commons.exception.EuropeanaClientRegistrationException;
 import eu.europeana.api.commons.http.HttpConnection;
 import eu.europeana.api.commons.http.HttpResponseHandler;
 import eu.europeana.api.commons.oauth2.model.KeyValidationError;
 import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
 import eu.europeana.api.commons.oauth2.model.impl.ClientDetailsAdapter;
-import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -31,26 +31,21 @@ import static eu.europeana.api.commons.oauth2.utils.OAuthUtils.*;
  */
 @Service("commons_oauth2_europeanaClientDetailsService")
 public class EuropeanaClientDetailsService implements ClientDetailsService {
-
     private String apiKeyServiceUrl;
     private AuthenticationHandler authHandler;
 
     public String getApiKeyServiceUrl() {
         return apiKeyServiceUrl;
     }
-
     public void setApiKeyServiceUrl(String apiKeyServiceUrl) {
         this.apiKeyServiceUrl = apiKeyServiceUrl;
     }
-
     public AuthenticationHandler getAuthHandler() {
         return authHandler;
     }
-
     public void setAuthHandler(AuthenticationHandler authHandler) {
         this.authHandler = authHandler;
     }
-
     @Override
     /* Loads ClientDetails object belongs to an apiKey
      */
@@ -74,7 +69,6 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
         // valid api key
         return new ClientDetailsAdapter(key);
     }
-
 
     /**
      * Method calls the validation endpoint of keycloak to validate the input apikey returns

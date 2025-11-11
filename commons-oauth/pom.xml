@@ -74,12 +74,6 @@
 		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
 
 		<dependency>
-			<groupId>eu.europeana.apikey-utils</groupId>
-			<artifactId>apikey-client</artifactId>
-			<version>${version.apikeyUtils}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>eu.europeana.api.commons</groupId>
 			<artifactId>commons-clientutils</artifactId>
 			<version>0.4.10-SNAPSHOT</version>
