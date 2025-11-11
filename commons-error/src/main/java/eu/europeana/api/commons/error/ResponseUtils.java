@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Optional;
 
 public class ResponseUtils {
 
@@ -15,15 +16,20 @@ public class ResponseUtils {
 
     /**
      * Gets a String representation of an Exception's stacktrace
-     *
+     * if attributeErrorPath is true set the trace to spring errorPathTrace
      * @param throwable Throwable instance
      * @return String representation of stacktrace
      */
-    public static String getExceptionStackTrace(Throwable throwable) {
-        Writer result = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(result);
-        throwable.printStackTrace(printWriter);
-        return result.toString();
+    public static String getExceptionStackTrace(Throwable throwable, boolean attributeErrorPath, Optional<String> errorPathTrace) {
+        if (attributeErrorPath && errorPathTrace.isPresent()) {
+            return errorPathTrace.get();
+        } else if (throwable != null) {
+            Writer result = new StringWriter();
+            PrintWriter printWriter = new PrintWriter(result);
+            throwable.printStackTrace(printWriter);
+            return result.toString();
+        }
+        return "";
     }
 
 

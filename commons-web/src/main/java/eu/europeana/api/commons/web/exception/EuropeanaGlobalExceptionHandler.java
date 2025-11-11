@@ -7,8 +7,10 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -330,6 +332,38 @@ public class EuropeanaGlobalExceptionHandler {
             .status(responseStatus)
             .headers(createHttpHeaders(httpRequest))
             .body(response);
+    }
+
+    /**
+     * Exception throw while handling apikey validation via keycloak
+     * @param request request
+     * @param ee exception
+     * @return EuropeanaApiErrorResponse
+     */
+    @ExceptionHandler(ApplicationAuthenticationException.class)
+    public ResponseEntity<EuropeanaApiErrorResponse> clientRegistrationExceptionHandler(HttpServletRequest request,
+                                                                                        ApplicationAuthenticationException ee) {
+        if (ee.getResult() != null) {
+            KeyValidationResult result = ee.getResult();
+            return ResponseEntity.status(result.getHttpStatusCode())
+                    .headers(createHttpHeaders(request))
+                    .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
+                            .setStatus(result.getHttpStatusCode())
+                            .setError(result.getValidationError().getError())
+                            .setMessage(result.getValidationError().getMessage())
+                            .setCode(result.getValidationError().getCode())
+                            .build());
+        } else {
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+                    .headers(createHttpHeaders(request))
+                    .body( new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
+                            .setStatus(HttpServletResponse.SC_UNAUTHORIZED)
+                            .setError("Unauthorized")
+                            .setMessage(getI18nService().getMessage(ee.getI18nKey()))
+                            .setCode(StringUtils.substringAfter(ee.getI18nKey(), "."))
+                            .build());
+
+        }
     }
 
     /**

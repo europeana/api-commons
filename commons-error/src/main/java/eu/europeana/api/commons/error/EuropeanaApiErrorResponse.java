@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
+import java.util.Optional;
 
 /**
  * This class contains fields to be returned by APIs when an error occurs within the application.
@@ -101,10 +102,10 @@ public class EuropeanaApiErrorResponse {
         private String seeAlso;
 
         public Builder(HttpServletRequest httpRequest, Exception e, boolean stacktraceEnabled) {
-            this(httpRequest, false , e, stacktraceEnabled);
+            this(httpRequest, false , e, stacktraceEnabled, Optional.empty());
         }
 
-        public Builder(HttpServletRequest httpRequest, boolean attributeErrorPath, Exception e, boolean stacktraceEnabled) {
+        public Builder(HttpServletRequest httpRequest, boolean attributeErrorPath, Exception e, boolean stacktraceEnabled, Optional<String> errorPathTrace) {
             this.path = ResponseUtils.getRequestPath(httpRequest, attributeErrorPath);
             boolean includeErrorStack = false;
             String profileParamString = httpRequest.getParameter(CommonApiConstants.QUERY_PARAM_PROFILE);
@@ -114,7 +115,7 @@ public class EuropeanaApiErrorResponse {
                     .contains(CommonApiConstants.PROFILE_DEBUG);
             }
             if (stacktraceEnabled && includeErrorStack) {
-                this.trace = ResponseUtils.getExceptionStackTrace(e);
+                this.trace = ResponseUtils.getExceptionStackTrace(e, attributeErrorPath, errorPathTrace);
             }
         }
 
