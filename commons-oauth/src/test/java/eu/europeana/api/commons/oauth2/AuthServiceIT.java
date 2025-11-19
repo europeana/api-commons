@@ -1,21 +1,22 @@
 package eu.europeana.api.commons.oauth2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+
+import eu.europeana.api.commons.auth.AuthenticationBuilder;
+import eu.europeana.api.commons.auth.AuthenticationConfig;
+import eu.europeana.api.commons.exception.ApiKeyValidationException;
+import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
+import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.http.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
-
-import eu.europeana.apikey.client.ApiKeyValidationResult;
-import eu.europeana.apikey.client.Client;
-import eu.europeana.apikey.client.exception.ApiKeyValidationException;
 
 /**
  * This class tests Auth service to fulfill validation for use case "read access"
@@ -24,62 +25,65 @@ import eu.europeana.apikey.client.exception.ApiKeyValidationException;
  *
  */
 public class AuthServiceIT {
-
 	private final Logger log = LogManager.getLogger(getClass());
-	
-	private String WRONG_API_KEY = "wrongapikey";
-	
+	private static final String WRONG_API_KEY = "wrongapikey";
 	public static final String PROP_API_KEY__SERVICE_URL = "test.apikey.service.url";
 	public static final String PROP_TEST_API_KEY = "test.apikey";
-	
+	public static final String PROP_TOKEN_ENDPOINT = "test.token.endpoint";
+	public static final String PROP_GRANT_PARAMS = "test.grant.param";
 	Properties configProps;
 	Properties dataProps;
-	
 
 	@Test
 	public void testAuthValidationReadAccess() throws ApiKeyValidationException, IOException {
-
-    	    Client client = new Client(getConfigProperty(PROP_API_KEY__SERVICE_URL));
-    	    String TEST_API_KEY = getDataProperty(PROP_TEST_API_KEY);
-	    ApiKeyValidationResult validationResult = client.validateApiKey(
-    		TEST_API_KEY);
-    	    assertNotNull(validationResult);
-    	    assertTrue(validationResult.isValidApiKey());
+		EuropeanaClientDetailsService client = getApiKeyClientDetailsService();
+		KeyValidationResult validationResult = client.validateApiKeyKeycloakClient(
+				getDataProperty(PROP_TEST_API_KEY));
+		assertNull(validationResult);
 	}
-	
+
 	@Test
 	public void testAuthValidationWrongKey() throws ApiKeyValidationException, IOException {
-
-    	    Client client = new Client(getConfigProperty(PROP_API_KEY__SERVICE_URL));
-    	    ApiKeyValidationResult validationResult = client.validateApiKey(
-    		WRONG_API_KEY);
-    	    assertNotNull(validationResult);
-    	    assertFalse(validationResult.isValidApiKey());
-    	    assertEquals(HttpStatus.SC_UNAUTHORIZED, validationResult.getHttpStatus());
+		EuropeanaClientDetailsService client = getApiKeyClientDetailsService();
+		KeyValidationResult validationResult = client.validateApiKeyKeycloakClient(WRONG_API_KEY);
+		assertNotNull(validationResult);
+		assertNotNull(validationResult.getValidationError());
+		assertEquals(HttpStatus.SC_BAD_REQUEST, validationResult.getHttpStatusCode());
 	}
 	
 	/**
-	 * @return
+	 * @return log
 	 */
 	public Logger getLog() {
 		return log;
 	}
 
 	protected String getConfigProperty(String key) throws IOException {
-	    if(configProps == null) {
-		configProps = new Properties();
-		configProps.load(getClass().getResourceAsStream("/test.properties"));
-	    }
-	    
-	    return (String) configProps.get(key);
+		if (configProps == null) {
+			configProps = new Properties();
+			configProps.load(getClass().getResourceAsStream("/test.properties"));
+		}
+		return (String) configProps.get(key);
 	}
-	
+
 	protected String getDataProperty(String key) throws IOException {
-	    if(dataProps == null) {
-		dataProps = new Properties();
-		dataProps.load(getClass().getResourceAsStream("/test_data.properties"));
-	    }
-	    
-	    return (String) dataProps.get(key);
+		if (dataProps == null) {
+			dataProps = new Properties();
+			dataProps.load(getClass().getResourceAsStream("/test_data.properties"));
+		}
+		return (String) dataProps.get(key);
+	}
+	public EuropeanaClientDetailsService getApiKeyClientDetailsService() throws IOException {
+		EuropeanaClientDetailsService clientDetails = new EuropeanaClientDetailsService();
+		clientDetails.setApiKeyServiceUrl(getConfigProperty(PROP_API_KEY__SERVICE_URL));
+		AuthenticationConfig config = new AuthenticationConfig(loadProperties());
+		clientDetails.setAuthHandler(AuthenticationBuilder.newAuthentication(config));
+		return clientDetails;
+	}
+	private Properties loadProperties() throws IOException {
+		Properties properties = new Properties();
+		properties.setProperty(AuthenticationConfig.CONFIG_TOKEN_ENDPOINT,getConfigProperty(PROP_TOKEN_ENDPOINT));
+		properties.setProperty(AuthenticationConfig.CONFIG_GRANT_PARAMS,getConfigProperty(PROP_GRANT_PARAMS));
+		return properties;
 	}
 }
