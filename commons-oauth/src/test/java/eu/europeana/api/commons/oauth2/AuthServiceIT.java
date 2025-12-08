@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.hc.core5.http.HttpStatus;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -25,7 +23,6 @@ import org.junit.jupiter.api.Test;
  *
  */
 public class AuthServiceIT {
-	private final Logger log = LogManager.getLogger(getClass());
 	private static final String WRONG_API_KEY = "wrongapikey";
 	public static final String PROP_API_KEY__SERVICE_URL = "test.apikey.service.url";
 	public static final String PROP_TEST_API_KEY = "test.apikey";
@@ -38,7 +35,7 @@ public class AuthServiceIT {
 	public void testAuthValidationReadAccess() throws ApiKeyValidationException, IOException {
 		EuropeanaClientDetailsService client = getApiKeyClientDetailsService();
 		KeyValidationResult validationResult = client.validateApiKeyKeycloakClient(
-				getDataProperty(PROP_TEST_API_KEY));
+				getConfigProperty(PROP_TEST_API_KEY));
 		assertNull(validationResult);
 	}
 
@@ -50,13 +47,6 @@ public class AuthServiceIT {
 		assertNotNull(validationResult.getValidationError());
 		assertEquals(HttpStatus.SC_BAD_REQUEST, validationResult.getHttpStatusCode());
 	}
-	
-	/**
-	 * @return log
-	 */
-	public Logger getLog() {
-		return log;
-	}
 
 	protected String getConfigProperty(String key) throws IOException {
 		if (configProps == null) {
@@ -66,24 +56,11 @@ public class AuthServiceIT {
 		return (String) configProps.get(key);
 	}
 
-	protected String getDataProperty(String key) throws IOException {
-		if (dataProps == null) {
-			dataProps = new Properties();
-			dataProps.load(getClass().getResourceAsStream("/test_data.properties"));
-		}
-		return (String) dataProps.get(key);
-	}
 	public EuropeanaClientDetailsService getApiKeyClientDetailsService() throws IOException {
 		EuropeanaClientDetailsService clientDetails = new EuropeanaClientDetailsService();
 		clientDetails.setApiKeyServiceUrl(getConfigProperty(PROP_API_KEY__SERVICE_URL));
-		AuthenticationConfig config = new AuthenticationConfig(loadProperties());
+		AuthenticationConfig config = new AuthenticationConfig(getConfigProperty(PROP_TOKEN_ENDPOINT), getConfigProperty(PROP_GRANT_PARAMS));
 		clientDetails.setAuthHandler(AuthenticationBuilder.newAuthentication(config));
 		return clientDetails;
-	}
-	private Properties loadProperties() throws IOException {
-		Properties properties = new Properties();
-		properties.setProperty(AuthenticationConfig.CONFIG_TOKEN_ENDPOINT,getConfigProperty(PROP_TOKEN_ENDPOINT));
-		properties.setProperty(AuthenticationConfig.CONFIG_GRANT_PARAMS,getConfigProperty(PROP_GRANT_PARAMS));
-		return properties;
 	}
 }
