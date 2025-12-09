@@ -42,6 +42,8 @@ public class ResponseUtils {
      * @return String containing request URI and query parameterss
      */
     public static String getRequestPath(HttpServletRequest httpRequest, boolean attributeErrorPath) {
+        System.out.println(httpRequest.getRequestURI() + "  " +httpRequest.getRequestURL() + "  " +httpRequest.getServletPath() +
+                "  " +httpRequest.getRemoteAddr() + "  " +httpRequest.getPathInfo()) ;
         if (attributeErrorPath && httpRequest.getAttribute("javax.servlet.error.request_uri") != null) {
             return StringUtils.substringBefore(httpRequest.getRequestURL().toString(), httpRequest.getRequestURI()) +
                     httpRequest.getAttribute("javax.servlet.error.request_uri");
