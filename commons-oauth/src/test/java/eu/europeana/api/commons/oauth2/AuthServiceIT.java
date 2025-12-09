@@ -29,7 +29,6 @@ public class AuthServiceIT {
 	public static final String PROP_TOKEN_ENDPOINT = "test.token.endpoint";
 	public static final String PROP_GRANT_PARAMS = "test.grant.param";
 	Properties configProps;
-	Properties dataProps;
 
 	@Test
 	public void testAuthValidationReadAccess() throws ApiKeyValidationException, IOException {
