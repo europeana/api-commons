@@ -6,16 +6,13 @@ import org.springframework.http.HttpStatus;
 
 public class ApplicationAuthenticationException extends HttpException{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8994054535719881829L;
 
 	KeyValidationResult result;
 	public KeyValidationResult getResult() {
 		return result;
 	}
-	
+
 	public ApplicationAuthenticationException(String message, String i18nKey){
 		super(message, i18nKey, null, HttpStatus.UNAUTHORIZED);
 	}

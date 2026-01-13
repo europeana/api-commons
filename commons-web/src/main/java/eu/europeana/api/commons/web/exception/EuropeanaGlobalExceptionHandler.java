@@ -345,10 +345,14 @@ public class EuropeanaGlobalExceptionHandler {
                                                                                         ApplicationAuthenticationException ee) {
         if (ee.getResult() != null) {
             KeyValidationResult result = ee.getResult();
-            return ResponseEntity.status(result.getHttpStatusCode())
+            // get the status
+            int status = isInvalidOrDisabledErrorCode(result.getValidationError().getCode()) ?
+                    HttpStatus.UNAUTHORIZED.value() : result.getHttpStatusCode();
+
+            return ResponseEntity.status(status)
                     .headers(createHttpHeaders(request))
                     .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-                            .setStatus(result.getHttpStatusCode())
+                            .setStatus(status)
                             .setError(result.getValidationError().getError())
                             .setMessage(result.getValidationError().getMessage())
                             .setCode(result.getValidationError().getCode())
@@ -364,6 +368,20 @@ public class EuropeanaGlobalExceptionHandler {
                             .build());
 
         }
+    }
+
+    /**
+     * If key does not exist (or it does not have either a “client_owner” or “shared_owner” role)
+     * OR If key is disabled -
+     *          keycloak responds with HTTP 400 error code “401_key_invalid” or "401_key_disabled"
+     * but it should be exposed to the original client
+     * as an actual 401
+     *
+     *
+     * @return
+     */
+    private boolean isInvalidOrDisabledErrorCode(String errorCode){
+        return StringUtils.equalsAny(errorCode, "401_key_invalid", "401_key_disabled");
     }
 
     /**
