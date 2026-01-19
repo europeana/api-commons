@@ -10,9 +10,12 @@ import eu.europeana.api.commons.http.HttpResponseHandler;
 import eu.europeana.api.commons.oauth2.model.KeyValidationError;
 import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
 import eu.europeana.api.commons.oauth2.model.impl.ClientDetailsAdapter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
+import org.apache.hc.core5.net.URIBuilder;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -87,7 +90,12 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
                     && apiKeyServiceUrl.contains(K8S_FQDN_SUFFIX)) {
                 headers.put(X_FORWARDED_PROTO, HTTPS);
             }
-            HttpResponseHandler response = httpConnection.post(VALIDATION_PARAMS.formatted(apiKeyServiceUrl, apikey), null,
+
+            URI uri = new URIBuilder(this.apiKeyServiceUrl)
+                .addParameter(PARAM_CLIENT_ID, apikey)
+                .build();
+
+            HttpResponseHandler response = httpConnection.post(uri.toString(), null,
                     headers, authHandler);
             if (response == null || response.getStatus() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
                 throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + apikey);
@@ -100,7 +108,7 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
                 return new KeyValidationResult(response.getStatus(),
                         getKeyValidationError(response.getResponse()));
             }
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new ApiKeyValidationException(
                     "Unexpected exception occurred when trying to validate API KEY: " + apikey, e);
         }
