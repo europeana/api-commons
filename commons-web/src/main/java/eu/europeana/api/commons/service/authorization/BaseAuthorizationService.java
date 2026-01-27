@@ -55,7 +55,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     Authentication authentication = null;
     // check and verify jwt token
     String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-    if (authorization != null && authorization.startsWith(OAuthUtils.TYPE_BEARER)) {
+    if (OAuthUtils.isValidBearerTokenType(authorization)) {
       // if jwt token submitted
       authentication = authorizeReadByJwtToken(request);
     } else {
@@ -64,7 +64,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     }
     return authentication;
   }
-
   private Authentication authorizeReadByApiKey(HttpServletRequest request)
       throws ApplicationAuthenticationException {
     String wsKey;

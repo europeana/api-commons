@@ -34,10 +34,9 @@ import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
  */
 @SuppressWarnings("deprecation")
 public class OAuthUtils {
-
   public static final String HEADER_XAPIKEY = "X-Api-Key";
   public static final String TYPE_APIKEY = "APIKEY";
-  public static final String TYPE_BEARER = "Bearer";
+  public static final String TYPE_BEARER = "Bearer ";
   // apikey
   public static final String AZP = "azp";
   public static final String EXP = "exp";
@@ -296,14 +295,19 @@ public class OAuthUtils {
     }
 
     // validate header format first
-    if (!authorization.startsWith(TYPE_BEARER) && !authorization.startsWith(TYPE_APIKEY))
+    boolean validBearerTokenType = isValidBearerTokenType(authorization);
+    if (!validBearerTokenType && !authorization.startsWith(TYPE_APIKEY))
       throw new ApiKeyExtractionException(
           "Unsupported type in Auhtorization header: " + authorization);
 
-    if (authorization.startsWith(authorizationType))
+    if (validBearerTokenType)
       return authorization.substring(authorizationType.length()).trim();
 
     return null;
+  }
+
+  public static boolean isValidBearerTokenType(String authorization) {
+      return (authorization!= null && authorization.regionMatches(true,0, TYPE_BEARER,0,7));
   }
 
   /**
