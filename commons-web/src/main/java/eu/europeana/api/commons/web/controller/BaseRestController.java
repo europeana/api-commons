@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
-import eu.europeana.api.commons.exception.ApiKeyExtractionException;
-import eu.europeana.api.commons.exception.AuthorizationExtractionException;
 import eu.europeana.api.commons.service.authorization.AuthorizationService;
 import eu.europeana.api.commons.web.exception.ApplicationAuthenticationException;
 import eu.europeana.api.commons.web.exception.HeaderValidationException;
@@ -37,8 +35,6 @@ public abstract class BaseRestController {
      * @param operation The name of current operation
      * @return authentication object containing user token
      * @throws ApplicationAuthenticationException
-     * @throws AuthorizationExtractionException
-     * @throws ApiKeyExtractionException
      */
     public Authentication verifyWriteAccess(String operation, HttpServletRequest request)
 	    throws ApplicationAuthenticationException {
