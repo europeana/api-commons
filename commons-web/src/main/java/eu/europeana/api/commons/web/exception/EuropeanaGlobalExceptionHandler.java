@@ -366,7 +366,6 @@ public class EuropeanaGlobalExceptionHandler {
                             .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
                             .setCode(StringUtils.substringAfter(ee.getI18nKey(), "."))
                             .build());
-
         }
     }
 
