@@ -34,6 +34,7 @@ import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
  */
 @SuppressWarnings("deprecation")
 public class OAuthUtils {
+
   public static final String HEADER_XAPIKEY = "X-Api-Key";
   public static final String TYPE_APIKEY = "APIKEY";
   public static final String TYPE_BEARER = "Bearer";
@@ -295,27 +296,14 @@ public class OAuthUtils {
     }
 
     // validate header format first
-    boolean validBearerTokenType = validateBearerToken(authorization);
-    if (!validBearerTokenType && !authorization.startsWith(TYPE_APIKEY))
+    if (!authorization.startsWith(TYPE_BEARER) && !authorization.startsWith(TYPE_APIKEY))
       throw new ApiKeyExtractionException(
           "Unsupported type in Auhtorization header: " + authorization);
 
-    if (validBearerTokenType)
+    if (authorization.startsWith(authorizationType))
       return authorization.substring(authorizationType.length()).trim();
 
     return null;
-  }
-
-  /**
-   * Method ensures the Authorization header value starts with correct token type.
-   * It also validates there is space between the token type and the actual token value.
-   * e.g.("Bearer <token_string>" ,"bearer <token_string>")   *
-   * @param authorization provided in Authorization header
-   * @return boolean true if the token type is valid.
-   */
-  public static boolean validateBearerToken(String authorization) {
-      return (authorization!= null &&
-              authorization.regionMatches(true,0, (TYPE_BEARER + " "),0,7));
   }
 
   /**
