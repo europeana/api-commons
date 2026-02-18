@@ -37,7 +37,6 @@ public class OAuthUtils {
   public static final String HEADER_XAPIKEY = "X-Api-Key";
   public static final String TYPE_APIKEY = "APIKEY";
   public static final String TYPE_BEARER = "Bearer";
-  public static final String BEARER = "Bearer ";
   // apikey
   public static final String AZP = "azp";
   public static final String EXP = "exp";
@@ -296,7 +295,7 @@ public class OAuthUtils {
     }
 
     // validate header format first
-    boolean validBearerTokenType = isValidBearerTokenType(authorization);
+    boolean validBearerTokenType = validateBearerToken(authorization);
     if (!validBearerTokenType && !authorization.startsWith(TYPE_APIKEY))
       throw new ApiKeyExtractionException(
           "Unsupported type in Auhtorization header: " + authorization);
@@ -314,8 +313,9 @@ public class OAuthUtils {
    * @param authorization provided in Authorization header
    * @return boolean true if the token type is valid.
    */
-  public static boolean isValidBearerTokenType(String authorization) {
-      return (authorization!= null && authorization.regionMatches(true,0,BEARER,0,7));
+  public static boolean validateBearerToken(String authorization) {
+      return (authorization!= null &&
+              authorization.regionMatches(true,0, (TYPE_BEARER + " "),0,7));
   }
 
   /**

@@ -55,7 +55,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     Authentication authentication = null;
     // check and verify jwt token
     String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-    if (OAuthUtils.isValidBearerTokenType(authorization)) {
+    if (OAuthUtils.validateBearerToken(authorization)) {
       // if jwt token submitted
       authentication = authorizeReadByJwtToken(request);
     } else {
