@@ -295,10 +295,10 @@ public class OAuthUtils {
     }
 
     // validate header format first
-    boolean validBearerTokenType = validateBearerToken(authorization);
+    boolean validBearerTokenType = isValidBearerToken(authorization);
     if (!validBearerTokenType && !authorization.startsWith(TYPE_APIKEY))
       throw new ApiKeyExtractionException(
-          "Unsupported type in Auhtorization header: " + authorization);
+          "Unsupported type in Authorization header: " + authorization);
 
     if (validBearerTokenType)
       return authorization.substring(authorizationType.length()).trim();
@@ -313,8 +313,8 @@ public class OAuthUtils {
    * @param authorization provided in Authorization header
    * @return boolean true if the token type is valid.
    */
-  public static boolean validateBearerToken(String authorization) {
-      return (authorization!= null &&
+  public static boolean isValidBearerToken(String authorization) {
+      return (authorization != null &&
               authorization.regionMatches(true,0, (TYPE_BEARER + " "),0,7));
   }
 
