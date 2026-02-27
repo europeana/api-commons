@@ -1,5 +1,6 @@
 package eu.europeana.api.commons.service.authorization;
 
+import eu.europeana.api.commons.config.ErrorMessage;
 import eu.europeana.api.commons.exception.EuropeanaClientRegistrationException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,8 +151,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     //invalid configurations
     if (getSignatureVerifier() == null) {
       getLog().error("No signature key configured for verification of JWT Token");
-      throw  new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
-          I18nConstants.TOKEN_INVALID,null, HttpStatus.UNAUTHORIZED);
+      throw new ApplicationAuthenticationException(ErrorMessage.TOKEN_INVALID_401,
+          null, HttpStatus.UNAUTHORIZED);
     }
     List<? extends Authentication> authenticationList;
     boolean verifyResourceAccess = isResourceAccessVerificationRequired(operation);
@@ -160,14 +161,14 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       authenticationList =
           OAuthUtils.processJwtToken(request, getSignatureVerifier(), getApiName(), verifyResourceAccess);
     } catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
-      throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
-          I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED, e);
+      throw new ApplicationAuthenticationException(ErrorMessage.TOKEN_INVALID_401,
+          null,HttpStatus.UNAUTHORIZED, e);
     }
 
     if(authenticationList == null || authenticationList.isEmpty()) {
       getLog().error("Invalid token or ApiKey, resource access not granted! ");
-      throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
-          I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED);
+      throw new ApplicationAuthenticationException(ErrorMessage.USER_NOT_AUTHORISED_403,
+          null,HttpStatus.FORBIDDEN);
     }
 
     if(verifyResourceAccess) {
@@ -198,8 +199,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       if(isResourceAccessVerificationRequired(operation)){
         //access verification required but
         getLog().error("No or invalid authorization provided. ");
-        throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
-            I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED);
+        throw new ApplicationAuthenticationException(ErrorMessage.USER_NOT_AUTHORISED_403,
+            null,HttpStatus.FORBIDDEN);
       } else {
         //TODO:
         return null;
@@ -224,8 +225,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
     // not authorized
     getLog().error("Operation not permitted or not GrantedAuthority found for operation:" + operation);
-    throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
-        I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED);
+    throw new ApplicationAuthenticationException(ErrorMessage.USER_NOT_AUTHORISED_403,
+        null,HttpStatus.FORBIDDEN);
   }
 
 

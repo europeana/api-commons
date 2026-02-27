@@ -5,6 +5,7 @@ error.empty_apikey=Empty apiKey!
 error.missing_apikey=The apiKey must be provided in the request!
 error.invalid_api_name=Invalid api name: {0}
 error.401_token_invalid=Please acquire a new token or get in contact with the Europeana APIs customer support via api@europeana.eu
+error.403_user_not_authorised=The user for which the token was granted for does not have sufficient rights to access the resource
 
 #400
 error.invalid_param_value=Invalid request. Parameter value not supported or not allowed! {0}:{1}
