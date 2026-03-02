@@ -363,10 +363,9 @@ public class EuropeanaGlobalExceptionHandler {
                     .body( new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
                             .setStatus(HttpServletResponse.SC_UNAUTHORIZED)
                             .setError("Unauthorized")
-                            .setMessage(getI18nService().getMessage(ee.getI18nKey()))
+                            .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
                             .setCode(StringUtils.substringAfter(ee.getI18nKey(), "."))
                             .build());
-
         }
     }
 

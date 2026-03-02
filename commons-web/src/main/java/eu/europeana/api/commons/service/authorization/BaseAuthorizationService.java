@@ -55,7 +55,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     Authentication authentication = null;
     // check and verify jwt token
     String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-    if (authorization != null && authorization.startsWith(OAuthUtils.TYPE_BEARER)) {
+    if (OAuthUtils.isValidBearerToken(authorization)) {
       // if jwt token submitted
       authentication = authorizeReadByJwtToken(request);
     } else {
@@ -64,7 +64,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     }
     return authentication;
   }
-
   private Authentication authorizeReadByApiKey(HttpServletRequest request)
       throws ApplicationAuthenticationException {
     String wsKey;
@@ -142,7 +141,6 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
    */
   public Authentication authorizeWriteAccess(HttpServletRequest request, String operation)
       throws ApplicationAuthenticationException {
-
     return authorizeOperation(request, operation);
   }
 
@@ -151,12 +149,10 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
     //invalid configurations
     if (getSignatureVerifier() == null) {
-      throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-          I18nConstants.OPERATION_NOT_AUTHORIZED,
-          new String[] {"No signature key configured for verification of JWT Token"},
-          HttpStatus.INTERNAL_SERVER_ERROR);
+      getLog().error("No signature key configured for verification of JWT Token");
+      throw  new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
+          I18nConstants.TOKEN_INVALID,null, HttpStatus.UNAUTHORIZED);
     }
-
     List<? extends Authentication> authenticationList;
     boolean verifyResourceAccess = isResourceAccessVerificationRequired(operation);
     try {
@@ -164,15 +160,14 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       authenticationList =
           OAuthUtils.processJwtToken(request, getSignatureVerifier(), getApiName(), verifyResourceAccess);
     } catch (ApiKeyExtractionException | AuthorizationExtractionException e) {
-      throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-          I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"Invalid token or ApiKey"},
-          HttpStatus.UNAUTHORIZED, e);
+      throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
+          I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED, e);
     }
 
     if(authenticationList == null || authenticationList.isEmpty()) {
-      throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-          I18nConstants.OPERATION_NOT_AUTHORIZED, new String[] {"Invalid token or ApiKey, resource access not granted!"},
-          HttpStatus.FORBIDDEN);
+      getLog().error("Invalid token or ApiKey, resource access not granted! ");
+      throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
+          I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED);
     }
 
     if(verifyResourceAccess) {
@@ -200,23 +195,16 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     final boolean isEmptyAuthenticationList = (authenticationList == null || authenticationList.isEmpty());
 
     if(isEmptyAuthenticationList) {
-
       if(isResourceAccessVerificationRequired(operation)){
         //access verification required but
-        throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-            I18nConstants.OPERATION_NOT_AUTHORIZED,
-            new String[] {"No or invalid authorization provided"}, HttpStatus.FORBIDDEN);
+        getLog().error("No or invalid authorization provided. ");
+        throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
+            I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED);
       } else {
         //TODO:
         return null;
       }
-
-
     }
-
-
-
-
     if (authenticationList == null || authenticationList.isEmpty()) {
 
     }
@@ -235,11 +223,9 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     }
 
     // not authorized
-    throw new ApplicationAuthenticationException(I18nConstants.OPERATION_NOT_AUTHORIZED,
-        I18nConstants.OPERATION_NOT_AUTHORIZED,
-        new String[] {
-            "Operation not permitted or not GrantedAuthority found for operation:" + operation},
-        HttpStatus.FORBIDDEN);
+    getLog().error("Operation not permitted or not GrantedAuthority found for operation:" + operation);
+    throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
+        I18nConstants.TOKEN_INVALID,null,HttpStatus.UNAUTHORIZED);
   }
 
 
