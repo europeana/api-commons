@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
@@ -359,10 +360,10 @@ public class EuropeanaGlobalExceptionHandler {
                             .build());
         } else {
 
-          int status = ee.getStatus()!=null? ee.getStatus().value(): HttpStatus.UNAUTHORIZED.value();
+          int status = ee.getStatus()!=null? ee.getStatus().value(): HttpServletResponse.SC_UNAUTHORIZED;
 
           ErrorMessage errorDetails = ee.getError();
-          String error = (errorDetails != null) ? errorDetails.getError() : HttpStatus.UNAUTHORIZED.getReasonPhrase();
+          String error = (errorDetails != null) ? errorDetails.getError() : "Unauthorized";
           String code = (errorDetails != null) ? errorDetails.getCode()
               : StringUtils.substringAfter(ee.getI18nKey(), ".");
 
