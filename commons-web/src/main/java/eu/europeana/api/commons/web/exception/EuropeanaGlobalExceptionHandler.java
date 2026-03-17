@@ -358,13 +358,17 @@ public class EuropeanaGlobalExceptionHandler {
                             .setCode(result.getValidationError().getCode())
                             .build());
         } else {
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
+            int status = ee.getStatus() != null ? ee.getStatus().value(): HttpServletResponse.SC_UNAUTHORIZED;
+            final String errorLabel = buildErrorLabel(ee, ee.getI18nKey(), "Unauthorized");
+            final String errorCode = buildErrorCode(ee, ee.getI18nKey(), ee.getI18nKey() );
+
+            return ResponseEntity.status(status)
                     .headers(createHttpHeaders(request))
                     .body( new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-                            .setStatus(HttpServletResponse.SC_UNAUTHORIZED)
-                            .setError("Unauthorized")
+                            .setStatus(status)
+                            .setError(errorLabel)
                             .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
-                            .setCode(StringUtils.substringAfter(ee.getI18nKey(), "."))
+                            .setCode(errorCode)
                             .build());
         }
     }

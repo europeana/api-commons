@@ -30,6 +30,7 @@ public class ApplicationAuthenticationException extends HttpException{
 		super(message, i18nKey, i18nParams, status);
 	}
 
+	//Support validation result from keycloak
 	public ApplicationAuthenticationException(String message, String i18nKey,
 			String[] i18nParams,HttpStatus status, Throwable th, KeyValidationResult result) {
 		super(message, i18nKey, i18nParams, status, th);
