@@ -1,6 +1,5 @@
 package eu.europeana.api.commons.web.exception;
 
-import eu.europeana.api.commons.config.ErrorMessage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -359,21 +358,17 @@ public class EuropeanaGlobalExceptionHandler {
                             .setCode(result.getValidationError().getCode())
                             .build());
         } else {
+            int status = ee.getStatus() != null ? ee.getStatus().value(): HttpServletResponse.SC_UNAUTHORIZED;
+            final String errorLabel = buildErrorLabel(ee, ee.getI18nKey(), "Unauthorized");
+            final String errorCode = buildErrorCode(ee, ee.getI18nKey(), ee.getI18nKey() );
 
-          int status = ee.getStatus()!=null? ee.getStatus().value(): HttpServletResponse.SC_UNAUTHORIZED;
-
-          ErrorMessage errorDetails = ee.getError();
-          String error = (errorDetails != null) ? errorDetails.getError() : "Unauthorized";
-          String code = (errorDetails != null) ? errorDetails.getCode()
-              : StringUtils.substringAfter(ee.getI18nKey(), ".");
-
-          return ResponseEntity.status(status)
+            return ResponseEntity.status(status)
                     .headers(createHttpHeaders(request))
                     .body( new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
                             .setStatus(status)
-                            .setError(error)
+                            .setError(errorLabel)
                             .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
-                            .setCode(code)
+                            .setCode(errorCode)
                             .build());
         }
     }
