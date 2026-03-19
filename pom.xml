@@ -4,7 +4,7 @@
 
 	<groupId>eu.europeana.api.commons</groupId>
 	<artifactId>commons-api-services</artifactId>
-	<version>0.4.11-SNAPSHOT</version>
+	<version>0.4.11</version>
 	<packaging>pom</packaging>
 	<name>API Commons modules</name>
 
@@ -39,7 +39,7 @@
 		<repository>
 			<id>repo1-cache</id>
 			<name>artifactory repo1-cache</name>
-			<url>>https://artifactory-prod.eanadev.org/artifactory/repo1-cache/</url>
+			<url>&gt;https://artifactory-prod.eanadev.org/artifactory/repo1-cache/</url>
 		</repository>
 	</repositories>
 
