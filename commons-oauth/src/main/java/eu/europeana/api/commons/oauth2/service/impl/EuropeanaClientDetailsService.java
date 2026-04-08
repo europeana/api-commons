@@ -1,18 +1,17 @@
 package eu.europeana.api.commons.oauth2.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europeana.api.commons.auth.AuthenticationHandler;
 import eu.europeana.api.commons.exception.ApiKeyValidationException;
 import eu.europeana.api.commons.exception.EuropeanaClientRegistrationException;
 import eu.europeana.api.commons.http.HttpConnection;
-import eu.europeana.api.commons.http.HttpResponseHandler;
 import eu.europeana.api.commons.oauth2.model.KeyValidationError;
 import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
 import eu.europeana.api.commons.oauth2.model.impl.ClientDetailsAdapter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpStatus;
 import org.apache.hc.core5.net.URIBuilder;
@@ -95,18 +94,18 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
                 .addParameter(PARAM_CLIENT_ID, apikey)
                 .build();
 
-            HttpResponseHandler response = httpConnection.post(uri.toString(), null,
+            CloseableHttpResponse response = httpConnection.post(uri.toString(), null,
                     headers, authHandler);
-            if (response == null || response.getStatus() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
+            if (response == null || response.getCode() == HttpStatus.SC_INTERNAL_SERVER_ERROR) {
                 throw new OAuth2Exception("Invocation of api key service failed. Cannot validate ApiKey : " + apikey);
                 // with previous implementation it looks like validation object was always null for
                 // internal server error, hence skipping the part to print the reason for now.
                 //  + ". Reason:" + response.getResponse());
             }
             //In case key is invalid , return the keycloak validation error response.
-            if (response.getStatus() != HttpStatus.SC_NO_CONTENT) {
-                return new KeyValidationResult(response.getStatus(),
-                        getKeyValidationError(response.getResponse()));
+            if (response.getCode() != HttpStatus.SC_NO_CONTENT) {
+                return new KeyValidationResult(response.getCode(),
+                        getKeyValidationError(response));
             }
         } catch (IOException | URISyntaxException e) {
             throw new ApiKeyValidationException(
@@ -115,9 +114,9 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
         return null;
     }
 
-    private static KeyValidationError getKeyValidationError(String response)
-            throws JsonProcessingException {
+    private static KeyValidationError getKeyValidationError(CloseableHttpResponse response)
+            throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(response, KeyValidationError.class);
+        return objectMapper.readerFor(KeyValidationError.class).readValue(response.getEntity().getContent());
     }
 }
