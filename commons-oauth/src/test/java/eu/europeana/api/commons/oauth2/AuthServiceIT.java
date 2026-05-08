@@ -1,20 +1,18 @@
 package eu.europeana.api.commons.oauth2;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 
 import eu.europeana.api.commons.auth.AuthenticationBuilder;
 import eu.europeana.api.commons.auth.AuthenticationConfig;
 import eu.europeana.api.commons.exception.ApiKeyValidationException;
-import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
+import eu.europeana.api.commons.exception.EuropeanaClientRegistrationException;
 import eu.europeana.api.commons.oauth2.service.impl.EuropeanaClientDetailsService;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.oauth2.provider.ClientDetails;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This class tests Auth service to fulfill validation for use case "read access"
@@ -30,21 +28,29 @@ public class AuthServiceIT {
 	public static final String PROP_GRANT_PARAMS = "test.grant.param";
 	Properties configProps;
 
+
 	@Test
 	public void testAuthValidationReadAccess() throws ApiKeyValidationException, IOException {
 		EuropeanaClientDetailsService client = getApiKeyClientDetailsService();
-		KeyValidationResult validationResult = client.validateApiKeyKeycloakClient(
+		ClientDetails details = client.validateApiKeyKeycloakClient(
 				getConfigProperty(PROP_TEST_API_KEY));
-		assertNull(validationResult);
+		assertNotNull(details);
+		assertNotNull(details.getAdditionalInformation());
+
 	}
 
 	@Test
-	public void testAuthValidationWrongKey() throws ApiKeyValidationException, IOException {
+	public void testAuthValidationWrongKey() throws IOException {
 		EuropeanaClientDetailsService client = getApiKeyClientDetailsService();
-		KeyValidationResult validationResult = client.validateApiKeyKeycloakClient(WRONG_API_KEY);
-		assertNotNull(validationResult);
-		assertNotNull(validationResult.getValidationError());
-		assertEquals(HttpStatus.SC_BAD_REQUEST, validationResult.getHttpStatusCode());
+		EuropeanaClientRegistrationException ex = assertThrows(
+				EuropeanaClientRegistrationException.class,
+				() ->  client.validateApiKeyKeycloakClient(WRONG_API_KEY)
+		);
+
+		assertEquals(401, ex.getHttpStatusCode());
+		assertEquals("401_key_invalid", ex.getCode());
+		assertEquals("Please register for an API key", ex.getMessage());
+		assertEquals("API key is invalid", ex.getError());
 	}
 
 	protected String getConfigProperty(String key) throws IOException {

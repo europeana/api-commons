@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+
+import eu.europeana.api.commons.oauth2.model.impl.EuropeanaAuthenticationToken;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.jwt.crypto.sign.RsaVerifier;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
+import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
 import eu.europeana.api.commons.definitions.exception.ApiWriteLockException;
@@ -67,6 +70,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
   private Authentication authorizeReadByApiKey(HttpServletRequest request)
       throws ApplicationAuthenticationException {
     String wsKey;
+    ClientDetails clientDetails = null;
+
     // extract api key with other methods
     try {
       wsKey = OAuthUtils.extractApiKey(request);
@@ -77,15 +82,14 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
     // check if empty
     if (StringUtils.isEmpty(wsKey))
-      throw new ApplicationAuthenticationException(I18nConstants.EMPTY_APIKEY,
-          I18nConstants.EMPTY_APIKEY, null);
+      throw new ApplicationAuthenticationException(I18nConstants.EMPTY_APIKEY, I18nConstants.EMPTY_APIKEY);
 
     // validate api key
     try {
-      getClientDetailsService().loadClientByClientId(wsKey);
+      clientDetails = getClientDetailsService().loadClientByClientId(wsKey);
     } catch (EuropeanaClientRegistrationException e) {
       // invalid api key
-      throw new ApplicationAuthenticationException(null,null,null,HttpStatus.valueOf(e.getResult().getHttpStatusCode()) , null, e.getResult());
+      throw new ApplicationAuthenticationException(e.getMessage(), e.getCode(), e.getError(), HttpStatus.valueOf(e.getHttpStatusCode()));
     } catch (OAuth2Exception e) {
       // validation failed through API Key service issues
       // silently approve request
@@ -93,7 +97,11 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     }
 
     // anonymous user, only the client application is verified by API key
-    return OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), wsKey);
+    EuropeanaAuthenticationToken token =  OAuthUtils.buildReadOnlyAuthenticationToken(getApiName(), wsKey);
+    if (clientDetails != null) {
+      token.setDetails(clientDetails.getAdditionalInformation());
+    }
+    return token;
   }
 
   private Authentication authorizeReadByJwtToken(HttpServletRequest request)
@@ -150,8 +158,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
     //invalid configurations
     if (getSignatureVerifier() == null) {
       getLog().error("No signature key configured for verification of JWT Token");
-      throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID,
-              I18nConstants.TOKEN_INVALID, null, HttpStatus.UNAUTHORIZED);
+      throw new ApplicationAuthenticationException(I18nConstants.TOKEN_INVALID, I18nConstants.TOKEN_INVALID, HttpStatus.UNAUTHORIZED);
     }
     List<? extends Authentication> authenticationList;
     boolean verifyResourceAccess = isResourceAccessVerificationRequired(operation);
@@ -166,8 +173,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
     if(authenticationList == null || authenticationList.isEmpty()) {
       getLog().error("Invalid token or ApiKey, resource access not granted! ");
-      throw new ApplicationAuthenticationException(I18nConstants.USER_NOT_AUTHORISED,
-              I18nConstants.USER_NOT_AUTHORISED, null, HttpStatus.FORBIDDEN);
+      throw new ApplicationAuthenticationException(I18nConstants.USER_NOT_AUTHORISED, I18nConstants.USER_NOT_AUTHORISED, HttpStatus.FORBIDDEN);
     }
 
     if(verifyResourceAccess) {
@@ -198,7 +204,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       if(isResourceAccessVerificationRequired(operation)){
         //access verification required but
         getLog().error("No or invalid authorization provided. ");
-        throw new ApplicationAuthenticationException(I18nConstants.USER_NOT_AUTHORISED, I18nConstants.USER_NOT_AUTHORISED, null, HttpStatus.FORBIDDEN);
+        throw new ApplicationAuthenticationException(I18nConstants.USER_NOT_AUTHORISED, I18nConstants.USER_NOT_AUTHORISED, HttpStatus.FORBIDDEN);
       } else {
         //TODO:
         return null;
@@ -223,7 +229,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
 
     // not authorized
     getLog().error("Operation not permitted or not GrantedAuthority found for operation:" + operation);
-    throw new ApplicationAuthenticationException(I18nConstants.USER_NOT_AUTHORISED, I18nConstants.USER_NOT_AUTHORISED, null, HttpStatus.FORBIDDEN);
+    throw new ApplicationAuthenticationException(I18nConstants.USER_NOT_AUTHORISED, I18nConstants.USER_NOT_AUTHORISED, HttpStatus.FORBIDDEN);
   }
 
 

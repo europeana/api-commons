@@ -1,6 +1,7 @@
 package eu.europeana.api.commons.oauth2.model.impl;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,16 +12,12 @@ import eu.europeana.api.commons.oauth2.model.ApiKey;
 
 public class ClientDetailsAdapter implements ClientDetails {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	ApiKey apiKey;
 	private String wsKey;
+	Map<String, Object> additionalInformation;
 
-	
 	public ClientDetailsAdapter() {
-
 	}
 
 	public ClientDetailsAdapter(ApiKey apiKey) {
@@ -94,7 +91,10 @@ public class ClientDetailsAdapter implements ClientDetails {
 
 	@Override
 	public Map<String, Object> getAdditionalInformation() {
-		return null;
+		if (additionalInformation == null ) {
+			this.additionalInformation = new HashMap<>();
+		}
+		return this.additionalInformation;
 	}
 
 	public ApiKey getApiKey() {
@@ -111,6 +111,10 @@ public class ClientDetailsAdapter implements ClientDetails {
 
 	public void setWsKey(String wsKey) {
 	    this.wsKey = wsKey;
+	}
+
+	public void setAdditionalInformation(Map<String, Object> additionalInformation) {
+		this.additionalInformation = additionalInformation;
 	}
 
 }
