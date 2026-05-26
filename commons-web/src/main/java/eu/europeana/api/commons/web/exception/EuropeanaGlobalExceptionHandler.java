@@ -7,10 +7,8 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
-import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -343,34 +341,19 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(ApplicationAuthenticationException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> clientRegistrationExceptionHandler(HttpServletRequest request,
                                                                                         ApplicationAuthenticationException ee) {
-        if (ee.getResult() != null) {
-            KeyValidationResult result = ee.getResult();
-            // get the status
-            int status = isInvalidOrDisabledErrorCode(result.getValidationError().getCode()) ?
-                    HttpStatus.UNAUTHORIZED.value() : result.getHttpStatusCode();
+        // get the status
+        int status = isInvalidOrDisabledErrorCode(ee.getErrorCode()) ? HttpStatus.UNAUTHORIZED.value() : ee.getResponseStatus().value();
+        String errorLabel = ee.getError() == null ? buildErrorLabel(ee, ee.getI18nKey(), "Unauthorized") : ee.getError();
+        String errorCode = buildErrorCode(ee, ee.getI18nKey(), ee.getErrorCode()); // we already have fallback for errorcode in EuropeanaI18nApiException
 
-            return ResponseEntity.status(status)
-                    .headers(createHttpHeaders(request))
-                    .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-                            .setStatus(status)
-                            .setError(result.getValidationError().getError())
-                            .setMessage(result.getValidationError().getMessage())
-                            .setCode(result.getValidationError().getCode())
-                            .build());
-        } else {
-            int status = ee.getStatus() != null ? ee.getStatus().value(): HttpServletResponse.SC_UNAUTHORIZED;
-            final String errorLabel = buildErrorLabel(ee, ee.getI18nKey(), "Unauthorized");
-            final String errorCode = buildErrorCode(ee, ee.getI18nKey(), ee.getI18nKey() );
-
-            return ResponseEntity.status(status)
-                    .headers(createHttpHeaders(request))
-                    .body( new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-                            .setStatus(status)
-                            .setError(errorLabel)
-                            .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
-                            .setCode(errorCode)
-                            .build());
-        }
+        return ResponseEntity.status(status)
+                .headers(createHttpHeaders(request))         // todo see if we need ratelimit headers for 429 responses ehre
+                .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
+                        .setStatus(ee.getResponseStatus().value())
+                        .setError(errorLabel)
+                        .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
+                        .setCode(errorCode)
+                        .build());
     }
 
     /**

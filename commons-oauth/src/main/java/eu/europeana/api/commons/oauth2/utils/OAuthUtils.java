@@ -61,6 +61,9 @@ public class OAuthUtils {
   public static final String HTTPS = "https";
   public static final CharSequence K8S_FQDN_SUFFIX = "svc.cluster.local";
 
+  public static final String RATE_LIMIT_POLICY_HEADER   = "RateLimit-Policy";
+  public static final String RATE_LIMIT_HEADER          = "RateLimit";
+
   static JsonParser objectMapper = JsonParserFactory.create();
 
   /**
@@ -510,5 +513,23 @@ public class OAuthUtils {
       String wsKey) {
     return new EuropeanaAuthenticationToken(null, apiName, EuropeanaApiCredentials.USER_ANONYMOUS,
         new EuropeanaApiCredentials(EuropeanaApiCredentials.USER_ANONYMOUS,EuropeanaApiCredentials.CLIENT_UNKNOWN,wsKey));
+  }
+
+  /**
+   * Retrieves the details from the provided Authentication object if available.
+   *
+   * @param auth the Authentication object from which details are to be extracted.
+   *             If null, the method returns null.
+   * @return a map containing the details if the Authentication object has details
+   *         of type Map<String, String>, otherwise returns null.
+   */
+  public static Map<String, String> getDetails(Authentication auth) {
+    if (auth == null) return null;
+
+    Object details = auth.getDetails();
+    if (details instanceof Map<?, ?> map) {
+      return (Map<String, String>) details;
+    }
+    return null;
   }
 }

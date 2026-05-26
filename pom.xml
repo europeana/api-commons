@@ -56,7 +56,7 @@
 		<version.springSecurityJwt>1.1.1.RELEASE</version.springSecurityJwt>
 		<version.springSecurityOauth>2.5.1.RELEASE</version.springSecurityOauth>
 		<version.log4j2>2.17.2</version.log4j2>
-		<version.commonsLang3>3.17.0</version.commonsLang3>
+		<version.commonsLang3>3.18.0</version.commonsLang3>
 		<version.commonsIO>2.5</version.commonsIO>
         <mongodb.version.upgrade>4.7.2</mongodb.version.upgrade>
 		<version.morphia>1.6.1</version.morphia>

@@ -10,27 +10,29 @@ public class EuropeanaI18nApiException extends EuropeanaApiException {
 	
   private String[] i18nParams;
 
-  public EuropeanaI18nApiException(String message, String errorCode, String i18nKey, String[] i18nParams){
-	super(message, errorCode);
-	this.i18nKey = i18nKey;
-	this.i18nParams = i18nParams;
-  }
-  
-  public EuropeanaI18nApiException(String message, String errorCode, HttpStatus responseStatus, String i18nKey, String[] i18nParams){
-    super(message, errorCode);
-    super.setResponseStatus(responseStatus);
-    this.i18nKey = i18nKey;
-    this.i18nParams = i18nParams;
-  }
-	
-  public EuropeanaI18nApiException(String message, String errorCode, HttpStatus responseStatus, String i18nKey, String[] i18nParams, Throwable th){
-	super(message, errorCode, th);
-	super.setResponseStatus(responseStatus);
-	this.i18nKey = i18nKey;
-	this.i18nParams = i18nParams;
-  }
+    public EuropeanaI18nApiException(String message, String errorCode, String error, String i18nKey,String[] i18nParams){
+        super(message, error, errorCode);
+        this.i18nKey = i18nKey;
+        this.i18nParams = i18nParams;
+    }
 
-  public String getI18nKey() {
+
+    public EuropeanaI18nApiException(String message, String errorCode, String error, HttpStatus responseStatus, String i18nKey, String[] i18nParams){
+        super(message, error, errorCode);
+        super.setResponseStatus(responseStatus);
+        this.i18nKey = i18nKey;
+        this.i18nParams = i18nParams;
+    }
+
+    public EuropeanaI18nApiException(String message, String errorCode, String error,HttpStatus responseStatus, String i18nKey,String[] i18nParams, Throwable th){
+        super(message, error, errorCode, th);
+        super.setResponseStatus(responseStatus);
+        this.i18nKey = i18nKey;
+        this.i18nParams = i18nParams;
+    }
+
+
+    public String getI18nKey() {
     return i18nKey;
   }
 
