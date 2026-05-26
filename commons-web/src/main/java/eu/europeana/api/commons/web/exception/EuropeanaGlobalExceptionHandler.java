@@ -341,35 +341,6 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(ApplicationAuthenticationException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> clientRegistrationExceptionHandler(HttpServletRequest request,
                                                                                         ApplicationAuthenticationException ee) {
-//        if (ee.getResult() != null) {
-//            KeyValidationResult result = ee.getResult();
-//            // get the status
-//            int status = isInvalidOrDisabledErrorCode(result.getValidationError().getCode()) ?
-//                    HttpStatus.UNAUTHORIZED.value() : result.getHttpStatusCode();
-//
-//            return ResponseEntity.status(status)
-//                    .headers(createHttpHeaders(request))
-//                    .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-//                            .setStatus(status)
-//                            .setError(result.getValidationError().getError())
-//                            .setMessage(result.getValidationError().getMessage())
-//                            .setCode(result.getValidationError().getCode())
-//                            .build());
-//        } else {
-//            int status = ee.getStatus() != null ? ee.getStatus().value(): HttpServletResponse.SC_UNAUTHORIZED;
-//            final String errorLabel = buildErrorLabel(ee, ee.getI18nKey(), "Unauthorized");
-//            final String errorCode = buildErrorCode(ee, ee.getI18nKey(), ee.getI18nKey() );
-//
-//            return ResponseEntity.status(status)
-//                    .headers(createHttpHeaders(request))
-//                    .body( new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-//                            .setStatus(status)
-//                            .setError(errorLabel)
-//                            .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
-//                            .setCode(errorCode)
-//                            .build());
-//        }
-
         // get the status
         int status = isInvalidOrDisabledErrorCode(ee.getErrorCode()) ? HttpStatus.UNAUTHORIZED.value() : ee.getResponseStatus().value();
         String errorLabel = ee.getError() == null ? buildErrorLabel(ee, ee.getI18nKey(), "Unauthorized") : ee.getError();
