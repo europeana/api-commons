@@ -1,9 +1,12 @@
 package eu.europeana.api.commons.web.controller;
 
+import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
@@ -104,5 +107,26 @@ public abstract class BaseRestController {
       return request.getMethod();
     }
   }
+
+    /**
+     * Adds rate limit headers to the given HTTP response based on the authentication details.
+     * The headers are derived from the details within the provided {@link Authentication} object.
+     *
+     * @param response the HttpServletResponse to which the rate limit headers will be added
+     * @param auth     the Authentication object from which rate limit details will be extracted
+     */
+    public void addRateLimitHeaders(HttpServletResponse response, Authentication auth) {
+        Map<String, String> details = OAuthUtils.getDetails(auth);
+        if (details != null) {
+            details.forEach((key, value) -> {
+                if (value != null) {
+                    response.addHeader(key, value.toString());
+                }
+            });
+        }
+    }
+
+
+
 
 }
