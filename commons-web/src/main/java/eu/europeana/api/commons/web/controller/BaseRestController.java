@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import eu.europeana.api.commons.definitions.config.i18n.I18nConstants;
@@ -16,6 +15,7 @@ import eu.europeana.api.commons.web.exception.HeaderValidationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
+import org.springframework.util.MultiValueMap;
 
 public abstract class BaseRestController {
 
@@ -109,24 +109,21 @@ public abstract class BaseRestController {
   }
 
     /**
-     * Adds rate limit headers to the given HTTP response based on the authentication details.
-     * The headers are derived from the details within the provided {@link Authentication} object.
+     * Adds rate limit-related headers to the provided HTTP headers map based on the details extracted
+     * from the given authentication object.
      *
-     * @param response the HttpServletResponse to which the rate limit headers will be added
-     * @param auth     the Authentication object from which rate limit details will be extracted
+     * @param headers the HTTP headers to which the rate limit-related details will be added
+     * @param auth the authentication object containing details used to generate rate limit headers
      */
-    public void addRateLimitHeaders(HttpServletResponse response, Authentication auth) {
+    public void addRateLimitHeaders(MultiValueMap<String, String> headers, Authentication auth) {
         Map<String, String> details = OAuthUtils.getDetails(auth);
         if (details != null) {
             details.forEach((key, value) -> {
                 if (value != null) {
-                    response.addHeader(key, value.toString());
+                    headers.add(key, value.toString());
                 }
             });
         }
     }
-
-
-
 
 }
