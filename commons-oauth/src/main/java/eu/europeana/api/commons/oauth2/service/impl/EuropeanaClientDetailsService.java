@@ -112,6 +112,7 @@ public class EuropeanaClientDetailsService implements ClientDetailsService {
                 EuropeanaClientRegistrationException e = objMapper.readerFor(EuropeanaClientRegistrationException.class).
                         readValue(response.getEntity().getContent());
                 e.setHttpStatusCode(response.getCode());
+                e.setAdditionalInformation(clientDetails.getAdditionalInformation());
                 throw e;
             }
             // valid api key

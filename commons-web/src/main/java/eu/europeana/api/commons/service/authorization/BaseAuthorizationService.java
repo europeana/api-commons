@@ -89,7 +89,8 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       clientDetails = getClientDetailsService().loadClientByClientId(wsKey);
     } catch (EuropeanaClientRegistrationException e) {
       // invalid api key
-      throw new ApplicationAuthenticationException(e.getMessage(), e.getCode(), e.getError(), HttpStatus.valueOf(e.getHttpStatusCode()));
+      throw new ApplicationAuthenticationException(e.getMessage(), e.getCode(), e.getError(), HttpStatus.valueOf(e.getHttpStatusCode()),
+              e.getAdditionalInformation());
     } catch (OAuth2Exception e) {
       // validation failed through API Key service issues
       // silently approve request
@@ -116,7 +117,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
       // check if null
       if (wsKey == null)
         throw new ApplicationAuthenticationException(I18nConstants.MISSING_APIKEY,
-            I18nConstants.MISSING_APIKEY, null, HttpStatus.UNAUTHORIZED, null);
+            I18nConstants.MISSING_APIKEY, HttpStatus.UNAUTHORIZED);
 
       if (data.containsKey(OAuthUtils.USER_ID)) {
         // read access is provided to any authenticated user
@@ -294,7 +295,7 @@ public abstract class BaseAuthorizationService implements AuthorizationService {
         // unlock operation should be permitted when the application is locked
         // activeWriteLock.getEnded()==null
         throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE,
-            I18nConstants.LOCKED_MAINTENANCE, null, HttpStatus.LOCKED, null);
+            I18nConstants.LOCKED_MAINTENANCE, HttpStatus.LOCKED);
       }
     } catch (ApiWriteLockException e) {
       throw new ApplicationAuthenticationException(I18nConstants.LOCKED_MAINTENANCE,
