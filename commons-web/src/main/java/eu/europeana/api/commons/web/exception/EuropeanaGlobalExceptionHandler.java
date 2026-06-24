@@ -25,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -441,18 +443,39 @@ public class EuropeanaGlobalExceptionHandler {
 		
 	}
 
-    
     protected HttpHeaders createHttpHeaders(HttpServletRequest httpRequest) {
+      return createHttpHeaders(httpRequest, new HashMap<>());
+    }
+    
+    protected HttpHeaders createHttpHeaders(HttpServletRequest httpRequest, Map<String, Object> additionalInformation) {
       HttpHeaders headers = new HttpHeaders();
       //enforce application/json as content type, it is the only serialization supported for exceptions
       headers.setContentType(MediaType.APPLICATION_JSON);
-      
+
+        // add the response headers provided by the service
+        headers.addAll(getHeaders(additionalInformation));
+
       //autogenerate allow header if the service is configured
       if(getRequestPathMethodService()!=null) {
         String allowHeaderValue = getRequestPathMethodService().getMethodsForRequestPattern(httpRequest).orElse(httpRequest.getMethod());
         headers.add(HttpHeaders.ALLOW, allowHeaderValue);
       }
       return headers;
+    }
+
+    /**
+     * Converts the provided map of additional information into a multi-valued map of headers.
+     *
+     * @param additionalInformation a map containing key-value pairs to be converted into headers
+     * @return a multi-valued map where keys are string headers and values are string representations of the input map's values
+     */
+    private static MultiValueMap<String, String> getHeaders(Map<String, Object> additionalInformation) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+
+        for (Map.Entry<String, Object> entry : additionalInformation.entrySet()) {
+            headers.add(entry.getKey(), String.valueOf(entry.getValue()));
+        }
+        return headers;
     }
 
     /**
