@@ -349,7 +349,7 @@ public class EuropeanaGlobalExceptionHandler {
         String errorCode = buildErrorCode(ee, ee.getI18nKey(), ee.getErrorCode()); // we already have fallback for errorcode in EuropeanaI18nApiException
 
         return ResponseEntity.status(status)
-                .headers(createHttpHeaders(request))         // todo see if we need ratelimit headers for 429 responses ehre
+                .headers(createHttpHeaders(request, ee.getAdditionalInformation()))
                 .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
                         .setStatus(ee.getResponseStatus().value())
                         .setError(errorLabel)
