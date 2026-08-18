@@ -1,6 +1,8 @@
 package eu.europeana.api.commons.web.controller;
 
+import eu.europeana.api.commons.oauth2.utils.OAuthUtils;
 import java.util.Date;
+import java.util.Map;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +15,7 @@ import eu.europeana.api.commons.web.exception.HeaderValidationException;
 import eu.europeana.api.commons.web.exception.HttpException;
 import eu.europeana.api.commons.web.http.HttpHeaders;
 import eu.europeana.api.commons.web.service.AbstractRequestPathMethodService;
+import org.springframework.util.MultiValueMap;
 
 public abstract class BaseRestController {
 
@@ -104,5 +107,23 @@ public abstract class BaseRestController {
       return request.getMethod();
     }
   }
+
+    /**
+     * Adds rate limit-related headers to the provided HTTP headers map based on the details extracted
+     * from the given authentication object.
+     *
+     * @param headers the HTTP headers to which the rate limit-related details will be added
+     * @param auth the authentication object containing details used to generate rate limit headers
+     */
+    public void addRateLimitHeaders(MultiValueMap<String, String> headers, Authentication auth) {
+        Map<String, String> details = OAuthUtils.getDetails(auth);
+        if (details != null) {
+            details.forEach((key, value) -> {
+                if (value != null) {
+                    headers.add(key, value.toString());
+                }
+            });
+        }
+    }
 
 }

@@ -7,10 +7,8 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
-import eu.europeana.api.commons.oauth2.model.KeyValidationResult;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -343,30 +343,19 @@ public class EuropeanaGlobalExceptionHandler {
     @ExceptionHandler(ApplicationAuthenticationException.class)
     public ResponseEntity<EuropeanaApiErrorResponse> clientRegistrationExceptionHandler(HttpServletRequest request,
                                                                                         ApplicationAuthenticationException ee) {
-        if (ee.getResult() != null) {
-            KeyValidationResult result = ee.getResult();
-            // get the status
-            int status = isInvalidOrDisabledErrorCode(result.getValidationError().getCode()) ?
-                    HttpStatus.UNAUTHORIZED.value() : result.getHttpStatusCode();
+        // get the status
+        int status = isInvalidOrDisabledErrorCode(ee.getErrorCode()) ? HttpStatus.UNAUTHORIZED.value() : ee.getResponseStatus().value();
+        String errorLabel = ee.getError() == null ? buildErrorLabel(ee, ee.getI18nKey(), "Unauthorized") : ee.getError();
+        String errorCode = buildErrorCode(ee, ee.getI18nKey(), ee.getErrorCode()); // we already have fallback for errorcode in EuropeanaI18nApiException
 
-            return ResponseEntity.status(status)
-                    .headers(createHttpHeaders(request))
-                    .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-                            .setStatus(status)
-                            .setError(result.getValidationError().getError())
-                            .setMessage(result.getValidationError().getMessage())
-                            .setCode(result.getValidationError().getCode())
-                            .build());
-        } else {
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED)
-                    .headers(createHttpHeaders(request))
-                    .body( new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
-                            .setStatus(HttpServletResponse.SC_UNAUTHORIZED)
-                            .setError("Unauthorized")
-                            .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
-                            .setCode(StringUtils.substringAfter(ee.getI18nKey(), "."))
-                            .build());
-        }
+        return ResponseEntity.status(status)
+                .headers(createHttpHeaders(request, ee.getAdditionalInformation()))
+                .body(new EuropeanaApiErrorResponse.Builder(request, ee, stackTraceEnabled())
+                        .setStatus(ee.getResponseStatus().value())
+                        .setError(errorLabel)
+                        .setMessage(buildResponseMessage(ee, ee.getI18nKey(), ee.getI18nParams()))
+                        .setCode(errorCode)
+                        .build());
     }
 
     /**
@@ -454,18 +443,39 @@ public class EuropeanaGlobalExceptionHandler {
 		
 	}
 
-    
     protected HttpHeaders createHttpHeaders(HttpServletRequest httpRequest) {
+      return createHttpHeaders(httpRequest, new HashMap<>());
+    }
+    
+    protected HttpHeaders createHttpHeaders(HttpServletRequest httpRequest, Map<String, Object> additionalInformation) {
       HttpHeaders headers = new HttpHeaders();
       //enforce application/json as content type, it is the only serialization supported for exceptions
       headers.setContentType(MediaType.APPLICATION_JSON);
-      
+
+        // add the response headers provided by the service
+        headers.addAll(getHeaders(additionalInformation));
+
       //autogenerate allow header if the service is configured
       if(getRequestPathMethodService()!=null) {
         String allowHeaderValue = getRequestPathMethodService().getMethodsForRequestPattern(httpRequest).orElse(httpRequest.getMethod());
         headers.add(HttpHeaders.ALLOW, allowHeaderValue);
       }
       return headers;
+    }
+
+    /**
+     * Converts the provided map of additional information into a multi-valued map of headers.
+     *
+     * @param additionalInformation a map containing key-value pairs to be converted into headers
+     * @return a multi-valued map where keys are string headers and values are string representations of the input map's values
+     */
+    private static MultiValueMap<String, String> getHeaders(Map<String, Object> additionalInformation) {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+
+        for (Map.Entry<String, Object> entry : additionalInformation.entrySet()) {
+            headers.add(entry.getKey(), String.valueOf(entry.getValue()));
+        }
+        return headers;
     }
 
     /**

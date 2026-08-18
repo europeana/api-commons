@@ -12,7 +12,11 @@ public interface I18nConstants {
 	static final String EMPTY_APIKEY = "error.empty_apikey";
 	static final String MISSING_APIKEY = "error.missing_apikey";
 	static final String INVALID_API_NAME = "error.invalid_api_name";
-	static final String TOKEN_INVALID = "error.401_token_invalid";
+	static final String TOKEN_INVALID = "error.token_invalid";
+	static final String USER_NOT_AUTHORISED = "error.user_not_authorised";
+
+
+
 	//404
 	static final String RESOURCE_NOT_FOUND = "error.not_found";
 	

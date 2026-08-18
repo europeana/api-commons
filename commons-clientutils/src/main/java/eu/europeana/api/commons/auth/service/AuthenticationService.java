@@ -6,9 +6,9 @@ package eu.europeana.api.commons.auth.service;
 import java.io.IOException;
 
 import eu.europeana.api.commons.auth.AuthenticationException;
-import eu.europeana.api.commons.http.HttpResponseHandler;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.HttpStatus;
 
@@ -38,16 +38,13 @@ public class AuthenticationService {
     public TokenResponse newToken(AuthGrant grant) 
            throws AuthenticationException {
 
-        try {
-            HttpResponseHandler rsp = new HttpResponseHandler();
-            this.httpClient.execute(newTokenRequest(grant), rsp);
-    
-            if (rsp.getStatus() != HttpStatus.SC_OK) {
-                AuthenticationException e = this.objMapper.readerFor(AuthenticationException.class).readValue(rsp.getResponse());
+        try (CloseableHttpResponse rsp = this.httpClient.execute(newTokenRequest(grant))) {
+            if (rsp.getCode() != HttpStatus.SC_OK) {
+                AuthenticationException e = this.objMapper.readerFor(AuthenticationException.class).readValue(rsp.getEntity().getContent());
                 throw e;
             }
 
-            return this.objMapper.readerFor(TokenResponse.class).readValue(rsp.getResponse());
+            return this.objMapper.readerFor(TokenResponse.class).readValue(rsp.getEntity().getContent());
         }
         catch (IOException e) {
             throw new AuthenticationException(AuthenticationException.AUTH_SERVICE_ERROR, e);
