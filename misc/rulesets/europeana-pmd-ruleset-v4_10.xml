@@ -49,7 +49,7 @@
   </rule>
   
   <!-- replacing BooleanInstantiation, ByteInstantiation, Integer, Long, Short instaniations rules:  https://pmd.github.io/2021/07/31/PMD-6.37.0/ -->
-  <rule ref="category/java/performance.xml/PrimitiveWrapperInstantiation">
+  <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation">
     <priority>3</priority>
   </rule>
   
@@ -209,7 +209,7 @@
   <rule ref="category/java/performance.xml/UseStringBufferLength">
     <priority>4</priority>
   </rule>
-  <!-- replacing UselessOperationOnImmutable -->
+  <!-- replacing UselessOperationOnImmutable, completely removed in PM V7
   <rule ref="category/java/errorprone.xml/UnusedReturnValue">
     <priority>2</priority>
   </rule>
